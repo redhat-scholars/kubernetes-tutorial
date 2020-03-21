@@ -1,0 +1,27 @@
+= Kubernetes Tutorial 
+
+== Resources
+https://kubernetes.io/docs/user-guide/kubectl/
+
+https://kubernetes.io/docs/reference/kubectl/cheatsheet
+
+== Prerequisites
+
+* Kubernetes Cluster (e.g. minikube, OpenShift, GKE, AKS, IKS)
+* kubectl 
+* stern (brew install stern)
+* watch (brew install watch)
+* kubectx/kubens (brew install kubectx)
+
+== Master Class I
+
+=== 1. Installation
+=== 2. kubectl
+=== 3. pod, replicatset, deployment
+=== 4. logs
+=== 5. exec
+=== 6. Service
+=== 7. Rolling Updates
+
+
+== Master Class II

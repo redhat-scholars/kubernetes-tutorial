@@ -1,0 +1,77 @@
+= Installation
+
+== Minikube
+
+https://minikube.sigs.k8s.io/docs/start/
+
+=== Create a Directory
+
+----
+mkdir ~/devnation
+cd ~/devnation
+git clone https://github.com/redhat-developer-demos/kubernetes-tutorial
+cd kubernetes-tutorial
+mkdir bin
+cd bin
+
+----
+
+=== MacOS
+----
+curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.8.2/minikube-darwin-amd64
+
+chmod +x minikube
+
+./minikube version
+----
+
+=== Fedora
+----
+curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.8.2/minikube-linux-amd64
+
+chmod +x minikube
+
+./minikube version
+----
+
+=== Windows
+
+https://github.com/kubernetes/minikube/releases/download/v1.8.2/minikube-windows-amd64.exe[Download]
+
+
+== kubectl
+
+=== MacOS
+----
+curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl 
+
+chmod +x kubectl
+
+./kubectl version
+----
+
+=== Linux
+----
+curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/linux/amd64/kubectl 
+
+chmod +x kubectl
+
+./kubectl version
+----
+
+=== Windows
+----
+https://storage.googleapis.com/kubernetes-release/release/v1.13.12/bin/windows/amd64/kubectl.exe[Download]
+
+kubectl.exe version
+----
+
+== PATH
+
+MacOS and Linux
+----
+
+mv minikube ~/
+----
+
+== Alternatives
