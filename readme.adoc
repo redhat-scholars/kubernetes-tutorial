@@ -12,7 +12,7 @@ IMPORTANT: Instructions are in Bash
 
 === 1. Installation
 === 2. kubectl
-=== 3. pod, replicatset, deployment
+=== 3. pod, replicaset, deployment
 === 4. logs
 === 5. exec
 === 6. Service
@@ -22,9 +22,10 @@ IMPORTANT: Instructions are in Bash
 == Master Class II
 
 === 8. Building Images
-=== 9. Live & Ready 
-=== 10. Service Magic
-=== 11. Blue/Green
-=== 12. Env & ConfigMap
-=== 13. Secrets
-=== 14. Custom Resource Definitions (CRDs)
+=== 9. Resource Limits
+=== 10. Live & Ready 
+=== 11. Service Magic
+=== 12. Blue/Green
+=== 13. Env & ConfigMap
+=== 14. Secrets
+=== 15. Custom Resource Definitions (CRDs)

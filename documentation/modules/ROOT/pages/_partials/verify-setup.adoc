@@ -40,7 +40,7 @@ To further debug and diagnose cluster problems, use `kubectl cluster-info dump`.
 ====
 
 
-* Set your local docker to use minikube docker daemon
+* Set your local docker to use the minikube docker daemon
 
 [#minikube-set-env]
 [source,bash,subs="+macros,+attributes"]

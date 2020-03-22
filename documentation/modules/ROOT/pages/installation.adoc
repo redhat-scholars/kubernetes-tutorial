@@ -65,7 +65,7 @@ cd $TUTORIAL_HOME
 ----
 copyToClipboard::cloneRepo[]
 
-ifndef::workshop[]
+
 [IMPORTANT,subs="attributes+,+macros"]
 ====
 
@@ -74,7 +74,26 @@ This tutorial was developed and tested with:
 - Minikube `{minikube-version}`
 - OpenShift `{openshift-version}`
 ====
-endif::[]
+
+
+[#download-minikube-kubectl]
+[source,bash,subs="attributes+,+macros"]
+----
+mkdir bin
+cd bin
+curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.8.2/minikube-darwin-amd64
+
+chmod +x minikube
+
+./minikube version
+
+# Mac version of kubectl
+curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl
+
+chmod +x kubectl
+
+----
+
 
 [#env-path]
 === Env and PATH
@@ -97,44 +116,20 @@ There are series of commands as steps that allows you get started with minikube.
 [#minikube-set-cpu]
 [source,bash,subs="+macros,+attributes"]
 ----
-minikube --profile {tutorial-namespace} config set cpus 2 # <.>
+minikube --profile devnation config set cpus 2 # <1>
+minikube --profile devnation config set memory 6144 # <2>
+minikube --profile devnation config set disk-size 50g # <3>
+minikube --profile devnation config set vm-driver {vm-driver} <4>
+minikube --profile devnation config set kubernetes-version v1.17.0 #<5>
 ----
 copyToClipboard::minikube-set-cpu[]
-<.> Using 2 cpus which is good enough for the basics
+<1> Using 2 cpus which is good enough for the basics
 There is nothing in this series of exercises that is CPU intensive 
-
-[#minikube-set-memory]
-[source,bash,subs="+macros,+attributes"]
-----
-minikube --profile {tutorial-namespace} config set memory 6144 # <.>
-----
-copyToClipboard::minikube-set-memory[]
-<.> Memory matters, especially when running traditional Java apps (e.g. Weblogic, Spring)
-
-[#minikube-set-disk]
-[source,bash,subs="+macros,+attributes"]
-----
-minikube --profile {tutorial-namespace} config set disk-size 50g # <.>
-----
-copyToClipboard::minikube-set-disk[]
-<.> Its required that we give additional disk space for storing container images
-
-[#minikube-set-vmdriver]
-[source,bash,subs="+macros,+attributes"]
-----
-minikube --profile {tutorial-namespace} config set vm-driver {vm-driver} <.>
-----
-copyToClipboard::minikube-set-vmdriver[]
-<.> Using virtualbox because it is available on all platforms.  There a number of 
+<2> Memory matters, especially when running traditional Java apps (e.g. Weblogic, Spring, JBoss)
+<3> More disk space for storing container images
+<4> Using virtualbox because it is available on all platforms.  There a number of 
 https://kubernetes.io/docs/tasks/tools/install-minikube/#install-a-hypervisor[hypervisor options] that you can choose with minikube
-
-[#minikube-set-k8sversion]
-[source,bash,subs="+macros,+attributes"]
-----
-minikube --profile devnation config set kubernetes-version v1.17.0 #<.>
-----
-copyToClipboard::minikube-set-k8sversion[]
-<.> Setting the Kubernetes version explicitly so you know what you are getting
+<5> Setting the Kubernetes version explicitly so you know what you are getting
 
 [#minikube-set-profile]
 [source,bash,subs="+macros,+attributes"]
@@ -142,20 +137,14 @@ copyToClipboard::minikube-set-k8sversion[]
 minikube start --profile devnation #<.>
 ----
 copyToClipboard::minikube-set-profile[]
-<.> Profiles allow you to keep different configurations 
+<.> Profiles allow you to manage different configurations 
 
 .Minikube starting
 [source,bash,subs="+macros,+attributes"]
 ----
-❌  profile "{tutorial-namespace}" not found
-✅  Created a new profile : {tutorial-namespace}
-✅  minikube profile was successfully set to {tutorial-namespace}
-😄  [{tutorial-namespace}] minikube {minikube-version} on Darwin 10.15.2
-✨  Selecting 'virtualbox' driver from user configuration (alternates: [hyperkit])
-🔥  Creating virtualbox VM (CPUs=2, Memory=6144MB, Disk=50000MB) ...
-🐳  Preparing Kubernetes {kubernetes-version} on Docker '19.03.5' ...
-    ▪ apiserver.enable-admission-plugins=LimitRanger,NamespaceExists,NamespaceLifecycle,ResourceQuota,ServiceAccount,DefaultStorageClass,MutatingAdmissionWebhook
-🚜  Pulling images ...
+.
+.
+.
 🚀  Launching Kubernetes ...
 ⌛  Waiting for cluster to come online ...
 🏄  Done! kubectl is now configured to use "{tutorial-namespace}"
@@ -171,13 +160,14 @@ minikube profile devnation #<.>
 copyToClipboard::minikube-stick-profile[]
 <.> Making the profile "sticky" or the default so you do not have to type --profile going forward
 
-You could also do `minikube profile list` command to list the available profiles
+You could also use the `minikube profile list` command to list the available profiles
 ====
 
 [[verify-setup]]
 === Verify Setup
 
 include::partial$verify-setup.adoc[]
+
 
 [[openshift]]
 === OpenShift Installation 
