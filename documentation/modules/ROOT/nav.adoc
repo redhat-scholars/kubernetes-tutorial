@@ -1,0 +1,2 @@
+* xref:installation.adoc[Install]
+* xref:kubectl.adoc[kubectl]
