@@ -27,5 +27,12 @@
             "copyToClipboard::$1[]"
         ],
         "description": "Add Source with Clipboard"
+    },
+    "Add Navigation": {
+        "prefix": "nav",
+        "body": [
+            "${1:*} xref:${2:page.adoc}[${3:Nav Title}]"
+        ],
+        "description": "Add new navigation"
     }
 }
