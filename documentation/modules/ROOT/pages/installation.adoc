@@ -1,141 +1,186 @@
-= Installation & Setup
+== Installation & Setup
+include::_attributes.adoc[]
 
-== Prerequisites
+[[tutorial-all-local]]
+=== CLI tools
 
-* https://www.docker.com/products/docker-desktop[Docker for Windows/Mac]
-* https://docs.docker.com/install/[Docker for Linux]
-* Kubernetes Cluster (e.g. minikube, OpenShift, GKE, AKS, DKS, etc)
-* kubectl 
-* git
-* stern (brew install stern)
-* watch (brew install watch)
-* kubectx/kubens (brew install kubectx)
+The following CLI tools are required for running the exercises in this tutorial. Please have them installed and configured before you get started with any of the tutorial chapters.
 
-== Minikube
+[cols="4*^,4*.",options="header,+attributes"]
+|===
+|**Tool**|**macOS**|**Fedora**|**windows**
 
-https://minikube.sigs.k8s.io/docs/start/
+| Git
+| https://git-scm.com/download/mac[Download]
+| https://git-scm.com/download/win[Download]
+| https://git-scm.com/download/linux[Download]
 
-=== Create a Directory 
+| `Docker`
+| https://docs.docker.com/docker-for-mac/install[Docker for Mac]
+| `dnf install docker`
+| https://docs.docker.com/docker-for-windows/install[Docker for Windows]
 
-Create a directory to hold the lab/exercise code as well as the downloaded binaries.
+| `kubectl {kubernetes-version}`
+| https://storage.googleapis.com/kubernetes-release/release/{kubernetes-version}/bin/darwin/amd64/kubectl[Download]
+| https://storage.googleapis.com/kubernetes-release/release/{kubernetes-version}/bin/linux/amd64/kubectl[Download]
+| https://storage.googleapis.com/kubernetes-release/release/{kubernetes-version}/bin/windows/amd64/kubectl.exe[Download]
 
+| https://github.com/wercker/stern[stern]
+| `brew install stern`
+| https://github.com/wercker/stern/releases/download/1.6.0/stern_linux_amd64[Download]
+| https://github.com/wercker/stern/releases/download/1.11.0/stern_windows_amd64.exe[Download]
+
+| https://github.com/mikefarah/yq[yq v2.4.1]
+| https://github.com/mikefarah/yq/releases/download/2.4.1/yq_darwin_amd64[Download]
+| https://github.com/mikefarah/yq/releases/download/2.4.1/yq_linux_amd64[Download]
+| https://github.com/mikefarah/yq/releases/download/2.4.1/yq_windows_amd64.exe[Download]
+
+| https://httpie.org/[httpie]
+| `brew install httpie`
+| `dnf install httpie`
+| https://httpie.org/doc#windows-etc
+
+| watch
+| `brew install watch`
+| `dnf install procps-ng`
+|
+
+| kubectx and kubens
+| `brew install kubectx`
+| https://github.com/ahmetb/kubectx
+|
+
+|===
+
+[#download-tutorial-sources]
+== Download Tutorial Sources
+Before we start setting up the environment, let's clone the tutorial sources and set the `TUTORIAL_HOME` environment variable to point to the root directory of the tutorial:
+
+[#cloneRepo]
+[source,bash,subs="attributes+,+macros"]
 ----
-mkdir ~/devnation
-cd ~/devnation
-git clone https://github.com/redhat-developer-demos/kubernetes-tutorial
-cd kubernetes-tutorial
-mkdir bin
-cd bin
+git clone {github-repo} &&\
+export TUTORIAL_HOME="$(pwd)/kubernetes-tutorial"
+cd $TUTORIAL_HOME
 ----
+copyToClipboard::cloneRepo[]
 
-=== MacOS
-----
-curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.8.2/minikube-darwin-amd64
+ifndef::workshop[]
+[IMPORTANT,subs="attributes+,+macros"]
+====
 
-chmod +x minikube
+This tutorial was developed and tested with:
 
-./minikube version
-----
+- Minikube `{minikube-version}`
+- OpenShift `{openshift-version}`
+====
+endif::[]
 
-=== Fedora
-----
-curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.8.2/minikube-linux-amd64
+[#env-path]
+=== Env and PATH
 
-chmod +x minikube
-
-./minikube version
-----
-
-=== Windows
-
-https://github.com/kubernetes/minikube/releases/download/v1.8.2/minikube-windows-amd64.exe[Download]
-
-
-== kubectl
-
-=== MacOS
-----
-curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl 
-
-chmod +x kubectl
-
-./kubectl version
-----
-
-=== Linux
-----
-curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/linux/amd64/kubectl 
-
-chmod +x kubectl
-
-./kubectl version
-----
-
-=== Windows
-----
-https://storage.googleapis.com/kubernetes-release/release/v1.13.12/bin/windows/amd64/kubectl.exe[Download]
-----
-
-== Env and PATH
+Download https://kubernetes.io/docs/setup/minikube[minikube] and add it to your path.
 
 MacOS and Linux
 ----
-export MINIKUBE_HOME=/Users/{your-home}/devnation/kubernetes-tutorial;
+export MINIKUBE_HOME=$TUTORIAL_HOME;
 export PATH=$MINIKUBE_HOME/bin:$PATH
 export KUBECONFIG=$MINIKUBE_HOME/.kube/config
 export KUBE_EDITOR="code -w"
 ----
 
-== Start Minikube
-----
-minikube --profile devnation config set cpus 2 <1>
-minikube --profile devnation config set memory 6144 <2>
-minikube --profile devnation config set vm-driver virtualbox <3>
-minikube --profile devnation config set kubernetes-version v1.17.0 <4>
-minikube start --profile devnation <5>
-minikube profile devnation <6> 
-----
+[#start-minikube]
+=== Start Minikube
 
-<1> Using 2 cpus which is good enough for the basics
+There are series of commands as steps that allows you get started with minikube. The following section shows how to start minikube with minimal and required configurtions:
+
+[#minikube-set-cpu]
+[source,bash,subs="+macros,+attributes"]
+----
+minikube --profile {tutorial-namespace} config set cpus 2 # <.>
+----
+copyToClipboard::minikube-set-cpu[]
+<.> Using 2 cpus which is good enough for the basics
 There is nothing in this series of exercises that is CPU intensive 
-<2> Memory matters, especially when running traditional Java apps (e.g. Weblogic, Spring)
-<3> Using virtualbox because it is available on all platforms.  There a number of hypervisor options
-https://kubernetes.io/docs/tasks/tools/install-minikube/#install-a-hypervisor
-<4> Setting the Kubernetes version explicitly so you know what you are getting
-<5> Profiles allow you to keep different configurations 
-<6> Making the profile "sticky" or the default so you do not have to type --profile going forward
 
-== Verify Setup
+[#minikube-set-memory]
+[source,bash,subs="+macros,+attributes"]
 ----
-minikube config view
-- profile: devnation
-- vm-driver: virtualbox
-- cpus: 2
-- kubernetes-version: v1.17.0
-- memory: 6144
+minikube --profile {tutorial-namespace} config set memory 6144 # <.>
+----
+copyToClipboard::minikube-set-memory[]
+<.> Memory matters, especially when running traditional Java apps (e.g. Weblogic, Spring)
+
+[#minikube-set-disk]
+[source,bash,subs="+macros,+attributes"]
+----
+minikube --profile {tutorial-namespace} config set disk-size 50g # <.>
+----
+copyToClipboard::minikube-set-disk[]
+<.> Its required that we give additional disk space for storing container images
+
+[#minikube-set-vmdriver]
+[source,bash,subs="+macros,+attributes"]
+----
+minikube --profile {tutorial-namespace} config set vm-driver {vm-driver} <.>
+----
+copyToClipboard::minikube-set-vmdriver[]
+<.> Using virtualbox because it is available on all platforms.  There a number of 
+https://kubernetes.io/docs/tasks/tools/install-minikube/#install-a-hypervisor[hypervisor options] that you can choose with minikube
+
+[#minikube-set-k8sversion]
+[source,bash,subs="+macros,+attributes"]
+----
+minikube --profile devnation config set kubernetes-version v1.17.0 #<.>
+----
+copyToClipboard::minikube-set-k8sversion[]
+<.> Setting the Kubernetes version explicitly so you know what you are getting
+
+[#minikube-set-profile]
+[source,bash,subs="+macros,+attributes"]
+----
+minikube start --profile devnation #<.>
+----
+copyToClipboard::minikube-set-profile[]
+<.> Profiles allow you to keep different configurations 
+
+.Minikube starting
+[source,bash,subs="+macros,+attributes"]
+----
+❌  profile "{tutorial-namespace}" not found
+✅  Created a new profile : {tutorial-namespace}
+✅  minikube profile was successfully set to {tutorial-namespace}
+😄  [{tutorial-namespace}] minikube {minikube-version} on Darwin 10.15.2
+✨  Selecting 'virtualbox' driver from user configuration (alternates: [hyperkit])
+🔥  Creating virtualbox VM (CPUs=2, Memory=6144MB, Disk=50000MB) ...
+🐳  Preparing Kubernetes {kubernetes-version} on Docker '19.03.5' ...
+    ▪ apiserver.enable-admission-plugins=LimitRanger,NamespaceExists,NamespaceLifecycle,ResourceQuota,ServiceAccount,DefaultStorageClass,MutatingAdmissionWebhook
+🚜  Pulling images ...
+🚀  Launching Kubernetes ...
+⌛  Waiting for cluster to come online ...
+🏄  Done! kubectl is now configured to use "{tutorial-namespace}"
 ----
 
+[TIP]
+====
+[#minikube-stick-profile]
+[source,bash,subs="+macros,+attributes"]
 ----
-kubectl cluster-info
-Kubernetes master is running at https://192.168.99.100:8443
-KubeDNS is running at https://192.168.99.100:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+minikube profile devnation #<.>
+----
+copyToClipboard::minikube-stick-profile[]
+<.> Making the profile "sticky" or the default so you do not have to type --profile going forward
 
-To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
-----
+You could also do `minikube profile list` command to list the available profiles
+====
 
-----
-kubectl get nodes
-kubectl get nodes --show-labels
-kubectl get namespaces
-kubectl config view
-cat $KUBECONFIG
-kubectl config current-context
-kubectl get pods --all-namespaces
-kubectl get pods --all-namespaces --show-labels
-kubectl get pods --all-namespaces -o wide
-----
+[[verify-setup]]
+=== Verify Setup
 
-== OpenShift Installation 
+include::partial$verify-setup.adoc[]
+
+[[openshift]]
+=== OpenShift Installation 
 
 https://www.openshift.com/try
 

@@ -17,11 +17,11 @@ content:
       branches: HEAD
 asciidoc:
   attributes:
-    tutorial-namespace:  knativetutorial
+    tutorial-namespace: knativetutorial
     #workshop: true
     title: Knative Tutorial
     workshop-domain: guru.devx.red
-    kubernetes-version: v1.15.0
+    kubernetes-version: v1.17.2
     release-version: master
     openshift-console-url: https://console-openshift-console.apps.example.com
     etherpad-url: http://example.com

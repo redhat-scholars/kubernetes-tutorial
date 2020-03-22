@@ -1,0 +1,7 @@
+:moduledir: ..
+:branch: master
+:github-repo: https://github.com/redhat-developer-demos/kubernetes-tutorial
+:minikube-version: 1.8.2
+:openshift-version: 4.3
+:kubernetes-version: v1.17.2
+:vm-driver: virtualbox

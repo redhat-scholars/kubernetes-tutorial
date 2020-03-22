@@ -10,9 +10,9 @@ TODO
 == Kubenretes Tutorial
 
 [.tile]
-.xref:knative-tutorial-serving:ROOT:index.adoc[Setup]
-* xref:knative-tutorial-serving:ROOT:setup.adoc[Deploy]
-* xref:knative-tutorial-serving:ROOT:knative-client.adoc[Knative Client]
+.xref:kubernetes-tutorial:ROOT:index.adoc[Setup]
+* xref:kubernetes-tutorial:ROOT:installation.adoc[Install]
+* xref:kubernetes-tutorial:ROOT:kubectl.adoc[Kubernetes Client]
 
 [.tile]
 .xref:knative-tutorial-serving:ROOT:index.adoc[Knative Serving]
@@ -25,15 +25,6 @@ TODO
 *** xref:knative-tutorial-eventing:ROOT:eventing-src-to-sink.adoc[Source to Sink]
 *** xref:knative-tutorial-eventing:ROOT:channel-and-subscribers.adoc[Channel and Subscribers]
 *** xref:knative-tutorial-eventing:ROOT:eventing-trigger-broker.adoc[Brokers and Triggers]
-
-ifndef::workshop[]
-[.tile]
-.xref:knative-tutorial-camelk:ROOT:index.adoc[Apache Camel-K]
-* xref:knative-tutorial-camelk:ROOT:setup.adoc[Setup]
-* xref:knative-tutorial-camelk:ROOT:camel-k-basics.adoc#deploy-camel-k-kn-integration[Camel-K with Knative Serving]
-* xref:knative-tutorial-camelk:ROOT:camel-k-eventing.adoc[Camel-K with Knative Eventing]
-*  xref:knative-tutorial-camelk:ROOT:camel-k-eventing.adoc#camel-k-es-sink[CamelSource to Sink]
-endif::[]
 
 ifndef::workshop[]
 [.tile]

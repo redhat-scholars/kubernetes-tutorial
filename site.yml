@@ -13,7 +13,7 @@ content:
       start_path: documentation
 asciidoc:
   attributes:
-    tutorial-namespace: knativetutorial
+    tutorial-namespace: devnation
     title: Knative Tutorial
     release-version: master
   extensions:

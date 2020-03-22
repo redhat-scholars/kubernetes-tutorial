@@ -1,0 +1,61 @@
+
+The following checks ensure that each chapter exercises are done with the right environment settings.
+
+[#minikube-config-view]
+[source,bash,subs="+macros,+attributes"]
+----
+minikube config view
+----
+copyToClipboard::minikube-config-view[]
+
+The command should return an output as shown:
+
+[source,bash,subs="+macros,+attributes"]
+----
+- profile: devnation
+- vm-driver: virtualbox
+- cpus: 2
+- kubernetes-version: {kubernetes-version}
+- memory: 6144
+----
+
+[#k8s-cluster-info]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl cluster-info
+----
+copyToClipboard::k8s-cluster-info[]
+
+The command should return an output as shown:
+
+[source,bash,subs="+macros,+attributes"]
+----
+Kubernetes master is running at https://192.168.99.100:8443
+KubeDNS is running at https://192.168.99.100:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+----
+
+[NOTE]
+====
+To further debug and diagnose cluster problems, use `kubectl cluster-info dump`.
+====
+
+
+* Set your local docker to use minikube docker daemon
+
+[#minikube-set-env]
+[source,bash,subs="+macros,+attributes"]
+----
+eval $(minikube docker-env)
+----
+copyToClipboard::minikube-set-env[]
+
+* Kubernetes should be {kubernetes-version}
+
+[#kubectl-version]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl version
+----
+copyToClipboard::kubectl-version[]
+--
+

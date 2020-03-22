@@ -1,3 +1,70 @@
-= kubectl
+== Kubernetes Client
 
-== Deploy Something
+[[view-config]]
+=== View Config
+
+[#kubectl-view-config]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl config view
+----
+copyToClipboard::kubectl-view-config[]
+
+[[view-nodes]]
+=== View Nodes
+
+[#kubectl-get-nodes]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get nodes
+----
+copyToClipboard::kubectl-get-nodes[]
+
+
+[#kubectl-nodes-with-labels]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get nodes --show-labels
+----
+copyToClipboard::kubectl-nodes-with-labels[]
+
+[[view-namespaces]]
+=== View Namespaces
+
+[#kubectl-get-ns]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get namespaces
+----
+copyToClipboard::kubectl-get-ns[]
+
+TODO
+
+* cat $KUBECONFIG
+* kubectl config current-context
+* change namesapace
+
+as tip show them kubens/kubectx
+
+[[view-pods]]
+=== View Pods
+
+[#kubectl-get-pods]
+[source,bash,subs="+macros,+attributes"]
+----
+
+kubectl get pods --all-namespaces
+kubectl get pods --all-namespaces --show-labels
+kubectl get pods --all-namespaces -o wide
+----
+copyToClipboard::kubectl-get-pods[]
+
+[[deploy-app]]
+=== Deploy Something
+
+[#kubectl-deploy-app]
+[source,bash,subs="+macros,+attributes"]
+----
+
+----
+copyToClipboard::kubectl-deploy-app[]
