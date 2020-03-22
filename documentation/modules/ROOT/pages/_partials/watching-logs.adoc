@@ -1,0 +1,36 @@
+[kube-ns='knativetutorial']
+[kube-svc='']
+
+Since a Cron job source is used in this section of the tutorial, it would emit events every minute. We can watch the logs of the service to see the messages delivered.
+
+The logs could be watched using the command:
+[tabs]
+====
+kubectl::
++
+--
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl logs -n {kube-ns} -f <pod-name> -c user-container
+----
+--
+oc::
++
+--
+
+[source,bash,subs="+macros,+attributes"]
+----
+oc logs -n {kube-ns} -f <pod-name> -c user-container
+----
+--
+====
+
+[TIP]
+====
+* Using stern with the command `stern  -n {kube-ns} {kube-svc}`, to filter the logs further add `-c user-container` to the stern command.
+
+[source,bash,subs="+macros,+attributes"]
+----
+stern -n {kube-ns} -c user-container {kube-svc} 
+----
+====

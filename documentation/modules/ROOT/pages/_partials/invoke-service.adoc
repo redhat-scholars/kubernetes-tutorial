@@ -1,0 +1,26 @@
+[k8s-env='']
+[k8s-cli='']
+[doc-sec='']
+
+#tag::env[]
+
+[#{doc-sec}-{k8s-cli}-svc-gateway-env]
+[source,bash,subs="+macros,+attributes"]
+----
+IP_ADDRESS="$({k8s-env} ip):$({k8s-cli} get svc istio-ingressgateway --namespace istio-system --output 'jsonpath={.spec.ports[?(@.port==80)].nodePort}')"
+----
+copyToClipboard::{doc-sec}-{k8s-cli}-svc-gateway-env[]
+
+#end::env[]
+
+#tag::call[]
+
+[#{doc-sec}-{k8s-cli}-svc-call]
+[source,bash,subs="+macros,+attributes"]
+----
+http $IP_ADDRESS 'Host:greeter.knativetutorial.example.com'
+----
+
+copyToClipboard::{doc-sec}-{k8s-cli}-svc-call[]
+
+#end::call[]

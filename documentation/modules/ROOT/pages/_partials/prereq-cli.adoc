@@ -1,0 +1,67 @@
+
+The following checks ensure that each chapter exercises are done with the right environment settings.
+
+[tabs]
+====
+Minikube::
++
+--
+* Set your local docker to use minikube docker daemon
+
+[#minikube-set-env]
+[source,bash,subs="+macros,+attributes"]
+----
+eval $(minikube docker-env)
+----
+copyToClipboard::minikube-set-env[]
+
+* Kubernetes should be v1.12+
+
+[#kubectl-version]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl version
+----
+copyToClipboard::kubectl-version[]
+--
+Minishift::
++
+--
+* Set your local docker to use minishift docker daemon 
+
+[#minishift-set-env]
+[source,bash,subs="+macros,+attributes"]
+----
+eval $(minishift docker-env)
+----
+copyToClipboard::minishift-set-env[]
+
+* OpenShift CLI should be v3.11.0+
+
+[#oc-version]
+[source,bash,subs="+macros,+attributes"]
+----
+eval $(minishift oc-env)
+oc version 
+----
+copyToClipboard::oc-version[]
+
+* Make sure to be on `knativetutorial` OpenShift project
+
+[#right-openshift-project]
+[source,bash,subs="+macros,+attributes"]
+----
+oc project -q 
+----
+copyToClipboard::right-openshift-project[]
+
+If you are not on `{tutorial-namespace}` project, then run following command to change to `{tutorial-namespace}` project:
+
+[#change-to-openshift-project]
+[source,bash,subs="+macros,+attributes"]
+----
+oc project {tutorial-namespace}
+----
+copyToClipboard::change-to-openshift-project[]
+--
+====
