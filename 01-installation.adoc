@@ -1,10 +1,23 @@
-= Installation
+= Installation & Setup
+
+== Prerequisites
+
+* https://www.docker.com/products/docker-desktop[Docker for Windows/Mac]
+* https://docs.docker.com/install/[Docker for Linux]
+* Kubernetes Cluster (e.g. minikube, OpenShift, GKE, AKS, DKS, etc)
+* kubectl 
+* git
+* stern (brew install stern)
+* watch (brew install watch)
+* kubectx/kubens (brew install kubectx)
 
 == Minikube
 
 https://minikube.sigs.k8s.io/docs/start/
 
-=== Create a Directory
+=== Create a Directory 
+
+Create a directory to hold the lab/exercise code as well as the downloaded binaries.
 
 ----
 mkdir ~/devnation
@@ -13,7 +26,6 @@ git clone https://github.com/redhat-developer-demos/kubernetes-tutorial
 cd kubernetes-tutorial
 mkdir bin
 cd bin
-
 ----
 
 === MacOS
@@ -62,16 +74,71 @@ chmod +x kubectl
 === Windows
 ----
 https://storage.googleapis.com/kubernetes-release/release/v1.13.12/bin/windows/amd64/kubectl.exe[Download]
-
-kubectl.exe version
 ----
 
-== PATH
+== Env and PATH
 
 MacOS and Linux
 ----
-
-mv minikube ~/
+export MINIKUBE_HOME=/Users/{your-home}/devnation/kubernetes-tutorial;
+export PATH=$MINIKUBE_HOME/bin:$PATH
+export KUBECONFIG=$MINIKUBE_HOME/.kube/config
+export KUBE_EDITOR="code -w"
 ----
 
-== Alternatives
+== Start Minikube
+----
+minikube --profile devnation config set cpus 2 <1>
+minikube --profile devnation config set memory 6144 <2>
+minikube --profile devnation config set vm-driver virtualbox <3>
+minikube --profile devnation config set kubernetes-version v1.17.0 <4>
+minikube start --profile devnation <5>
+minikube profile devnation <6> 
+----
+
+<1> Using 2 cpus which is good enough for the basics
+There is nothing in this series of exercises that is CPU intensive 
+<2> Memory matters, especially when running traditional Java apps (e.g. Weblogic, Spring)
+<3> Using virtualbox because it is available on all platforms.  There a number of hypervisor options
+https://kubernetes.io/docs/tasks/tools/install-minikube/#install-a-hypervisor
+<4> Setting the Kubernetes version explicitly so you know what you are getting
+<5> Profiles allow you to keep different configurations 
+<6> Making the profile "sticky" or the default so you do not have to type --profile going forward
+
+== Verify Setup
+----
+minikube config view
+- profile: devnation
+- vm-driver: virtualbox
+- cpus: 2
+- kubernetes-version: v1.17.0
+- memory: 6144
+----
+
+----
+kubectl cluster-info
+Kubernetes master is running at https://192.168.99.100:8443
+KubeDNS is running at https://192.168.99.100:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+----
+
+----
+kubectl get nodes
+kubectl get nodes --show-labels
+kubectl get namespaces
+kubectl config view
+cat $KUBECONFIG
+kubectl config current-context
+kubectl get pods --all-namespaces
+kubectl get pods --all-namespaces --show-labels
+kubectl get pods --all-namespaces -o wide
+----
+
+== OpenShift Installation 
+
+https://www.openshift.com/try
+
+Once you have an OpenShift cluster, setup your KUBECONFIG correctly and then use `oc login`.  The rest of the `kubectl` commands will simply work.
+
+

@@ -5,13 +5,8 @@ https://kubernetes.io/docs/user-guide/kubectl/
 
 https://kubernetes.io/docs/reference/kubectl/cheatsheet
 
-== Prerequisites
+IMPORTANT: Instructions are in Bash
 
-* Kubernetes Cluster (e.g. minikube, OpenShift, GKE, AKS, IKS)
-* kubectl 
-* stern (brew install stern)
-* watch (brew install watch)
-* kubectx/kubens (brew install kubectx)
 
 == Master Class I
 
@@ -25,3 +20,11 @@ https://kubernetes.io/docs/reference/kubectl/cheatsheet
 
 
 == Master Class II
+
+=== 8. Building Images
+=== 9. Live & Ready 
+=== 10. Service Magic
+=== 11. Blue/Green
+=== 12. Env & ConfigMap
+=== 13. Secrets
+=== 14. Custom Resource Definitions (CRDs)
