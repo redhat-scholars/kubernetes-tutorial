@@ -1,0 +1,178 @@
+== Service
+
+Note: this follows the creation of the Deployment in the previous chapter
+
+Make sure you are in the correct namespace
+----
+kubectl config set-context --current --namespace=myspace
+----
+
+Make sure you have Deployment, RS and Pods
+----
+kubectl get deployments
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+quarkus-demo-deployment   3/3     3            3           8m33s
+----
+
+----
+kubectl get rs
+NAME                                 DESIRED   CURRENT   READY   AGE
+quarkus-demo-deployment-5979886fb7   3         3         3       8m56s
+----
+
+----
+kubectl get pods
+NAME                                       READY   STATUS    RESTARTS   AGE
+quarkus-demo-deployment-5979886fb7-c888m   1/1     Running   0          9m17s
+quarkus-demo-deployment-5979886fb7-gdtnz   1/1     Running   0          9m17s
+quarkus-demo-deployment-5979886fb7-grf59   1/1     Running   0          9m17s
+----
+
+Create a Service
+[#create-service]
+[source,bash,subs="+macros,+attributes"]
+----
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: the-service
+spec:
+  selector:
+    app: quarkus-demo
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+EOF
+----
+copyToClipboard::create-service[]
+
+----
+watch kubectl get services
+----
+
+----
+NAME          TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+the-service   LoadBalancer   172.30.20.239   <pending>     80:32002/TCP   15s
+----
+
+----
+NAME          TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)        AGE
+the-service   LoadBalancer   172.30.20.239   35.184.214.208   80:32002/TCP   36s
+----
+
+Hosted OpenShift/Kubernetes
+[#ip-port-openshift]
+[source,bash,subs="+macros,+attributes"]
+----
+IP=$(kubectl get service the-service -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+PORT=$(kubectl get service the-service -o jsonpath="{.spec.ports[*].port}")
+----
+copyToClipboard::ip-port-openshift[]
+
+Minikube
+[#ip-port-minikube]
+[source,bash,subs="+macros,+attributes"]
+----
+IP=$(minikube ip)
+PORT=$(kubectl get service/the-service -o jsonpath="{.spec.ports[*].nodePort}")
+----
+copyToClipboard::ip-port-minikube[]
+
+Curl the Service
+[#curl-the-service]
+[source,bash,subs="+macros,+attributes"]
+----
+curl $IP:$PORT
+----
+copyToClipboard::curl-the-service[]
+
+Results:
+----
+Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-grf59:1
+----
+
+Note: "5979886fb7-grf59" is part of the unique id for the pod.   The .java code uses `System.getenv().getOrDefault("HOSTNAME", "unknown");`
+
+== Ingress
+
+[#create-ingress]
+[source,bash,subs="+macros,+attributes"]
+----
+cat <<EOF | kubectl apply -f -
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: myingress
+spec:
+  rules:
+  - host: stuff-myspace.apps.gcp.burrsutter.dev
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: the-service
+          servicePort: 80
+EOF          
+----
+copyToClipboard::create-ingress[]
+
+----
+curl stuff-myspace.apps.gcp.burrsutter.dev
+Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:2
+----
+
+Minikube
+
+https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/
+
+
+== OpenShift Route
+
+Delete the any manually created Ingress to avoid any naming collisions.  An OpenShift Route leverages ha-proxy for its default Ingress.
+
+[#delete-ingress]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl delete ingress myingress
+----
+copyToClipboard::delete-ingress[]
+
+[#expose-service]
+[source,bash,subs="+macros,+attributes"]
+----
+oc expose service the-service
+kubectl get routes
+----
+copyToClipboard::expose-service[]
+
+----
+NAME          HOST/PORT                                     PATH   SERVICES      PORT   TERMINATION   WILDCARD
+the-service   the-service-myspace.apps.gcp.burrsutter.dev          the-service   8080                 None
+----
+
+----
+curl the-service-myspace.apps.gcp.burrsutter.dev
+Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:3
+----
+
+== Tip: Use jq to pull out the data elements you need for scripting
+----
+kubectl get route the-service -o json > myroutes.json
+----
+
+copy and paste contents into jqplay.org
+
+https://www.screencast.com/t/09biZYHNo62
+
+----
+brew install jq
+----
+
+----
+kubectl get route the-service -o json | jq '.spec.host'
+"the-service-myspace.apps.gcp.burrsutter.dev"
+----
+
