@@ -13,19 +13,20 @@ IMPORTANT: Instructions are in Bash
 === 1. Installation
 === 2. kubectl
 === 3. pod, replicaset, deployment
-=== 4. logs
-=== 5. exec
-=== 6. Service
-=== 7. Rolling Updates
+=== 4. Service
+=== 5. logs
+=== 6. exec
+=== 7. Service
+=== 8. Rolling Updates
 
 
 == Master Class II
 
-=== 8. Building Images
-=== 9. Resource Limits
-=== 10. Live & Ready 
-=== 11. Service Magic
-=== 12. Blue/Green
-=== 13. Env & ConfigMap
-=== 14. Secrets
-=== 15. Custom Resource Definitions (CRDs)
+=== 9. Building Images
+=== 10. Resource Limits
+=== 11. Live & Ready 
+=== 12. Service Magic
+=== 13. Blue/Green
+=== 14. Env & ConfigMap
+=== 15. Secrets
+=== 16. Custom Resource Definitions (CRDs)

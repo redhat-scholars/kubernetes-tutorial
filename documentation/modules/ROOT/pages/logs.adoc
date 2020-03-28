@@ -1,0 +1,174 @@
+== kubectl logs
+
+There are various "production-ready" ways to do log gathering and viewing across a Kubernetes/OpenShift cluster. Many folks like some flavor of ELK (ElasticSearch, Logstash, Kibana) or EFK (ElasticSearch, FluentD, Kibana).
+
+The focus here is on things a developer needs to get access to do help understand the behavior of their application running inside of a pod.
+
+
+Make sure you have an application (Deployment) running
+[#create-deployment]
+[source,bash,subs="+macros,+attributes"]
+----
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+        env: dev
+    spec:
+      containers:
+      - name: myapp
+        image: quay.io/burrsutter/myboot:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+EOF
+----
+copyToClipboard::create-deployment[]
+
+
+Make sure you are running 3 replicas (3 pods/instances of your application)
+
+----
+kubectl get deployment my-deployment -o json | jq '.status.replicas'
+----
+
+If not
+
+----
+kubectl scale --replicas=3 deployment/my-deployment
+----
+
+----
+NAME                             READY   STATUS    RESTARTS   AGE
+my-deployment-5dc67997c7-5bq4n   1/1     Running   0          34s
+my-deployment-5dc67997c7-m7z9f   1/1     Running   0          34s
+my-deployment-5dc67997c7-s4jc6   1/1     Running   0          34s
+----
+
+----
+kubectl logs my-deployment-5dc67997c7-m7z9f
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v1.5.3.RELEASE)
+
+----
+
+Follow logs with -f 
+
+----
+kubectl logs my-deployment-5dc67997c7-m7z9f -f
+----
+
+In another Terminal
+----
+kubectl exec -it my-deployment-5dc67997c7-m7z9f /bin/bash
+
+curl localhost:8080
+----
+
+----
+Aloha from my-deployment-5dc67997c7-m7z9f
+----  
+
+Deploy a Service for my-deployment
+
+[#create-service]
+[source,bash,subs="+macros,+attributes"]
+----
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: the-service
+spec:
+  selector:
+    app: myapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+EOF
+----
+copyToClipboard::create-service[]
+
+In another Terminal, loop and curl that service
+
+OpenShift:
+----
+IP=$(kubectl get service the-service -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+PORT=$(kubectl get service the-service -o jsonpath="{.spec.ports[*].port}")
+----
+
+Minikube:
+----
+IP=$(minikube ip)
+PORT=$(kubectl get service/the-service -o jsonpath="{.spec.ports[*].nodePort}")
+----
+
+[#curl-loop]
+[source,bash,subs="+macros,+attributes"]
+----
+while true
+do curl $IP:$PORT
+sleep .3
+done
+----
+copyToClipboard::curl-loop[]
+
+Then use Stern to view the logs across all pods
+
+[#stern-my-deployment]
+[source,bash,subs="+macros,+attributes"]
+----
+stern my-deployment
+----
+copyToClipboard::stern-my-deployment[]
+
+----
+my-deployment-5dc67997c7-5bq4n myapp Aloha from my-deployment-5dc67997c7-5bq4n
+my-deployment-5dc67997c7-m7z9f myapp Aloha from my-deployment-5dc67997c7-m7z9f
+my-deployment-5dc67997c7-s4jc6 myapp Aloha from my-deployment-5dc67997c7-s4jc6
+my-deployment-5dc67997c7-s4jc6 myapp Aloha from my-deployment-5dc67997c7-s4jc6
+----
+
+Another option is https://github.com/boz/kail[kail]
+
+----
+brew tap boz/repo
+brew install boz/repo/kail
+
+kail --deploy=my-deployment -c myapp --since=1h
+----
+
+
+
+TIP: To potentially pull the logs from a failing pod use `-p`
+----
+kubectl logs my-deployment-5dc67997c7-s4jc6 -p 
+----
+
+== Clean Up
+
+[#clean-up]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl delete service the-service
+kubectl delete deployment my-deployment
+----
+copyToClipboard::clean-up[]

@@ -147,7 +147,7 @@ copyToClipboard::minikube-set-profile[]
 .
 🚀  Launching Kubernetes ...
 ⌛  Waiting for cluster to come online ...
-🏄  Done! kubectl is now configured to use "{tutorial-namespace}"
+🏄  Done! kubectl is now configured to use devnation
 ----
 
 [TIP]
@@ -162,11 +162,6 @@ copyToClipboard::minikube-stick-profile[]
 
 You could also use the `minikube profile list` command to list the available profiles
 ====
-
-[[verify-setup]]
-=== Verify Setup
-
-include::partial$verify-setup.adoc[]
 
 
 [[openshift]]
