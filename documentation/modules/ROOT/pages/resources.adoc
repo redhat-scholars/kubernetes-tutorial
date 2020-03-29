@@ -1,0 +1,262 @@
+Make sure you are in the correct namespace
+
+----
+kubectl config set-context --current --namespace=myspace
+----
+
+Make sure nothing is running in your namespace
+
+----
+kubectl get all
+No resources found in myspace namespace.
+----
+
+First deploy an application without any Requests nor Limits
+
+----
+kubectl apply -f apps/kubefiles/myboot-deployment.yml
+----
+
+Describe the pod
+----
+PODNAME=$(kubectl get pod  -l app=myboot -o name)
+kubectl describe $PODNAME
+----
+
+There are not resource limits configured for the pod.
+
+----
+Name:         myboot-66d7d57687-jzbzj
+Namespace:    myspace
+Priority:     0
+Node:         gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal/10.0.32.5
+Start Time:   Sun, 29 Mar 2020 14:24:24 -0400
+Labels:       app=myboot
+              pod-template-hash=66d7d57687
+Annotations:  k8s.v1.cni.cncf.io/networks-status:
+                [{
+                    "name": "openshift-sdn",
+                    "interface": "eth0",
+                    "ips": [
+                        "10.130.2.23"
+                    ],
+                    "dns": {},
+                    "default-route": [
+                        "10.130.2.1"
+                    ]
+                }]
+              openshift.io/scc: restricted
+Status:       Running
+IP:           10.130.2.23
+IPs:
+  IP:           10.130.2.23
+Controlled By:  ReplicaSet/myboot-66d7d57687
+Containers:
+  myboot:
+    Container ID:   cri-o://2edfb0a5a93f375516ee49d33df20bee40c14792b37ec1648dc5205244095a53
+    Image:          quay.io/burrsutter/myboot:v1
+    Image ID:       quay.io/burrsutter/myboot@sha256:cdf39f191f5d322ebe6c04cae218b0ad8f6dbbb8a81e81a88c0fbc6e3c05f860
+    Port:           8080/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Sun, 29 Mar 2020 14:24:32 -0400
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-vlzsl (ro)
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:
+  default-token-vlzsl:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-vlzsl
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age        From                                                                Message
+  ----    ------     ----       ----                                                                -------
+  Normal  Scheduled  <unknown>  default-scheduler                                                   Successfully assigned myspace/myboot-66d7d57687-jzbzj to gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal
+  Normal  Pulled     12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Container image "quay.io/burrsutter/myboot:v1" already present on machine
+  Normal  Created    12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Created container myboot
+  Normal  Started    12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Started container myboot
+----
+
+Delete that deployment
+
+----
+kubectl delete deployment myboot
+----
+
+Create a new deployment with resource requests
+
+----
+kubectl apply -f apps/kubefiles/myboot-deployment-resources.yml
+----
+
+----
+kubectl get pods
+NAME                      READY   STATUS    RESTARTS   AGE
+myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s
+----
+
+----
+kubectl get events --sort-by=.metadata.creationTimestamp
+----
+
+----
+<unknown>   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.
+<unknown>   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.
+----
+
+The "resource requests" of the pod specification require that at least one worker node have N cores and X memory available.  If there is no worker node that meets the requires, you recieve "PENDING" and the appropriate notations in the events listing.
+
+You can also use `kubectl describe` on the pod to find more informatoin about the failure.
+
+----
+PODNAME=$(kubectl get pod  -l app=myboot -o name)
+kubectl describe $PODNAME
+----
+
+Delete the deployment
+----
+kubectl delete -f apps/kubefiles/myboot-deployment-resources.yml
+----
+
+Create a new deployment with a more sane resource request and a hard limit
+
+----
+kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
+----
+
+Describe the pod
+----
+
+----
+
+Deploy the service
+----
+kubectl apply -f apps/kubefiles/myboot-service.yml
+----
+
+and watch your pods
+----
+watch kubectl get pods
+----
+
+In another Terminal, loop and curl that service
+
+OpenShift:
+[#openshift-ip-port]
+[source,bash,subs="+macros,+attributes"]
+----
+IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")
+----
+copyToClipboard::openshift-ip-port[]
+
+Minikube:
+[#minikube-ip-port]
+[source,bash,subs="+macros,+attributes"]
+----
+IP=$(minikube ip)
+PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")
+----
+copyToClipboard::minikube-ip-port[]
+
+[#curl-loop]
+[source,bash,subs="+macros,+attributes"]
+----
+while true
+do curl $IP:$PORT
+sleep .3
+done
+----
+copyToClipboard::curl-loop[]
+
+In yet another terminal window, curl the /sysresources endpoint
+
+----
+ curl $IP:$PORT/sysresources
+----
+
+Note: the reported memory vs what was set in the resource limits
+
+----
+PODNAME=$(kubectl get pod  -l app=myboot -o name)
+kubectl get $PODNAME -o json | jq ".spec.containers[0].resources"
+----
+
+----
+{
+  "limits": {
+    "cpu": "1",
+    "memory": "400Mi"
+  },
+  "requests": {
+    "cpu": "250m",
+    "memory": "300Mi"
+  }
+}
+----
+
+Curl the /consume endpoint
+
+----
+curl $IP:$PORT/consume
+curl: (52) Empty reply from server
+----
+
+And you should notice that your loop also fails
+
+----
+Aloha from Spring Boot! 1120 on myboot-d78fb6d58-69kl7
+curl: (56) Recv failure: Connection reset by peer
+----
+
+Describe the pod
+----
+kubectl describe $PODNAME
+----
+
+and look for
+
+----
+    Last State:     Terminated
+      Reason:       OOMKilled
+      Exit Code:    137
+----      
+
+----
+kubectl get $PODNAME -o json | jq ".status.containerStatuses[0].lastState.terminated"
+----
+
+----
+{
+  "containerID": "cri-o://7b9be70ce4b616d6083d528dee708cea879da967373dad0d396fb999bd3898d3",
+  "exitCode": 137,
+  "finishedAt": "2020-03-29T19:14:56Z",
+  "reason": "OOMKilled",
+  "startedAt": "2020-03-29T18:50:15Z"
+}
+----
+
+You might even see the STATUS column of the `watch kubectl get pods` reflect the OOMKilled
+
+----
+NAME                     READY   STATUS      RESTARTS   AGE
+myboot-d78fb6d58-69kl7   0/1     OOMKilled   1          30m
+----
+
+And you will notice that the RESTARTS column increments with each crash of the Spring Boot pod.
+
+
+
+

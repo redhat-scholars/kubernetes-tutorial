@@ -8,5 +8,6 @@
 * xref:pod-rs-deployment.adoc[Pod, ReplicaSet, Deployment]
 * xref:service.adoc[Service]
 * xref:logs.adoc[logs]
+* xref:resources.adoc[Resources/Limits]
 * xref:exec.adoc[exec]
 * xref:rolling-updates.adoc[Rolling updates]
