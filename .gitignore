@@ -8,3 +8,4 @@ target
 /gh-pages
 /.cache
 *.swp
+node_modules

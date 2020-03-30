@@ -11,3 +11,4 @@
 * xref:resources.adoc[Resources/Limits]
 * xref:exec.adoc[exec]
 * xref:rolling-updates.adoc[Rolling updates]
+* xref:building-images.adoc[Building Images]
