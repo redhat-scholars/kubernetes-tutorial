@@ -1,24 +1,27 @@
-= Kubernetes Tutorial 
+# Kubernetes Tutorial 
+
+image:https://github.com/redhat-developer-demos/kubernetes-tutorial/workflows/docs/badge.svg[]
 
 IMPORTANT: Instructions are in Bash
 
-== Master Course I
+## Master Course I
 
-=== 1. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/installation.adoc[Installation]
-=== 2. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/kubectl.adoc[kubectl]
-=== 3. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/pod-rs-deployment.adoc[pod, replicaset, deployment]
-=== 4. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/service.adoc[Service]
-=== 5. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/logs.adoc[logs]
-=== 6. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/resources.adoc[Resource Limits]
-=== 7. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/exec.adoc[exec]
-=== 8. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/rolling-updates.adoc[Rolling Updates]
+. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/installation.adoc[Installation]
+. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/kubectl.adoc[kubectl]
+. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/pod-rs-deployment.adoc[pod, replicaset, deployment]
+. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/service.adoc[Service]
+. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/logs.adoc[logs]
+. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/resources.adoc[Resource Limits]
+. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/exec.adoc[exec]
+. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/rolling-updates.adoc[Rolling Updates]
 
-== Master Course II
+## Master Course II
 
-=== 9. Building Images
-=== 10. Live & Ready 
-=== 11. Service Magic
-=== 12. Blue/Green
-=== 13. Env & ConfigMap
-=== 14. Secrets
-=== 15. Custom Resource Definitions (CRDs)
+[start=9]
+. Building Images
+. Live & Ready 
+. Service Magic
+. Blue/Green
+. Env & ConfigMap
+. Secrets
+. Custom Resource Definitions (CRDs)
