@@ -187,3 +187,25 @@ Bonjour from Spring Boot! 502 on myboot-7fbc4b97df-qtkzj
 Aloha from Spring Boot! 0 on myboot-d78fb6d58-vnlch
 ----
 
+Note: On minikube, you may receive errors from curl during the rollover activity.
+----
+Aloha from Spring Boot! 119 on myboot-d78fb6d58-2zp4h
+curl: (7) Failed to connect to 192.168.99.100 port 31528: Connection refused
+----
+
+The reason is the the missing Live and Ready Probes
+
+Try using the Quarkus image instead of the Spring Boot one
+
+----
+kubectl set image deployment/myboot myboot=quay.io/burrsutter/quarkus-demo:1.0.0
+----
+
+And there should be no errors, Quarkus simply boots up crazy fast
+
+----
+Aloha from Spring Boot! 62 on myboot-d78fb6d58-smb7h
+Aloha from Spring Boot! 63 on myboot-d78fb6d58-smb7h
+Supersonic Subatomic Java with Quarkus myboot-5cf696848b-tlt6l:1
+Supersonic Subatomic Java with Quarkus myboot-5cf696848b-tlt6l:2
+----
