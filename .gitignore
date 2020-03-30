@@ -1,4 +1,10 @@
-bin
-node_modules
-gh-pages
 .DS_Store
+target
+*.iml
+.idea
+*.class
+*.log
+.cache
+/gh-pages
+/.cache
+*.swp
