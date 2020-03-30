@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Untitled :: Kubernetes Tutorial</title>
+    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/resources.html">
+    <meta name="generator" content="Antora 2.2.0">
+    <link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+  </head>
+  <body class="article">
+<header class="header" role="banner">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <a href="https://redhat-developer-demos.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
+      </div>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+<div class="main-wrapper">
+<div class="navigation-container"  data-component="kubernetes-tutorial"
+  data-version="master" >
+  <aside class="navigation">
+    <div class="panels">
+      <div class="navigation-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="index.html">Kubernetes Tutorial</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="installation.html">Install</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="installation.html#tutorial-all-local">CLI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="installation.html#env-path">Env and Path</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="installation.html#start-minikube">Start Minikube</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="installation.html#verify-setup">Verify Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="installation.html#openshift">OpenShift</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="kubectl.html">kubectl</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="pod-rs-deployment.html">Pod, ReplicaSet, Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="service.html">Service</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="logs.html">logs</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="resources.html">Resources/Limits</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="exec.html">exec</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+  <div class="navigation-explore" data-panel="explore">
+  <div class="context">
+    <!-- Just a place holder to fill in  explorer for each context -->
+  </div>
+</div>
+</div>
+  <main class="main">
+<div class="toolbar" role="navigation">
+  <button class="navigation-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+  <nav class="crumbs" aria-label="breadcrumbs">
+  <ul>
+    <li class="crumb"><a href="index.html">Kubernetes Tutorial</a></li>
+    <li class="crumb"><a href="resources.html">Resources/Limits</a></li>
+  </ul>
+</nav>
+</div>
+<article class="doc">
+<div class="paragraph">
+<p>Make sure you are in the correct namespace</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl config set-context --current --namespace=myspace</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Make sure nothing is running in your namespace</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl get all
+No resources found in myspace namespace.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>First deploy an application without any Requests nor Limits</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl apply -f apps/kubefiles/myboot-deployment.yml</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Describe the pod</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>PODNAME=$(kubectl get pod  -l app=myboot -o name)
+kubectl describe $PODNAME</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>There are not resource limits configured for the pod.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Name:         myboot-66d7d57687-jzbzj
+Namespace:    myspace
+Priority:     0
+Node:         gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal/10.0.32.5
+Start Time:   Sun, 29 Mar 2020 14:24:24 -0400
+Labels:       app=myboot
+              pod-template-hash=66d7d57687
+Annotations:  k8s.v1.cni.cncf.io/networks-status:
+                [{
+                    "name": "openshift-sdn",
+                    "interface": "eth0",
+                    "ips": [
+                        "10.130.2.23"
+                    ],
+                    "dns": {},
+                    "default-route": [
+                        "10.130.2.1"
+                    ]
+                }]
+              openshift.io/scc: restricted
+Status:       Running
+IP:           10.130.2.23
+IPs:
+  IP:           10.130.2.23
+Controlled By:  ReplicaSet/myboot-66d7d57687
+Containers:
+  myboot:
+    Container ID:   cri-o://2edfb0a5a93f375516ee49d33df20bee40c14792b37ec1648dc5205244095a53
+    Image:          quay.io/burrsutter/myboot:v1
+    Image ID:       quay.io/burrsutter/myboot@sha256:cdf39f191f5d322ebe6c04cae218b0ad8f6dbbb8a81e81a88c0fbc6e3c05f860
+    Port:           8080/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Sun, 29 Mar 2020 14:24:32 -0400
+    Ready:          True
+    Restart Count:  0
+    Environment:    &lt;none&gt;
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-vlzsl (ro)
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:
+  default-token-vlzsl:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-vlzsl
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  &lt;none&gt;
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age        From                                                                Message
+  ----    ------     ----       ----                                                                -------
+  Normal  Scheduled  &lt;unknown&gt;  default-scheduler                                                   Successfully assigned myspace/myboot-66d7d57687-jzbzj to gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal
+  Normal  Pulled     12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Container image "quay.io/burrsutter/myboot:v1" already present on machine
+  Normal  Created    12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Created container myboot
+  Normal  Started    12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Started container myboot</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Delete that deployment</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl delete deployment myboot</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create a new deployment with resource requests</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl apply -f apps/kubefiles/myboot-deployment-resources.yml</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl get pods
+NAME                      READY   STATUS    RESTARTS   AGE
+myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl get events --sort-by=.metadata.creationTimestamp</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;unknown&gt;   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.
+&lt;unknown&gt;   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The "resource requests" of the pod specification require that at least one worker node have N cores and X memory available.  If there is no worker node that meets the requires, you recieve "PENDING" and the appropriate notations in the events listing.</p>
+</div>
+<div class="paragraph">
+<p>You can also use <code>kubectl describe</code> on the pod to find more informatoin about the failure.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>PODNAME=$(kubectl get pod  -l app=myboot -o name)
+kubectl describe $PODNAME</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Delete the deployment</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl delete -f apps/kubefiles/myboot-deployment-resources.yml</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create a new deployment with a more sane resource request and a hard limit</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Describe the pod</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deploy the service</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl apply -f apps/kubefiles/myboot-service.yml</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and watch your pods</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>watch kubectl get pods</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In another Terminal, loop and curl that service</p>
+</div>
+<div class="paragraph">
+<p>OpenShift:</p>
+</div>
+<div id="openshift-ip-port" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#openshift-ip-port"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>Minikube:</p>
+</div>
+<div id="minikube-ip-port" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
+PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#minikube-ip-port"><i class="fa fa-clipboard"></i></button><br/>
+<div id="curl-loop" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true
+do curl $IP:$PORT
+sleep .3
+done</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-loop"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>In yet another terminal window, curl the /sysresources endpoint</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre> curl $IP:$PORT/sysresources</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note: the reported memory vs what was set in the resource limits</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>PODNAME=$(kubectl get pod  -l app=myboot -o name)
+kubectl get $PODNAME -o json | jq ".spec.containers[0].resources"</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+  "limits": {
+    "cpu": "1",
+    "memory": "400Mi"
+  },
+  "requests": {
+    "cpu": "250m",
+    "memory": "300Mi"
+  }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Curl the /consume endpoint</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>curl $IP:$PORT/consume
+curl: (52) Empty reply from server</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And you should notice that your loop also fails</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Aloha from Spring Boot! 1120 on myboot-d78fb6d58-69kl7
+curl: (56) Recv failure: Connection reset by peer</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Describe the pod</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl describe $PODNAME</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and look for</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    Last State:     Terminated
+      Reason:       OOMKilled
+      Exit Code:    137</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl get $PODNAME -o json | jq ".status.containerStatuses[0].lastState.terminated"</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+  "containerID": "cri-o://7b9be70ce4b616d6083d528dee708cea879da967373dad0d396fb999bd3898d3",
+  "exitCode": 137,
+  "finishedAt": "2020-03-29T19:14:56Z",
+  "reason": "OOMKilled",
+  "startedAt": "2020-03-29T18:50:15Z"
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You might even see the STATUS column of the <code>watch kubectl get pods</code> reflect the OOMKilled</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>NAME                     READY   STATUS      RESTARTS   AGE
+myboot-d78fb6d58-69kl7   0/1     OOMKilled   1          30m</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And you will notice that the RESTARTS column increments with each crash of the Spring Boot pod.</p>
+</div>
+</article>
+  </main>
+</div>
+<footer role="contentinfo">
+  <div class="region region-rhd-footer">
+    <div id="block-rhdfooter" class="rhd-footer">
+      <nav class="rhd-footer-nav" aria-label="Secondary Navigation" role="navigation">
+  <ul class="rhd-menu">
+    <li class="menu-item menu-item--expanded">
+      <h3 class="section-toggle">GitHub</h3>
+      <ul class="rhd-menu">
+        <li class="menu-item">
+          <a href="https://github.com/redhat-developer-demos/knative-tutorial" title="Knative Tutorial">Knative
+            Tutorial</a>
+        </li>
+        <li class="menu-item">
+          <a href="https://github.com/redhat-developer-demos/knative-tutorial/issues" title="Issue Tracker">Issue
+            Tracker</a>
+        </li>
+        <li class="menu-item">
+          <a href="https://github.com/openshift-cloud-functions/Documentation"
+            title="OpenShift Cloud Functions">OpenShift Cloud Functions</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+      <div class="rhd-footer-sidebar">
+        <p class="rhd-footer-sidebar-title">Red Hat Developer</p>
+        <p class="rhd-footer-sidebar-subtitle">Build here. Go anywhere.</p>
+        <p class="rhd-footer-sidebar-content">
+          We serve the builders. The problem solvers who create careers with
+          code.<br /><br /><a href="https://developer.redhat.com/register">Join us</a>
+          if you’re a developer, software engineer, web designer, front-end
+          designer, UX designer, computer scientist, architect, tester,
+          product manager, project manager or team lead.
+        </p>
+        <ul class="rhd-footer-sidebar-social">
+          <li>
+            <a href="https://www.youtube.com/channel/UC7noUdfWp-ukXUlAsJnSm-Q" target="_blank"
+              rel="noopener noreferrer"><svg class="svg-inline--fa fa-youtube fa-w-18" aria-hidden="true"
+                data-prefix="fab" data-icon="youtube" role="img" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 576 512" data-fa-i2svg="">
+                <path fill="currentColor"
+                  d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z">
+                </path>
+              </svg><!-- <i class="fab fa-youtube"></i> --></a>
+          </li>
+          <li>
+            <a href="https://www.facebook.com/RedHatDeveloperProgram" target="_blank" rel="noopener noreferrer"><svg
+                class="svg-inline--fa fa-facebook fa-w-14" aria-hidden="true" data-prefix="fab" data-icon="facebook"
+                role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg="">
+                <path fill="currentColor"
+                  d="M448 56.7v398.5c0 13.7-11.1 24.7-24.7 24.7H309.1V306.5h58.2l8.7-67.6h-67v-43.2c0-19.6 5.4-32.9 33.5-32.9h35.8v-60.5c-6.2-.8-27.4-2.7-52.2-2.7-51.6 0-87 31.5-87 89.4v49.9h-58.4v67.6h58.4V480H24.7C11.1 480 0 468.9 0 455.3V56.7C0 43.1 11.1 32 24.7 32h398.5c13.7 0 24.8 11.1 24.8 24.7z">
+                </path>
+              </svg><!-- <i class="fab fa-facebook"> </i> --></a>
+          </li>
+          <li>
+            <a href="https://twitter.com/rhdevelopers" target="_blank" rel="noopener noreferrer"><svg
+                class="svg-inline--fa fa-twitter fa-w-16" aria-hidden="true" data-prefix="fab" data-icon="twitter"
+                role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="">
+                <path fill="currentColor"
+                  d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z">
+                </path>
+              </svg><!-- <i class="fab fa-twitter"> </i> --></a>
+          </li>
+          <li>
+            <a href="https://github.com/redhat-developer" target="_blank" rel="noopener noreferrer"><svg
+                class="svg-inline--fa fa-github fa-w-16" aria-hidden="true" data-prefix="fab" data-icon="github"
+                role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" data-fa-i2svg="">
+                <path fill="currentColor"
+                  d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z">
+                </path>
+              </svg><!-- <i class="fab fa-github"> </i> --></a>
+          </li>
+        </ul>
+        <a class="rhd-footer-sidebar-signup" href="https://developers.redhat.com/register">Sign me up ▸</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="../_/js/site.js"></script>
+<script src="../_/js/vendor/highlight.js"></script>
+<script>hljs.initHighlighting()</script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+  integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+  integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
