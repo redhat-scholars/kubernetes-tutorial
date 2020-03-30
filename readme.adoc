@@ -1,32 +1,27 @@
 = Kubernetes Tutorial 
 
-== Resources
-https://kubernetes.io/docs/user-guide/kubectl/
-
-https://kubernetes.io/docs/reference/kubectl/cheatsheet
 
 IMPORTANT: Instructions are in Bash
 
 
 == Master Class I
 
-=== 1. Installation
-=== 2. kubectl
-=== 3. pod, replicaset, deployment
-=== 4. Service
-=== 5. logs
-=== 6. exec
-=== 7. Service
-=== 8. Rolling Updates
+=== 1. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/installation.adoc[Installation]
+=== 2. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/kubectl.adoc[kubectl]
+=== 3. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/pod-rs-deployment.adoc[pod, replicaset, deployment]
+=== 4. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/service.adoc[Service]
+=== 5. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/logs.adoc[logs]
+=== 6. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/resources.adoc[Resource Limits]
+=== 7. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/exec.adoc[exec]
+=== 8. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/rolling-updates.adoc[Rolling Updates]
 
 
 == Master Class II
 
 === 9. Building Images
-=== 10. Resource Limits
-=== 11. Live & Ready 
-=== 12. Service Magic
-=== 13. Blue/Green
-=== 14. Env & ConfigMap
-=== 15. Secrets
-=== 16. Custom Resource Definitions (CRDs)
+=== 10. Live & Ready 
+=== 11. Service Magic
+=== 12. Blue/Green
+=== 13. Env & ConfigMap
+=== 14. Secrets
+=== 15. Custom Resource Definitions (CRDs)
