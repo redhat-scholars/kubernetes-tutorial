@@ -9,3 +9,7 @@ target
 /.cache
 *.swp
 node_modules
+.classpath
+.project
+.settings
+
