@@ -142,3 +142,9 @@ To leave this pod, simply type "exit" and hit enter
 ----
 exit
 ----
+
+Clean up
+----
+kubectl delete deployment myboot
+kubectl delete service myboot
+----
