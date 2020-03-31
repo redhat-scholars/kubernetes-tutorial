@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Untitled :: Kubernetes Tutorial</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/resources.html">
+    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/service-magic.html">
     <meta name="generator" content="Antora 2.2.0">
     <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
@@ -70,7 +70,7 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="logs.html">logs</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="resources.html">Resources/Limits</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -85,7 +85,7 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="live-ready.html">Live &amp; Ready</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <a class="nav-link" href="service-magic.html">Service Magic</a>
   </li>
 </ul>
@@ -108,328 +108,116 @@
   <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="index.html">Kubernetes Tutorial</a></li>
-    <li class="crumb"><a href="resources.html">Resources/Limits</a></li>
+    <li class="crumb"><a href="service-magic.html">Service Magic</a></li>
   </ul>
 </nav>
 </div>
 <article class="doc">
 <div class="sect1">
-<h2 id="_resources"><a class="anchor" href="#_resources"></a>Resources</h2>
+<h2 id="_service_magic"><a class="anchor" href="#_service_magic"></a>Service Magic</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Make sure you are in the correct namespace</p>
+<p>Create a Namespace</p>
 </div>
-<div class="listingblock">
+<div id="create-namespace" class="listingblock">
 <div class="content">
-<pre>kubectl config set-context --current --namespace=myspace</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create namespace funstuff
+kubectl config set-context --current --namespace=funstuff</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Make sure nothing is running in your namespace</p>
-</div>
-<div class="listingblock">
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-namespace"><i class="fa fa-clipboard"></i></button><br/>
+<div class="sect2">
+<h3 id="_deploy_mypython"><a class="anchor" href="#_deploy_mypython"></a>Deploy mypython</h3>
+<div id="deploy-mypython" class="listingblock">
 <div class="content">
-<pre>kubectl get all
-No resources found in myspace namespace.</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mypython-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mypython
+  template:
+    metadata:
+      labels:
+        app: mypython
+    spec:
+      containers:
+      - name: mypython
+        image: docker.io/burrsutter/mypython:1.0.0
+        ports:
+        - containerPort: 8000
+EOF</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>First deploy an application without any Requests nor Limits</p>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-mypython"><i class="fa fa-clipboard"></i></button><br/>
 </div>
-<div class="listingblock">
+<div class="sect2">
+<h3 id="_deploy_mygo"><a class="anchor" href="#_deploy_mygo"></a>Deploy mygo</h3>
+<div id="deploy-mygo" class="listingblock">
 <div class="content">
-<pre>kubectl apply -f apps/kubefiles/myboot-deployment.yml</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mygo-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mygo
+  template:
+    metadata:
+      labels:
+        app: mygo
+    spec:
+      containers:
+      - name: mygo
+        image: quay.io/burrsutter/mygo:1.0.0
+        ports:
+        - containerPort: 8000
+EOF</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Describe the pod</p>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-mygo"><i class="fa fa-clipboard"></i></button><br/>
 </div>
-<div class="listingblock">
+<div class="sect2">
+<h3 id="_deploy_mynode"><a class="anchor" href="#_deploy_mynode"></a>Deploy mynode</h3>
+<div id="deploy-mynode" class="listingblock">
 <div class="content">
-<pre>PODNAME=$(kubectl get pod  -l app=myboot -o name)
-kubectl describe $PODNAME</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mynode-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mynode
+  template:
+    metadata:
+      labels:
+        app: mynode
+    spec:
+      containers:
+      - name: mynode
+        image: quay.io/burrsutter/mynode:1.0.0
+        ports:
+        - containerPort: 8000
+EOF</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>There are not resource limits configured for the pod.</p>
-</div>
-<div class="listingblock">
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-mynode"><i class="fa fa-clipboard"></i></button><br/>
+<div id="deploy-mypython" class="listingblock">
 <div class="content">
-<pre>Name:         myboot-66d7d57687-jzbzj
-Namespace:    myspace
-Priority:     0
-Node:         gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal/10.0.32.5
-Start Time:   Sun, 29 Mar 2020 14:24:24 -0400
-Labels:       app=myboot
-              pod-template-hash=66d7d57687
-Annotations:  k8s.v1.cni.cncf.io/networks-status:
-                [{
-                    "name": "openshift-sdn",
-                    "interface": "eth0",
-                    "ips": [
-                        "10.130.2.23"
-                    ],
-                    "dns": {},
-                    "default-route": [
-                        "10.130.2.1"
-                    ]
-                }]
-              openshift.io/scc: restricted
-Status:       Running
-IP:           10.130.2.23
-IPs:
-  IP:           10.130.2.23
-Controlled By:  ReplicaSet/myboot-66d7d57687
-Containers:
-  myboot:
-    Container ID:   cri-o://2edfb0a5a93f375516ee49d33df20bee40c14792b37ec1648dc5205244095a53
-    Image:          quay.io/burrsutter/myboot:v1
-    Image ID:       quay.io/burrsutter/myboot@sha256:cdf39f191f5d322ebe6c04cae218b0ad8f6dbbb8a81e81a88c0fbc6e3c05f860
-    Port:           8080/TCP
-    Host Port:      0/TCP
-    State:          Running
-      Started:      Sun, 29 Mar 2020 14:24:32 -0400
-    Ready:          True
-    Restart Count:  0
-    Environment:    &lt;none&gt;
-    Mounts:
-      /var/run/secrets/kubernetes.io/serviceaccount from default-token-vlzsl (ro)
-Conditions:
-  Type              Status
-  Initialized       True
-  Ready             True
-  ContainersReady   True
-  PodScheduled      True
-Volumes:
-  default-token-vlzsl:
-    Type:        Secret (a volume populated by a Secret)
-    SecretName:  default-token-vlzsl
-    Optional:    false
-QoS Class:       BestEffort
-Node-Selectors:  &lt;none&gt;
-Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
-                 node.kubernetes.io/unreachable:NoExecute for 300s
-Events:
-  Type    Reason     Age        From                                                                Message
-  ----    ------     ----       ----                                                                -------
-  Normal  Scheduled  &lt;unknown&gt;  default-scheduler                                                   Successfully assigned myspace/myboot-66d7d57687-jzbzj to gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal
-  Normal  Pulled     12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Container image "quay.io/burrsutter/myboot:v1" already present on machine
-  Normal  Created    12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Created container myboot
-  Normal  Started    12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Started container myboot</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">clear</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Delete that deployment</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl delete deployment myboot</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Create a new deployment with resource requests</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl apply -f apps/kubefiles/myboot-deployment-resources.yml</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl get pods
-NAME                      READY   STATUS    RESTARTS   AGE
-myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl get events --sort-by=.metadata.creationTimestamp</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>&lt;unknown&gt;   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.
-&lt;unknown&gt;   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The "resource requests" of the pod specification require that at least one worker node have N cores and X memory available.  If there is no worker node that meets the requires, you recieve "PENDING" and the appropriate notations in the events listing.</p>
-</div>
-<div class="paragraph">
-<p>You can also use <code>kubectl describe</code> on the pod to find more informatoin about the failure.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>PODNAME=$(kubectl get pod  -l app=myboot -o name)
-kubectl describe $PODNAME</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Delete the deployment</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl delete -f apps/kubefiles/myboot-deployment-resources.yml</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Create a new deployment with a more sane resource request and a hard limit</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Describe the pod</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Deploy the service</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl apply -f apps/kubefiles/myboot-service.yml</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and watch your pods</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>watch kubectl get pods</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In another Terminal, loop and curl that service</p>
-</div>
-<div class="paragraph">
-<p>OpenShift:</p>
-</div>
-<div id="openshift-ip-port" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#openshift-ip-port"><i class="fa fa-clipboard"></i></button><br/>
-<div class="paragraph">
-<p>Minikube:</p>
-</div>
-<div id="minikube-ip-port" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
-PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#minikube-ip-port"><i class="fa fa-clipboard"></i></button><br/>
-<div id="curl-loop" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true
-do curl $IP:$PORT
-sleep .3
-done</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-loop"><i class="fa fa-clipboard"></i></button><br/>
-<div class="paragraph">
-<p>In yet another terminal window, curl the /sysresources endpoint</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre> curl $IP:$PORT/sysresources</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Note: the reported memory vs what was set in the resource limits</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>PODNAME=$(kubectl get pod  -l app=myboot -o name)
-kubectl get $PODNAME -o json | jq ".spec.containers[0].resources"</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>{
-  "limits": {
-    "cpu": "1",
-    "memory": "400Mi"
-  },
-  "requests": {
-    "cpu": "250m",
-    "memory": "300Mi"
-  }
-}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Curl the /consume endpoint</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>curl $IP:$PORT/consume
-curl: (52) Empty reply from server</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>And you should notice that your loop also fails</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>Aloha from Spring Boot! 1120 on myboot-d78fb6d58-69kl7
-curl: (56) Recv failure: Connection reset by peer</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Describe the pod</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl describe $PODNAME</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and look for</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>    Last State:     Terminated
-      Reason:       OOMKilled
-      Exit Code:    137</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl get $PODNAME -o json | jq ".status.containerStatuses[0].lastState.terminated"</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>{
-  "containerID": "cri-o://7b9be70ce4b616d6083d528dee708cea879da967373dad0d396fb999bd3898d3",
-  "exitCode": 137,
-  "finishedAt": "2020-03-29T19:14:56Z",
-  "reason": "OOMKilled",
-  "startedAt": "2020-03-29T18:50:15Z"
-}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You might even see the STATUS column of the <code>watch kubectl get pods</code> reflect the OOMKilled</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>NAME                     READY   STATUS      RESTARTS   AGE
-myboot-d78fb6d58-69kl7   0/1     OOMKilled   1          30m</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>And you will notice that the RESTARTS column increments with each crash of the Spring Boot pod.</p>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-mypython"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 </div>

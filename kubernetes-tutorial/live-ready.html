@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Untitled :: Kubernetes Tutorial</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/resources.html">
+    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/live-ready.html">
     <meta name="generator" content="Antora 2.2.0">
     <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
@@ -70,7 +70,7 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="logs.html">logs</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="resources.html">Resources/Limits</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -82,7 +82,7 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="building-images.html">Building Images</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <a class="nav-link" href="live-ready.html">Live &amp; Ready</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -108,13 +108,13 @@
   <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="index.html">Kubernetes Tutorial</a></li>
-    <li class="crumb"><a href="resources.html">Resources/Limits</a></li>
+    <li class="crumb"><a href="live-ready.html">Live &amp; Ready</a></li>
   </ul>
 </nav>
 </div>
 <article class="doc">
 <div class="sect1">
-<h2 id="_resources"><a class="anchor" href="#_resources"></a>Resources</h2>
+<h2 id="_live_ready"><a class="anchor" href="#_live_ready"></a>Live &amp; Ready</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Make sure you are in the correct namespace</p>
@@ -125,7 +125,7 @@
 </div>
 </div>
 <div class="paragraph">
-<p>Make sure nothing is running in your namespace</p>
+<p>Make sure nothing else is deployed</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -134,162 +134,79 @@ No resources found in myspace namespace.</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>First deploy an application without any Requests nor Limits</p>
+<p>Deploy an application with the Live and Ready probe set</p>
+</div>
+<div id="create-app-live-ready" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myboot
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myboot
+  template:
+    metadata:
+      labels:
+        app: myboot
+        env: dev
+    spec:
+      containers:
+      - name: myboot
+        image: quay.io/burrsutter/myboot:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "300Mi"
+            cpu: "250m" # 1/4 core
+          limits:
+            memory: "400Mi"
+            cpu: "1000m" # 1 core
+        livenessProbe:
+          httpGet:
+              port: 8080
+              path: /
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 2
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 3
+EOF</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-app-live-ready"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>Describe the deployment</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>kubectl apply -f apps/kubefiles/myboot-deployment.yml</pre>
+<pre>kubectl describe deployment myboot
+...
+    Image:      quay.io/burrsutter/myboot:v1
+    Port:       8080/TCP
+    Host Port:  0/TCP
+    Limits:
+      cpu:     1
+      memory:  400Mi
+    Requests:
+      cpu:        250m
+      memory:     300Mi
+    Liveness:     http-get http://:8080/ delay=10s timeout=2s period=5s #success=1 #failure=3
+    Readiness:    http-get http://:8080/health delay=10s timeout=1s period=3s #success=1 #failure=3
+...</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Describe the pod</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>PODNAME=$(kubectl get pod  -l app=myboot -o name)
-kubectl describe $PODNAME</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>There are not resource limits configured for the pod.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>Name:         myboot-66d7d57687-jzbzj
-Namespace:    myspace
-Priority:     0
-Node:         gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal/10.0.32.5
-Start Time:   Sun, 29 Mar 2020 14:24:24 -0400
-Labels:       app=myboot
-              pod-template-hash=66d7d57687
-Annotations:  k8s.v1.cni.cncf.io/networks-status:
-                [{
-                    "name": "openshift-sdn",
-                    "interface": "eth0",
-                    "ips": [
-                        "10.130.2.23"
-                    ],
-                    "dns": {},
-                    "default-route": [
-                        "10.130.2.1"
-                    ]
-                }]
-              openshift.io/scc: restricted
-Status:       Running
-IP:           10.130.2.23
-IPs:
-  IP:           10.130.2.23
-Controlled By:  ReplicaSet/myboot-66d7d57687
-Containers:
-  myboot:
-    Container ID:   cri-o://2edfb0a5a93f375516ee49d33df20bee40c14792b37ec1648dc5205244095a53
-    Image:          quay.io/burrsutter/myboot:v1
-    Image ID:       quay.io/burrsutter/myboot@sha256:cdf39f191f5d322ebe6c04cae218b0ad8f6dbbb8a81e81a88c0fbc6e3c05f860
-    Port:           8080/TCP
-    Host Port:      0/TCP
-    State:          Running
-      Started:      Sun, 29 Mar 2020 14:24:32 -0400
-    Ready:          True
-    Restart Count:  0
-    Environment:    &lt;none&gt;
-    Mounts:
-      /var/run/secrets/kubernetes.io/serviceaccount from default-token-vlzsl (ro)
-Conditions:
-  Type              Status
-  Initialized       True
-  Ready             True
-  ContainersReady   True
-  PodScheduled      True
-Volumes:
-  default-token-vlzsl:
-    Type:        Secret (a volume populated by a Secret)
-    SecretName:  default-token-vlzsl
-    Optional:    false
-QoS Class:       BestEffort
-Node-Selectors:  &lt;none&gt;
-Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
-                 node.kubernetes.io/unreachable:NoExecute for 300s
-Events:
-  Type    Reason     Age        From                                                                Message
-  ----    ------     ----       ----                                                                -------
-  Normal  Scheduled  &lt;unknown&gt;  default-scheduler                                                   Successfully assigned myspace/myboot-66d7d57687-jzbzj to gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal
-  Normal  Pulled     12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Container image "quay.io/burrsutter/myboot:v1" already present on machine
-  Normal  Created    12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Created container myboot
-  Normal  Started    12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Started container myboot</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Delete that deployment</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl delete deployment myboot</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Create a new deployment with resource requests</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl apply -f apps/kubefiles/myboot-deployment-resources.yml</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl get pods
-NAME                      READY   STATUS    RESTARTS   AGE
-myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl get events --sort-by=.metadata.creationTimestamp</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>&lt;unknown&gt;   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.
-&lt;unknown&gt;   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The "resource requests" of the pod specification require that at least one worker node have N cores and X memory available.  If there is no worker node that meets the requires, you recieve "PENDING" and the appropriate notations in the events listing.</p>
-</div>
-<div class="paragraph">
-<p>You can also use <code>kubectl describe</code> on the pod to find more informatoin about the failure.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>PODNAME=$(kubectl get pod  -l app=myboot -o name)
-kubectl describe $PODNAME</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Delete the deployment</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl delete -f apps/kubefiles/myboot-deployment-resources.yml</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Create a new deployment with a more sane resource request and a hard limit</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Describe the pod</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Deploy the service</p>
+<p>Deploy a Service</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -297,18 +214,8 @@ kubectl describe $PODNAME</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>and watch your pods</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>watch kubectl get pods</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In another Terminal, loop and curl that service</p>
-</div>
-<div class="paragraph">
-<p>OpenShift:</p>
+<p>Start a poller
+OpenShift:</p>
 </div>
 <div id="openshift-ip-port" class="listingblock">
 <div class="content">
@@ -317,6 +224,9 @@ PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></p
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#openshift-ip-port"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>OR</p>
+</div>
 <div class="paragraph">
 <p>Minikube:</p>
 </div>
@@ -337,99 +247,218 @@ done</code></pre>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-loop"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>In yet another terminal window, curl the /sysresources endpoint</p>
+<p>Change the image</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre> curl $IP:$PORT/sysresources</pre>
+<pre>kubectl set image deployment/myboot myboot=quay.io/burrsutter/myboot:v2</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Note: the reported memory vs what was set in the resource limits</p>
+<p>and notice the error free rolling update:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>PODNAME=$(kubectl get pod  -l app=myboot -o name)
-kubectl get $PODNAME -o json | jq ".spec.containers[0].resources"</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>{
-  "limits": {
-    "cpu": "1",
-    "memory": "400Mi"
-  },
-  "requests": {
-    "cpu": "250m",
-    "memory": "300Mi"
-  }
-}</pre>
+<pre>Aloha from Spring Boot! 131 on myboot-845968c6ff-k4rvb
+Aloha from Spring Boot! 134 on myboot-845968c6ff-9wvt9
+Aloha from Spring Boot! 122 on myboot-845968c6ff-9824z
+Bonjour from Spring Boot! 0 on myboot-8449d5468d-m88z4
+Bonjour from Spring Boot! 1 on myboot-8449d5468d-m88z4
+Aloha from Spring Boot! 135 on myboot-845968c6ff-9wvt9
+Aloha from Spring Boot! 133 on myboot-845968c6ff-k4rvb
+Aloha from Spring Boot! 137 on myboot-845968c6ff-9wvt9
+Bonjour from Spring Boot! 3 on myboot-8449d5468d-m88z4</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Curl the /consume endpoint</p>
+<p>Look at the Endpoints to see which pods are part of the Service</p>
+</div>
+<div id="get-endpoints-before" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints myboot -o json | jq '.subsets[].addresses[].ip'</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-endpoints-before"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>These are the Pod IPs that have passed their readiness probe</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>curl $IP:$PORT/consume
-curl: (52) Empty reply from server</pre>
+<pre>"10.129.2.40"
+"10.130.2.37"
+"10.130.2.38"</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And you should notice that your loop also fails</p>
+<p>Exec into a single pod and change its readiness flag</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Aloha from Spring Boot! 1120 on myboot-d78fb6d58-69kl7
-curl: (56) Recv failure: Connection reset by peer</pre>
+<pre>kubectl exec -it myboot-845968c6ff-k5lcb /bin/bash
+curl localhost:8080/misbehave
+exit</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Describe the pod</p>
+<p>See that the pod is no longer Ready</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>kubectl describe $PODNAME</pre>
+<pre>NAME                      READY   STATUS    RESTARTS   AGE
+myboot-845968c6ff-9wshg   1/1     Running   0          11m
+myboot-845968c6ff-k5lcb   0/1     Running   0          12m
+myboot-845968c6ff-zsgx2   1/1     Running   0          11m</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>and look for</p>
+<p>Now check the Endpoints</p>
+</div>
+<div id="get-endpoints-after" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints myboot -o json | jq '.subsets[].addresses[].ip'</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-endpoints-after"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>And that pod is now missing from the Service&#8217;s loadbalancer</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>    Last State:     Terminated
-      Reason:       OOMKilled
-      Exit Code:    137</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl get $PODNAME -o json | jq ".status.containerStatuses[0].lastState.terminated"</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>{
-  "containerID": "cri-o://7b9be70ce4b616d6083d528dee708cea879da967373dad0d396fb999bd3898d3",
-  "exitCode": 137,
-  "finishedAt": "2020-03-29T19:14:56Z",
-  "reason": "OOMKilled",
-  "startedAt": "2020-03-29T18:50:15Z"
-}</pre>
+<pre>"10.130.2.37"
+"10.130.2.38"</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You might even see the STATUS column of the <code>watch kubectl get pods</code> reflect the OOMKilled</p>
+<p>Which is also self-evident in the curl loop</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>NAME                     READY   STATUS      RESTARTS   AGE
-myboot-d78fb6d58-69kl7   0/1     OOMKilled   1          30m</pre>
+<pre>Aloha from Spring Boot! 845 on myboot-845968c6ff-9wshg
+Aloha from Spring Boot! 604 on myboot-845968c6ff-zsgx2
+Aloha from Spring Boot! 846 on myboot-845968c6ff-9wshg</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And you will notice that the RESTARTS column increments with each crash of the Spring Boot pod.</p>
+<p>Testing the Liveness Probe</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl set image deployment/myboot myboot=quay.io/burrsutter/myboot:v3</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let the rollout finish to completion across all 3 replicas</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>watch kubectl get pods
+NAME                      READY   STATUS    RESTARTS   AGE
+myboot-56659c9d69-6sglj   1/1     Running   0          2m2s
+myboot-56659c9d69-mdllq   1/1     Running   0          97s
+myboot-56659c9d69-zjt6q   1/1     Running   0          72s</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and as seen in the curl loop/poller</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Jambo from Spring Boot! 40 on myboot-56659c9d69-mdllq
+Jambo from Spring Boot! 26 on myboot-56659c9d69-zjt6q
+Jambo from Spring Boot! 71 on myboot-56659c9d69-6sglj</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Edit the Deployment to point to the /alive URL</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>export KUBE_EDITOR="code -w"
+
+kubectl edit deployment myboot
+...
+    spec:
+      containers:
+      - image: quay.io/burrsutter/myboot:v3
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /alive
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 2
+        name: myboot
+...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Save and close the editor, allowing that change to rollout</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>watch kubectl get pods
+NAME                      READY   STATUS        RESTARTS   AGE
+myboot-558b4f8678-nw762   1/1     Running       0          59s
+myboot-558b4f8678-qbrgc   1/1     Running       0          81s
+myboot-558b4f8678-z7f9n   1/1     Running       0          36s</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now pick one of the pods, exec into it and shoot it</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
+curl localhost:8080/shot</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And you will see it get restarted</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>NAME                      READY   STATUS    RESTARTS   AGE
+myboot-558b4f8678-nw762   1/1     Running   0          4m7s
+myboot-558b4f8678-qbrgc   1/1     Running   1          4m29s
+myboot-558b4f8678-z7f9n   1/1     Running   0          3m44s</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Plus, your exec will be terminated</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre> kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
+1000610000@myboot-558b4f8678-qbrgc:/app$ curl localhost:8080/shot
+I have been shot in the head1000610000@myboot-558b4f8678-qbrgc:/app$ command terminated with exit code 137</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And your end-users will not see any errors</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Jambo from Spring Boot! 174 on myboot-558b4f8678-z7f9n
+Jambo from Spring Boot! 11 on myboot-558b4f8678-qbrgc
+Jambo from Spring Boot! 12 on myboot-558b4f8678-qbrgc
+Jambo from Spring Boot! 206 on myboot-558b4f8678-nw762
+Jambo from Spring Boot! 207 on myboot-558b4f8678-nw762
+Jambo from Spring Boot! 175 on myboot-558b4f8678-z7f9n
+Jambo from Spring Boot! 176 on myboot-558b4f8678-z7f9n</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Clean up</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl delete deployment myboot
+kubectl delete service myboot</pre>
+</div>
 </div>
 </div>
 </div>
