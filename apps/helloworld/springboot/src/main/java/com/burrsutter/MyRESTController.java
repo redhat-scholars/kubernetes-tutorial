@@ -18,12 +18,14 @@ public class MyRESTController {
    String greeting;
    
    private int count = 0; // simple counter to see lifecycle
+   boolean behave = true;
+   boolean dead = false;
 
    RestTemplate restTemplate = new RestTemplate();
 
    @RequestMapping("/")
    public String sayHello() {
-       greeting = environment.getProperty("GREETING","Aloha");
+       greeting = environment.getProperty("GREETING","Jambo");
        count++;
        System.out.println(greeting + " from " + hostname + " " + count);
        return greeting + " from Spring Boot! " + count + " on " + hostname + "\n";
@@ -60,13 +62,44 @@ public class MyRESTController {
 
    @RequestMapping(method = RequestMethod.GET, value = "/health")   
    public ResponseEntity<String> health() {               
-        // if (count++ < 5) {
-        //    return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Bad");
-        // } else {             
-            return ResponseEntity.status(HttpStatus.OK)
-                .body("I am fine, thank you\n");
-        // }
+        if (behave) {
+          return ResponseEntity.status(HttpStatus.OK)
+          .body("I am fine, thank you\n");     
+        } else {             
+          return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Bad");          
+        }
    }
+
+   @RequestMapping(method = RequestMethod.GET, value = "/misbehave")   
+   public ResponseEntity<String> misbehave() {
+        behave = false;
+        return ResponseEntity.status(HttpStatus.OK).body("Misbehaving");
+   }
+
+   @RequestMapping(method = RequestMethod.GET, value = "/behave")   
+   public ResponseEntity<String> behave() {
+        behave = true;
+        return ResponseEntity.status(HttpStatus.OK).body("Ain't Misbehaving");
+   }
+
+   @RequestMapping(method = RequestMethod.GET, value = "/shot")   
+   public ResponseEntity<String> shot() {
+        dead = true;
+        return ResponseEntity.status(HttpStatus.OK).body("I have been shot in the head");
+        // https://www.quora.com/Why-can-zombies-only-die-by-being-shot-in-the-head-Why-can-they-survive-all-the-blood-loss-and-still-live-If-zombies-were-real-anyway
+   }
+
+   @RequestMapping(method = RequestMethod.GET, value = "/alive")   
+   public ResponseEntity<String> alive() {
+    if (!dead) {
+      return ResponseEntity.status(HttpStatus.OK)
+      .body("It's Alive! (Frankenstein)\n");     
+    } else {             
+      return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("All dead, not mostly dead (Princess Bride)");
+    }
+}
+
+
 
    @RequestMapping("/configure")
    public String configure() {
