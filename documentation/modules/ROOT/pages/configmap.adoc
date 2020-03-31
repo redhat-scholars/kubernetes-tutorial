@@ -216,6 +216,29 @@ greeting=jambo
 love=Amour
 ----
 
+and switch to the other properties file by recreating the CM
+----
+kubectl delete cm my-config
+kubectl create cm my-config --from-env-file=apps/config/other.properties
+kubectl delete pod -l app=myboot
+----
+
+----
+curl $IP:$PORT/configure
+
+Configuration for : myboot-694954fc6d-nzdvx
+databaseConn=jdbc:sqlserver://123.123.123.123:1443;user=MyUserName;password=*****;
+msgBroker=tcp://localhost:61616?jms.useAsyncSend=true
+hello=Default
+love=Default
+----
+
+
+
+There are a lot more ways to have fun with ConfigMaps, the core documentation has you manipulate a Pod specification instead of a Deployment but the results are basically the same
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap
+
+
 Clean Up
 ----
 kubectl delete deployment myboot

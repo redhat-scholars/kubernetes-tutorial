@@ -16,3 +16,4 @@
 * xref:service-magic.adoc[Service Magic]
 * xref:blue-green.adoc[Blue Green]
 * xref:configmap.adoc[ConfigMap]
+* xref:secrets.adoc[Secrets]
