@@ -17,3 +17,4 @@
 * xref:blue-green.adoc[Blue Green]
 * xref:configmap.adoc[ConfigMap]
 * xref:secrets.adoc[Secrets]
+* xref:crds.adoc[CRDs]

@@ -2,24 +2,24 @@ runtime:
   cache_dir: ./.cache/antora
 
 site:
-  title: Knative Tutorial
-  url: https://redhat-developer-demos.github.io/knative-tutorial
-  start_page: knative-tutorial::index.adoc
+  title: Kubernetes Tutorial
+  url: https://redhat-developer-demos.github.io/kubernetes-tutorial
+  start_page: kubernetes-tutorial::index.adoc
 
 content:
   sources:
     - url: .
       branches: HEAD
       start_path: documentation
-    - url: ../knative-tutorial-module-basics
+    - url: ../kubernetes-tutorial-module-basics
       branches: HEAD
-    - url: ../knative-tutorial-module-camelk
+    - url: ../kubernetes-tutorial-module-camelk
       branches: HEAD
 asciidoc:
   attributes:
-    tutorial-namespace: knativetutorial
+    tutorial-namespace: kubernetestutorial
     #workshop: true
-    title: Knative Tutorial
+    title: Kubernetes Tutorial
     workshop-domain: guru.devx.red
     kubernetes-version: v1.17.2
     release-version: master
