@@ -1,11 +1,11 @@
 {
-  "name": "knative-tutorial-site",
-  "description": "Knative Tutorial Documentation Site",
-  "homepage": "https://redhat-developer-demos.github.io/knative-tutorial",
+  "name": "kubernetes-tutorial-site",
+  "description": "Kubernetes Tutorial Documentation Site",
+  "homepage": "https://redhat-developer-demos.github.io/kubernetes-tutorial",
   "author": {
-    "email": "kamesh.sampath@hotmail.com",
-    "name": "Kamesh Sampath",
-    "url": "https://twitter.com/@kamesh_sampath"
+    "email": "burrsutter@gmail.com",
+    "name": "Burr Sutter",
+    "url": "https://twitter.com/burrsutter"
   },
   "dependencies": {
     "@antora/cli": "2.2",
@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/redhat-developer-demos/knative-tutorial.git"
+    "url": "git+https://github.com/redhat-developer-demos/kubernetes-tutorial.git"
   },
   "license": "Apache-2.0",
   "babel": {

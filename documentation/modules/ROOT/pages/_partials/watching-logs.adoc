@@ -1,4 +1,4 @@
-[kube-ns='knativetutorial']
+[kube-ns='kubernetestutorial']
 [kube-svc='']
 
 Since a Cron job source is used in this section of the tutorial, it would emit events every minute. We can watch the logs of the service to see the messages delivered.

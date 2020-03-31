@@ -14,8 +14,8 @@ content:
       start_path: documentation
 asciidoc:
   attributes:
-    tutorial-namespace: knativetutorial
-    title: Knative Tutorial(Staging)
+    tutorial-namespace: kubernetestutorial
+    title: Kubernetes Tutorial(Staging)
     workshop-domain: guru.devx.red
     kubernetes-version: v1.17.2
     release-version: master
