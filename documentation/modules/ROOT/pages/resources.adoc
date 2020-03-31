@@ -140,7 +140,8 @@ kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
 
 Describe the pod
 ----
-
+PODNAME=$(kubectl get pod  -l app=myboot -o name)
+kubectl describe $PODNAME
 ----
 
 Deploy the service
