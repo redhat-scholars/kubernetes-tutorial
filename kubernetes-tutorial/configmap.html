@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Untitled :: Kubernetes Tutorial</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/service-magic.html">
+    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/configmap.html">
     <meta name="generator" content="Antora 2.2.0">
     <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
@@ -85,13 +85,13 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="live-ready.html">Live &amp; Ready</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="service-magic.html">Service Magic</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="blue-green.html">Blue Green</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <a class="nav-link" href="configmap.html">ConfigMap</a>
   </li>
 </ul>
@@ -114,171 +114,78 @@
   <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="index.html">Kubernetes Tutorial</a></li>
-    <li class="crumb"><a href="service-magic.html">Service Magic</a></li>
+    <li class="crumb"><a href="configmap.html">ConfigMap</a></li>
   </ul>
 </nav>
 </div>
 <article class="doc">
 <div class="sect1">
-<h2 id="_service_magic"><a class="anchor" href="#_service_magic"></a>Service Magic</h2>
+<h2 id="_externalize_configuration"><a class="anchor" href="#_externalize_configuration"></a>Externalize Configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Create a Namespace</p>
+<p><strong><em>An app’s config is everything that is likely to vary between deploys (staging, production, developer environments, etc).</em></strong></p>
 </div>
-<div id="create-namespace" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create namespace funstuff
-kubectl config set-context --current --namespace=funstuff</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-namespace"><i class="fa fa-clipboard"></i></button><br/>
-<div class="sect2">
-<h3 id="_deploy_mypython"><a class="anchor" href="#_deploy_mypython"></a>Deploy mypython</h3>
-<div id="deploy-mypython" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mypython-deployment
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: mypython
-  template:
-    metadata:
-      labels:
-        app: mypython
-    spec:
-      containers:
-      - name: mypython
-        image: docker.io/burrsutter/mypython:1.0.0
-        ports:
-        - containerPort: 8000
-EOF</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-mypython"><i class="fa fa-clipboard"></i></button><br/>
-</div>
-<div class="sect2">
-<h3 id="_deploy_mygo"><a class="anchor" href="#_deploy_mygo"></a>Deploy mygo</h3>
-<div id="deploy-mygo" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mygo-deployment
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: mygo
-  template:
-    metadata:
-      labels:
-        app: mygo
-    spec:
-      containers:
-      - name: mygo
-        image: quay.io/burrsutter/mygo:1.0.0
-        ports:
-        - containerPort: 8000
-EOF</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-mygo"><i class="fa fa-clipboard"></i></button><br/>
-</div>
-<div class="sect2">
-<h3 id="_deploy_mynode"><a class="anchor" href="#_deploy_mynode"></a>Deploy mynode</h3>
-<div id="deploy-mynode" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mynode-deployment
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: mynode
-  template:
-    metadata:
-      labels:
-        app: mynode
-    spec:
-      containers:
-      - name: mynode
-        image: quay.io/burrsutter/mynode:1.0.0
-        ports:
-        - containerPort: 8000
-EOF</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-mynode"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
-<div class="content">
-<pre>watch kubectl get pods --show-labels</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl get pods --show-labels
-NAME                                   READY   STATUS    RESTARTS   AGE     LABELS
-mygo-deployment-6d944c5c69-kcvmk       1/1     Running   0          2m11s   app=mygo,pod-template-hash=6d944c5c69
-mynode-deployment-fb5457c5-hhz7h       1/1     Running   0          2m1s    app=mynode,pod-template-hash=fb5457c5
-mypython-deployment-6874f84d85-2kpjl   1/1     Running   0          3m53s   app=mypython,pod-template-hash=6874f84d85</pre>
-</div>
-</div>
-<div id="deploy-myservice" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
-apiVersion: v1
-kind: Service
-metadata:
-  name: my-service
-  labels:
-    app: mystuff
-spec:
-  ports:
-  - name: http
-    port: 8000
-  selector:
-    inservice: mypods
-  type: LoadBalancer
-EOF</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-myservice"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl describe service my-service</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl get endpoints
-NAME         ENDPOINTS   AGE
-my-service   &lt;none&gt;      2m6s</pre>
-</div>
-</div>
-<div id="get-endpoints1" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'
-jq: error (at &lt;stdin&gt;:18): Cannot iterate over null (null)</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-endpoints1"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>Curl Loop
-OpenShift:</p>
+<p><a href="https://12factor.net/config">12 Factor Apps</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_environment_variables"><a class="anchor" href="#_environment_variables"></a>Environment Variables</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>MyRESTController.java includes a small chunk of code that looks to the environment</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">   @RequestMapping("/configure")
+   public String configure() {
+        String databaseConn = environment.getProperty("DBCONN","Default");
+        String msgBroker = environment.getProperty("MSGBROKER","Default");
+        String hello = environment.getProperty("GREETING","Default");
+        String love = environment.getProperty("LOVE","Default");
+        return "Configuration: \n"
+            + "databaseConn=" + databaseConn + "\n"
+            + "msgBroker=" + msgBroker + "\n"
+            + "hello=" + hello + "\n"
+            + "love=" + love + "\n";
+   }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Environment variables can be manipulated at the Deployment level. Changes cause pod redeployment.</p>
+</div>
+<div class="paragraph">
+<p>Deploy myboot</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl apply -f apps/kubefiles/myboot-deployment.yml</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deploy myboot Service</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl apply -f apps/kubefiles/myboot-service.yml</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>watch kubectl get pods</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ask the application for its configuration</p>
+</div>
+<div class="paragraph">
+<p>OpenShift:</p>
 </div>
 <div id="openshift-ip-port" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service my-service -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-PORT=$(kubectl get service my-service -o jsonpath="{.spec.ports[*].port}")</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#openshift-ip-port"><i class="fa fa-clipboard"></i></button><br/>
@@ -291,123 +198,187 @@ PORT=$(kubectl get service my-service -o jsonpath="{.spec.ports[*].port}")</code
 <div id="minikube-ip-port" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
-PORT=$(kubectl get service/my-service -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
+PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#minikube-ip-port"><i class="fa fa-clipboard"></i></button><br/>
-<div id="curl-loop" class="listingblock">
+<div id="get-config" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true
-do curl $IP:$PORT
-sleep .3
-done</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT/configure</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-loop"><i class="fa fa-clipboard"></i></button><br/>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-config"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
-curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused</pre>
-</div>
-</div>
-<div id="label-mypython" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label pod -l app=mypython inservice=mypods</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#label-mypython"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
-<div class="content">
-<pre>curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
-Python Hello on mypython-deployment-6874f84d85-2kpjl
-Python Hello on mypython-deployment-6874f84d85-2kpjl
-Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
-</div>
-</div>
-<div id="label-mynode" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label pod -l app=mynode inservice=mypods</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#label-mynode"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
-<div class="content">
-<pre>Python Hello on mypython-deployment-6874f84d85-2kpjl
-Python Hello on mypython-deployment-6874f84d85-2kpjl
-Node Hello on mynode-deployment-fb5457c5-hhz7h 0
-Node Hello on mynode-deployment-fb5457c5-hhz7h 1
-Python Hello on mypython-deployment-6874f84d85-2kpjl
-Python Hello on mypython-deployment-6874f84d85-2kpjl
-Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
-</div>
-</div>
-<div id="label-mygo" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label pod -l app=mygo inservice=mypods</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#label-mygo"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
-<div class="content">
-<pre>Node Hello on mynode-deployment-fb5457c5-hhz7h 59
-Node Hello on mynode-deployment-fb5457c5-hhz7h 60
-Go Hello on mygo-deployment-6d944c5c69-kcvmk
-Python Hello on mypython-deployment-6874f84d85-2kpjl
-Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
-</div>
-</div>
-<div id="get-endpoints2" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-endpoints2"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
-<div class="content">
-<pre>"10.130.2.43"
-"10.130.2.44"
-"10.130.2.45"</pre>
+<pre>Configuration for : myboot-66d7d57687-jsbz7
+databaseConn=Default
+msgBroker=Default
+greeting=Default
+love=Default</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>See the Pod IPs</p>
+<p>Set env vars</p>
 </div>
-<div id="pod-ips" class="listingblock">
+<div id="set-env-vars" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods -o wide</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set env deployment/myboot GREETING="namaste"
+kubectl set env deployment/myboot LOVE="Aloha"
+kubectl set env deployment/myboot DBCONN="jdbc:sqlserver://45.91.12.123:1443;user=MyUserName;password=*****;"</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#pod-ips"><i class="fa fa-clipboard"></i></button><br/>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#set-env-vars"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>Remove mypython pod from the Service</p>
+<p>Watch the pods being reborn</p>
 </div>
-<div id="remove-label" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label pod -l app=mypython inservice-</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#remove-label"><i class="fa fa-clipboard"></i></button><br/>
-<div id="get-endpoints3" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-endpoints3"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>"10.130.2.44"
-"10.130.2.45"</pre>
+<pre>NAME                      READY   STATUS        RESTARTS   AGE
+myboot-66d7d57687-jsbz7   1/1     Terminating   0          5m
+myboot-785ff6bddc-ghwpc   1/1     Running       0          13s</pre>
+</div>
+</div>
+<div id="get-config2" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT/configure</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-config2"><i class="fa fa-clipboard"></i></button><br/>
+<div class="listingblock">
+<div class="content">
+<pre>Configuration for : myboot-5fd9dd9c59-58xbh
+databaseConn=jdbc:sqlserver://45.91.12.123:1443;user=MyUserName;password=*****;
+msgBroker=Default
+greeting=namaste
+love=Aloha</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl describe deployment myboot</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>...
+  Containers:
+   myboot:
+    Image:      quay.io/burrsutter/myboot:v1
+    Port:       8080/TCP
+    Host Port:  0/TCP
+    Environment:
+      GREETING:  namaste
+      LOVE:      Aloha
+      DBCONN:    jdbc:sqlserver://45.91.12.123:1443;user=MyUserName;password=*****;
+    Mounts:      &lt;none&gt;
+  Volumes:       &lt;none&gt;
+...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Remove env var</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl set env deployment/myboot GREETING-
+kubectl set env deployment/myboot LOVE-
+kubectl set env deployment/myboot DBCONN-</pre>
+</div>
+</div>
+<div id="get-config3" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT/configure</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-config3"><i class="fa fa-clipboard"></i></button><br/>
+<div class="listingblock">
+<div class="content">
+<pre>Configuration for : myboot-66d7d57687-xkgw6
+databaseConn=Default
+msgBroker=Default
+greeting=Default
+love=Default</pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_a_configmap"><a class="anchor" href="#_create_a_configmap"></a>Create a ConfigMap</h3>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl create cm my-config --from-env-file=apps/config/some.properties</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl get cm
+kubectl get cm my-config
+kubectl get cm my-config -o json</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>...
+    "data": {
+        "GREETING": "jambo",
+        "LOVE": "Amour"
+    },
+    "kind": "ConfigMap",
+...</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre> kubectl describe cm my-config
+Name:         my-config
+Namespace:    myspace
+Labels:       &lt;none&gt;
+Annotations:  &lt;none&gt;
+
+Data
+====
+GREETING:
+====
+jambo
+LOVE:
+====
+Amour
+Events:  &lt;none&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now deploy the app with its request for the configmap</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl apply -f apps/kubefiles/myboot-deployment-configuration.yml</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And can its configure endpoint</p>
+</div>
+<div id="get-config4" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT/configure</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-config4"><i class="fa fa-clipboard"></i></button><br/>
+<div class="listingblock">
+<div class="content">
+<pre>Configuration for : myboot-84bfcff474-x6xnt
+databaseConn=Default
+msgBroker=Default
+greeting=jambo
+love=Amour</pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Clean Up</p>
 </div>
-<div id="clean-up" class="listingblock">
+<div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete namespace funstuff</code></pre>
+<pre>kubectl delete deployment myboot
+kubectl delete service myboot</pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#clean-up"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 </div>
