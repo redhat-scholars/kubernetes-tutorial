@@ -14,3 +14,4 @@
 * xref:building-images.adoc[Building Images]
 * xref:live-ready.adoc[Live & Ready]
 * xref:service-magic.adoc[Service Magic]
+* xref:blue-green.adoc[Blue Green]

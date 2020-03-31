@@ -1,0 +1,127 @@
+== Blue/Green
+
+https://martinfowler.com/bliki/BlueGreenDeployment.html[Description of Blue/Green Deployment]
+
+Make sure you are in the correct namespace
+
+----
+kubectl config set-context --current --namespace=myspace
+----
+
+Make sure nothing else is deployed
+----
+kubectl get all
+No resources found in myspace namespace.
+----
+
+Deploy V1 of myboot
+----
+kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
+----
+
+Scale to 2 replicas 
+----
+kubectl scale deployment/myboot --replicas=2
+----
+
+Watch and show-labels
+----
+watch kubectl get pods --show-labels
+----
+
+Deploy the service
+----
+kubectl apply -f apps/kubefiles/myboot-service.yml
+----
+
+Curl Loop
+OpenShift:
+[#openshift-ip-port]
+[source,bash,subs="+macros,+attributes"]
+----
+IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")
+----
+copyToClipboard::openshift-ip-port[]
+
+OR
+
+Minikube:
+[#minikube-ip-port]
+[source,bash,subs="+macros,+attributes"]
+----
+IP=$(minikube ip)
+PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")
+----
+copyToClipboard::minikube-ip-port[]
+
+[#curl-loop]
+[source,bash,subs="+macros,+attributes"]
+----
+while true
+do curl $IP:$PORT
+sleep .3
+done
+----
+copyToClipboard::curl-loop[]
+
+
+
+Deploy V2 of myboot
+----
+kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits-v2.yml
+----
+
+Verify that the new pod/deployment carries the new code
+----
+PODNAME=$(kubectl get pod -l app=myboot-next -o name)
+kubectl exec -it $PODNAME -- curl localhost:8080
+----
+
+----
+Bonjour from Spring Boot! 1 on myboot-next-66b68c6659-ftcjr
+----
+
+Now update the single Service to point to the new pod and go GREEN
+
+[#patch-service-green]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl patch svc/myboot -p '{"spec":{"selector":{"app":"myboot-next"}}}'
+----
+copyToClipboard::patch-service-green[]
+
+----
+Aloha from Spring Boot! 240 on myboot-d78fb6d58-929wn
+Bonjour from Spring Boot! 2 on myboot-next-66b68c6659-ftcjr
+Bonjour from Spring Boot! 3 on myboot-next-66b68c6659-ftcjr
+Bonjour from Spring Boot! 4 on myboot-next-66b68c6659-ftcjr
+----
+
+Determine that you prefer Hawaiian (blue) to French (green) and fallback
+
+Now update the single Service to point to the new pod and go GREEN
+
+[#patch-service-blue]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl patch svc/myboot -p '{"spec":{"selector":{"app":"myboot"}}}'
+----
+copyToClipboard::patch-service-blue[]
+
+----
+Bonjour from Spring Boot! 17 on myboot-next-66b68c6659-ftcjr
+Aloha from Spring Boot! 257 on myboot-d78fb6d58-vqvlb
+Aloha from Spring Boot! 258 on myboot-d78fb6d58-vqvlb
+----
+
+Clean Up
+
+[#clean]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl delete service myboot
+kubectl delete deployment myboot
+kubectl delete deployment myboot-next
+----
+copyToClipboard::clean[]
