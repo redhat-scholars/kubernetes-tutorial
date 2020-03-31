@@ -1,0 +1,194 @@
+= CRDs & Controllers
+
+Custom Resources extend the API
+
+Custom Controllers provide the functionality - continually maintains the desired state -  to monitor its state and reconcile the resource to match with the configuration
+
+https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/
+
+https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/
+
+Custom Resource Definitions (CRDs) in version 1.7
+
+=== CRDs
+
+[#get-crds]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get crds --all-namespaces
+kubectl api-resources
+----
+copyToClipboard::get-crds[]
+
+=== Example CRD
+----
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: pizzas.mykubernetes.burrsutter.com
+  labels:
+    app: pizzamaker
+    mylabel: stuff
+  annotations:
+    "yourannotation": morestuff
+spec:
+  group: mykubernetes.burrsutter.com
+  scope: Namespaced
+  version: v1beta2
+  names:
+    kind: Pizza
+    listKind: PizzaList
+    plural: pizzas
+    singular: pizza
+    shortNames:
+    - pz
+----
+
+=== Add Pizzas
+
+[#add-pizzas]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/pizzas/pizza-crd.yaml
+----
+copyToClipboard::add-pizzas[]
+
+
+=== Now part of the API
+----
+kubectl get crds | grep pizza
+----
+
+Results:
+----
+pizzas.mykubernetes.burrsutter.com                          2020-03-31T20:36:10Z
+----
+
+----
+kubectl api-resources | grep burr
+----
+
+Results:
+----
+pizzas                                pz               mykubernetes.burrsutter.com           true         Pizza
+----
+
+
+=== Make some Pizzas
+----
+kubectl create namespace pizzahat
+
+kubectl config set-context --current --namespace=pizzahat
+
+kubectl apply -f apps/pizzas/cheese-pizza.yaml
+
+kubectl get pizzas
+
+kubectl describe pizza burrcheese
+----
+
+=== Make more Pizzas
+----
+kubectl apply -f apps/pizzas/meat-lovers.yaml
+
+kubectl apply -f apps/pizzas/veggie-lovers.yaml
+
+kubectl get pizzas --all-namespaces
+----
+
+=== Eat all Pizzas
+----
+kubectl delete pizzas --all
+----
+
+
+== Create some Kafka
+
+https://github.com/strimzi/strimzi-kafka-operator/blob/master/install/cluster-operator/040-Crd-kafka.yaml[Example CRD]
+
+=== Kafka for Minikube
+
+Create a new namespace for this experiment
+
+[#create-namespace-franz]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl create namespace franz
+kubectl config set-context --current --namespace=franz
+----
+copyToClipboard::create-namespace-franz[]
+
+
+For minikube, the instructions for installation can be found here:
+
+https://operatorhub.io/operator/strimzi-kafka-operator[Click Install]
+
+What follows were the instructions from a moment in time
+
+[#minikube-install]
+[source,bash,subs="+macros,+attributes"]
+----
+curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/0.14.1/install.sh | bash -s 0.14.1
+
+kubectl create -f https://operatorhub.io/install/strimzi-kafka-operator.yaml
+----
+copyToClipboard::minikube-install[]
+
+=== Kafka for OpenShift
+
+image:operator-hub-openshift.png[OperatorHub in OpenShift]
+
+=== Verify Install
+
+[#verify-install]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get csv -n operators
+kubectl get crds | grep kafka
+----
+copyToClipboard::verify-install[]
+
+Start a watch in another terminal
+[#watch-pods]
+[source,bash,subs="+macros,+attributes"]
+----
+watch kubectl get pods
+----
+copyToClipboard::watch-pods[]
+
+Then deploy the resource requesting a Kafka cluster
+[#deploy-cluster]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/mykafka.yml
+----
+copyToClipboard::deploy-cluster[]
+
+----
+NAME                                          READY   STATUS    RESTARTS   AGE
+my-cluster-entity-operator-66676cb9fb-fzckz   2/2     Running   0          29s
+my-cluster-kafka-0                            2/2     Running   0          60s
+my-cluster-kafka-1                            2/2     Running   0          60s
+my-cluster-kafka-2                            2/2     Running   0          60s
+my-cluster-zookeeper-0                        2/2     Running   0          92s
+my-cluster-zookeeper-1                        2/2     Running   0          92s
+my-cluster-zookeeper-2                        2/2     Running   0          92s
+----
+
+----
+kubectl get kafkas
+NAME         DESIRED KAFKA REPLICAS   DESIRED ZK REPLICAS
+my-cluster   3                        3
+----
+
+=== Clean up
+
+[#clean-up]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl delete namespace pizzahat
+kubectl delete -f apps/pizzas/pizza-crd.yaml
+kubectl delete kafka my-cluster
+kubectl delete namespace franz
+----
+copyToClipboard::clean-up[]

@@ -18,6 +18,10 @@
 * xref:kubernetes-tutorial:ROOT:building-images.adoc[Building Images]
 * xref:kubernetes-tutorial:ROOT:live-ready.adoc[Live & Ready]
 * xref:kubernetes-tutorial:ROOT:service-magic.adoc[Service Magic]
+* xref:kubernetes-tutorial:ROOT:blue-green.adoc[Blue Green]
+* xref:kubernetes-tutorial:ROOT:configmap.adoc[ConfigMap]
+* xref:kubernetes-tutorial:ROOT:secrets.adoc[Secrets]
+* xref:kubernetes-tutorial:ROOT:crds.adoc[CRDs]
 
 ifndef::workshop[]
 endif::[]
