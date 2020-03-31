@@ -2,20 +2,22 @@
 :page-layout: home
 :!sectids:
 
-****
-TODO
-****
 
 [.tiles.browse]
-== Kubenretes Tutorial
+== Kubernetes Tutorial
 
 [.tile]
-.xref:kubernetes-tutorial:ROOT:index.adoc[Setup]
 * xref:kubernetes-tutorial:ROOT:installation.adoc[Install]
 * xref:kubernetes-tutorial:ROOT:kubectl.adoc[kubectl]
-* xref:kubernetes-tutorial:ROOT:pod-rs-deployment.adoc[Pod, RS, Deployment]
+* xref:kubernetes-tutorial:ROOT:pod-rs-deployment.adoc[Pod, ReplicaSet, Deployment]
 * xref:kubernetes-tutorial:ROOT:service.adoc[Service]
-
+* xref:kubernetes-tutorial:ROOT:logs.adoc[logs]
+* xref:kubernetes-tutorial:ROOT:resources.adoc[Resources/Limits]
+* xref:kubernetes-tutorial:ROOT:exec.adoc[exec]
+* xref:kubernetes-tutorial:ROOT:rolling-updates.adoc[Rolling updates]
+* xref:kubernetes-tutorial:ROOT:building-images.adoc[Building Images]
+* xref:kubernetes-tutorial:ROOT:live-ready.adoc[Live & Ready]
+* xref:kubernetes-tutorial:ROOT:service-magic.adoc[Service Magic]
 
 ifndef::workshop[]
 endif::[]

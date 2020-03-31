@@ -13,3 +13,4 @@
 * xref:rolling-updates.adoc[Rolling updates]
 * xref:building-images.adoc[Building Images]
 * xref:live-ready.adoc[Live & Ready]
+* xref:service-magic.adoc[Service Magic]
