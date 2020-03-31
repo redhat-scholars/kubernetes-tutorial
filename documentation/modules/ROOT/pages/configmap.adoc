@@ -1,0 +1,223 @@
+== Externalize Configuration
+
+*_An app’s config is everything that is likely to vary between deploys (staging, production, developer environments, etc)._*
+
+https://12factor.net/config[12 Factor Apps]
+
+== Environment Variables
+
+MyRESTController.java includes a small chunk of code that looks to the environment
+
+[source,java]
+----
+   @RequestMapping("/configure")
+   public String configure() {
+        String databaseConn = environment.getProperty("DBCONN","Default");
+        String msgBroker = environment.getProperty("MSGBROKER","Default");
+        String hello = environment.getProperty("GREETING","Default");
+        String love = environment.getProperty("LOVE","Default");
+        return "Configuration: \n"
+            + "databaseConn=" + databaseConn + "\n"
+            + "msgBroker=" + msgBroker + "\n"
+            + "hello=" + hello + "\n"
+            + "love=" + love + "\n";
+   }
+----
+
+Environment variables can be manipulated at the Deployment level. Changes cause pod redeployment.
+
+
+Deploy myboot
+----
+kubectl apply -f apps/kubefiles/myboot-deployment.yml
+----
+
+Deploy myboot Service
+----
+kubectl apply -f apps/kubefiles/myboot-service.yml
+----
+
+----
+watch kubectl get pods
+----
+
+Ask the application for its configuration
+
+OpenShift:
+[#openshift-ip-port]
+[source,bash,subs="+macros,+attributes"]
+----
+IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")
+----
+copyToClipboard::openshift-ip-port[]
+
+OR
+
+Minikube:
+[#minikube-ip-port]
+[source,bash,subs="+macros,+attributes"]
+----
+IP=$(minikube ip)
+PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")
+----
+copyToClipboard::minikube-ip-port[]
+
+[#get-config]
+[source,bash,subs="+macros,+attributes"]
+----
+curl $IP:$PORT/configure
+----
+copyToClipboard::get-config[]
+
+----
+Configuration for : myboot-66d7d57687-jsbz7
+databaseConn=Default
+msgBroker=Default
+greeting=Default
+love=Default
+----
+
+Set env vars
+
+[#set-env-vars]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl set env deployment/myboot GREETING="namaste"
+kubectl set env deployment/myboot LOVE="Aloha"
+kubectl set env deployment/myboot DBCONN="jdbc:sqlserver://45.91.12.123:1443;user=MyUserName;password=*****;"
+----
+copyToClipboard::set-env-vars[]
+
+Watch the pods being reborn
+----
+NAME                      READY   STATUS        RESTARTS   AGE
+myboot-66d7d57687-jsbz7   1/1     Terminating   0          5m
+myboot-785ff6bddc-ghwpc   1/1     Running       0          13s
+----
+
+[#get-config2]
+[source,bash,subs="+macros,+attributes"]
+----
+curl $IP:$PORT/configure
+----
+copyToClipboard::get-config2[]
+
+----
+Configuration for : myboot-5fd9dd9c59-58xbh
+databaseConn=jdbc:sqlserver://45.91.12.123:1443;user=MyUserName;password=*****;
+msgBroker=Default
+greeting=namaste
+love=Aloha
+----
+
+----
+kubectl describe deployment myboot
+----
+
+----
+...
+  Containers:
+   myboot:
+    Image:      quay.io/burrsutter/myboot:v1
+    Port:       8080/TCP
+    Host Port:  0/TCP
+    Environment:
+      GREETING:  namaste
+      LOVE:      Aloha
+      DBCONN:    jdbc:sqlserver://45.91.12.123:1443;user=MyUserName;password=*****;
+    Mounts:      <none>
+  Volumes:       <none>
+...  
+----
+
+Remove env var
+----
+kubectl set env deployment/myboot GREETING-
+kubectl set env deployment/myboot LOVE-
+kubectl set env deployment/myboot DBCONN-
+----
+
+[#get-config3]
+[source,bash,subs="+macros,+attributes"]
+----
+curl $IP:$PORT/configure
+----
+copyToClipboard::get-config3[]
+
+----
+Configuration for : myboot-66d7d57687-xkgw6
+databaseConn=Default
+msgBroker=Default
+greeting=Default
+love=Default
+----
+
+===  Create a ConfigMap
+
+----
+kubectl create cm my-config --from-env-file=apps/config/some.properties
+----
+
+----
+kubectl get cm
+kubectl get cm my-config
+kubectl get cm my-config -o json
+----
+
+----
+...
+    "data": {
+        "GREETING": "jambo",
+        "LOVE": "Amour"
+    },
+    "kind": "ConfigMap",
+...    
+----
+
+----
+ kubectl describe cm my-config
+Name:         my-config
+Namespace:    myspace
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+GREETING:
+====
+jambo
+LOVE:
+====
+Amour
+Events:  <none>
+----
+
+Now deploy the app with its request for the configmap
+
+----
+kubectl apply -f apps/kubefiles/myboot-deployment-configuration.yml
+----
+
+And can its configure endpoint
+
+[#get-config4]
+[source,bash,subs="+macros,+attributes"]
+----
+curl $IP:$PORT/configure
+----
+copyToClipboard::get-config4[]
+
+----
+Configuration for : myboot-84bfcff474-x6xnt
+databaseConn=Default
+msgBroker=Default
+greeting=jambo
+love=Amour
+----
+
+Clean Up
+----
+kubectl delete deployment myboot
+kubectl delete service myboot
+----
