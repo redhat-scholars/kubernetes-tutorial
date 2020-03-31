@@ -288,7 +288,8 @@ kubectl describe $PODNAME</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre></pre>
+<pre>PODNAME=$(kubectl get pod  -l app=myboot -o name)
+kubectl describe $PODNAME</pre>
 </div>
 </div>
 <div class="paragraph">
