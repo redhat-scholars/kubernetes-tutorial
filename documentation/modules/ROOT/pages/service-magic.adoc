@@ -1,0 +1,105 @@
+== Service Magic
+
+Create a Namespace 
+[#create-namespace]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl create namespace funstuff
+kubectl config set-context --current --namespace=funstuff
+----
+copyToClipboard::create-namespace[]
+
+=== Deploy mypython
+[#deploy-mypython]
+[source,bash,subs="+macros,+attributes"]
+----
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mypython-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mypython
+  template:
+    metadata:
+      labels:
+        app: mypython
+    spec:
+      containers:
+      - name: mypython
+        image: docker.io/burrsutter/mypython:1.0.0
+        ports:
+        - containerPort: 8000
+EOF
+----
+copyToClipboard::deploy-mypython[]
+
+=== Deploy mygo
+[#deploy-mygo]
+[source,bash,subs="+macros,+attributes"]
+----
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mygo-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mygo
+  template:
+    metadata:
+      labels:
+        app: mygo
+    spec:
+      containers:
+      - name: mygo
+        image: quay.io/burrsutter/mygo:1.0.0
+        ports:
+        - containerPort: 8000
+EOF
+----
+copyToClipboard::deploy-mygo[]
+
+=== Deploy mynode
+[#deploy-mynode]
+[source,bash,subs="+macros,+attributes"]
+----
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mynode-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mynode
+  template:
+    metadata:
+      labels:
+        app: mynode
+    spec:
+      containers:
+      - name: mynode
+        image: quay.io/burrsutter/mynode:1.0.0
+        ports:
+        - containerPort: 8000
+EOF
+----
+copyToClipboard::deploy-mynode[]
+
+
+
+[#deploy-mypython]
+[source,bash,subs="+macros,+attributes"]
+----
+clear
+----
+copyToClipboard::deploy-mypython[]
+
+
