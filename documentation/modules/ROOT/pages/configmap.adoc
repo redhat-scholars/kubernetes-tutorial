@@ -242,5 +242,6 @@ https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap
 Clean Up
 ----
 kubectl delete deployment myboot
+kubectl delete cm my-config
 kubectl delete service myboot
 ----
