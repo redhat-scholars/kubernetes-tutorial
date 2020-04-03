@@ -1,7 +1,7 @@
-== kubectl: The Kubernetes Client
+= kubectl: The Kubernetes Client
 
 [[talk]]
-=== Talk to your Cluster
+== Talk to your Cluster
 [#kubectl-view-config]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -12,7 +12,7 @@ copyToClipboard::kubectl-view-config[]
 
 
 [[view-nodes]]
-=== View Nodes
+== View Nodes
 
 [#kubectl-get-nodes]
 [source,bash,subs="+macros,+attributes"]
@@ -24,7 +24,7 @@ kubectl get namespaces
 copyToClipboard::kubectl-get-nodes[]
 
 [[view-pods]]
-=== View out-of-the-box Pods
+== View out-of-the-box Pods
 
 Your Kubernetes vendor likely includes many pods out-of-the-box
 
@@ -38,7 +38,7 @@ kubectl get pods --all-namespaces -o wide
 copyToClipboard::kubectl-get-pods[]
 
 [[deploy-app]]
-=== Deploy Something
+== Deploy Something
 
 Create a Namespace and Deploy something
 
@@ -53,7 +53,7 @@ kubectl create deployment myapp --image=quay.io/burrsutter/quarkus-demo:1.0.0
 copyToClipboard::kubectl-deploy-app[]
 
 [[monitor-events]]
-=== while monitoring Events
+== while monitoring Events
 
 [#kubectl-get-events]
 [source,bash,subs="+macros,+attributes"]
@@ -76,9 +76,9 @@ o:1.0.0"
 ----
 
 [[created-objects]]
-==== Created Objects
+=== Created Objects
 
-===== Deployments
+==== Deployments
 [#kubectl-get-deployments]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -91,7 +91,7 @@ NAME    READY   UP-TO-DATE   AVAILABLE   AGE
 myapp   1/1     1            1           95s
 ----
 
-===== Replicasets
+==== Replicasets
 [#kubectl-get-replicasets]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -104,7 +104,7 @@ NAME               DESIRED   CURRENT   READY   AGE
 myapp-5dcbf46dfc   1         1         1       2m1s
 ----
 
-===== Pods
+==== Pods
 
 [#kubectl-get-podsx]
 [source,bash,subs="+macros,+attributes"]
@@ -118,7 +118,7 @@ NAME                     READY   STATUS    RESTARTS   AGE     LABELS
 myapp-5dcbf46dfc-ghrk4   1/1     Running   0          2m18s   app=myapp,pod-template-hash=5dcbf46dfc
 ----
 
-===== Logs
+==== Logs
 [#kubectl-logs]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -131,7 +131,7 @@ copyToClipboard::kubectl-logs[]
 2020-03-22 14:41:30,497 INFO  [io.quarkus] (main) Installed features: [cdi, resteasy]
 ----
 
-=== Expose a Service
+== Expose a Service
 [#kubectl-expose]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -139,7 +139,7 @@ kubectl expose deployment myapp --port=8080 --type=LoadBalancer
 ----
 copyToClipboard::kubectl-expose[]
 
-==== while watching Services
+=== while watching Services
 [#kubectl-get-services]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -159,7 +159,7 @@ myapp   LoadBalancer   172.30.103.41   34.71.122.153   8080:31974/TCP   44s
 
 NOTE: On Minikube without an Ingress controller, <pending> will not become a real external IP.  https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/[Optional: Setup Minikube Ingres]
 
-=== Talk to the App
+== Talk to the App
 
 If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port `8080`
 
@@ -178,11 +178,11 @@ curl $(minikube ip):$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nod
 ----
 copyToClipboard::curl-minikube-ip[]
 
-=== Scale the App
+== Scale the App
 
 Three Terminal Windows
 
-==== Terminal 1
+=== Terminal 1
 [#watch-pods]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -190,7 +190,7 @@ watch kubectl get pods
 ----
 copyToClipboard::watch-pods[]
 
-==== Terminal 2
+=== Terminal 2
 
 OpenShift
 [#env-vars-openshift]
@@ -230,7 +230,7 @@ Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:293
 ----
 
 
-==== Terminal 3
+=== Terminal 3
 Change replicas
 [#change-replicas]
 [source,bash,subs="+macros,+attributes"]
