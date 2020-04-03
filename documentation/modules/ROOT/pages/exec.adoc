@@ -1,4 +1,4 @@
-== kubectl exec
+= kubectl exec
 
 The exec command allows you to "shell into" your pod and execute commands inside of that tiny linux machine that is running your application. 
 
