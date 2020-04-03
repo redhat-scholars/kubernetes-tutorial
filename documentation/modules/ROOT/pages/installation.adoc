@@ -1,4 +1,4 @@
-== Installation & Setup
+= Installation & Setup
 include::_attributes.adoc[]
 
 [[tutorial-all-local]]
