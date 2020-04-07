@@ -2,6 +2,8 @@
 
 image:https://github.com/redhat-developer-demos/kubernetes-tutorial/workflows/docs/badge.svg[]
 
+You can access the HTML version of this tutorial here: https://redhat-developer-demos.github.io/kubernetes-tutorial/
+
 IMPORTANT: Instructions are in Bash
 
 ## Master Course I
