@@ -12,4 +12,6 @@ node_modules
 .classpath
 .project
 .settings
+.kube
+.minikube
 
