@@ -22,7 +22,7 @@ kubectl apply -f apps/kubefiles/myboot-deployment.yml
 Describe the pod
 ----
 PODNAME=$(kubectl get pod  -l app=myboot -o name)
-kubectl describe pod $PODNAME
+kubectl describe $PODNAME
 ----
 
 There are not resource limits configured for the pod.
