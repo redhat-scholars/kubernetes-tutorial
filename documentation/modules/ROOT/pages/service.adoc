@@ -1,27 +1,52 @@
 == Service
 
-Note: this follows the creation of the Deployment in the previous chapter
+NOTE: This follows the creation of the Deployment in the previous chapter
 
-Make sure you are in the correct namespace
-----
-kubectl config set-context --current --namespace=myspace
-----
+Make sure you are in the correct namespace:
 
-Make sure you have Deployment, RS and Pods
+:section-k8s: services
+:set-namespace: myspace
+
+include::partial$set-context.adoc[]
+
+Make sure you have Deployment:
+
+[#have-deployment-service]
+[source,bash]
 ----
 kubectl get deployments
+----
+copyToClipboard::have-deployment-service[]
+
+----
 NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
 quarkus-demo-deployment   3/3     3            3           8m33s
 ----
 
+Make sure you have RS:
+
+[#have-rs-service]
+[source,bash]
 ----
 kubectl get rs
+----
+copyToClipboard::have-rs-service[]
+
+----
 NAME                                 DESIRED   CURRENT   READY   AGE
 quarkus-demo-deployment-5979886fb7   3         3         3       8m56s
 ----
 
+Make sure you have Pods:
+
+[#have-pods-service]
+[source,bash]
 ----
 kubectl get pods
+----
+copyToClipboard::have-pods-service[]
+
+----
 NAME                                       READY   STATUS    RESTARTS   AGE
 quarkus-demo-deployment-5979886fb7-c888m   1/1     Running   0          9m17s
 quarkus-demo-deployment-5979886fb7-gdtnz   1/1     Running   0          9m17s
@@ -49,52 +74,19 @@ EOF
 ----
 copyToClipboard::create-service[]
 
-----
-watch kubectl get services
-----
+:section-k8s: services
+include::partial$watching-services.adoc[]
 
-----
-NAME          TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
-the-service   LoadBalancer   172.30.20.239   <pending>     80:32002/TCP   15s
-----
-
-----
-NAME          TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)        AGE
-the-service   LoadBalancer   172.30.20.239   35.184.214.208   80:32002/TCP   36s
-----
-
-Hosted OpenShift/Kubernetes
-[#ip-port-openshift]
-[source,bash,subs="+macros,+attributes"]
-----
-IP=$(kubectl get service the-service -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-PORT=$(kubectl get service the-service -o jsonpath="{.spec.ports[*].port}")
-----
-copyToClipboard::ip-port-openshift[]
-
-Minikube
-[#ip-port-minikube]
-[source,bash,subs="+macros,+attributes"]
-----
-IP=$(minikube ip)
-PORT=$(kubectl get service/the-service -o jsonpath="{.spec.ports[*].nodePort}")
-----
-copyToClipboard::ip-port-minikube[]
-
-Curl the Service
-[#curl-the-service]
-[source,bash,subs="+macros,+attributes"]
-----
-curl $IP:$PORT
-----
-copyToClipboard::curl-the-service[]
+:section-k8s: services
+:service-exposed: the-service
+include::partial$env-curl.adoc[]
 
 Results:
 ----
 Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-grf59:1
 ----
 
-Note: "5979886fb7-grf59" is part of the unique id for the pod.   The .java code uses `System.getenv().getOrDefault("HOSTNAME", "unknown");`
+NOTE: "5979886fb7-grf59" is part of the unique id for the pod. The `.java` code uses `System.getenv().getOrDefault("HOSTNAME", "unknown");`
 
 == Ingress
 
@@ -119,15 +111,18 @@ EOF
 ----
 copyToClipboard::create-ingress[]
 
+[#curl-services-ingress]
+[source, bash]
 ----
 curl stuff-myspace.apps.gcp.burrsutter.dev
+----
+copyToClipboard::curl-services-ingress[]
+
+----
 Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:2
 ----
 
-Minikube
-
-https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/
-
+In case of using Minikube follow: https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/
 
 == OpenShift Route
 
@@ -153,12 +148,21 @@ NAME          HOST/PORT                                     PATH   SERVICES     
 the-service   the-service-myspace.apps.gcp.burrsutter.dev          the-service   8080                 None
 ----
 
+Then make a request to the service:
+
+[#curl-services-route]
+[source, bash]
 ----
 curl the-service-myspace.apps.gcp.burrsutter.dev
+----
+copyToClipboard::curl-services-route[]
+
+----
 Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:3
 ----
 
-== Tip: Use jq to pull out the data elements you need for scripting
+=== Use jq to pull out the data elements you need for scripting
+
 ----
 kubectl get route the-service -o json > myroutes.json
 ----
@@ -167,12 +171,17 @@ copy and paste contents into jqplay.org
 
 https://www.screencast.com/t/09biZYHNo62
 
+[#install-jq]
+[source, bash]
 ----
 brew install jq
 ----
+copyToClipboard::install-jq[]
 
+[#route-jq]
+[source, bash]
 ----
 kubectl get route the-service -o json | jq '.spec.host'
 "the-service-myspace.apps.gcp.burrsutter.dev"
 ----
-
+copyToClipboard::route-jq[]

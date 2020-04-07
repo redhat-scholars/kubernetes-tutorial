@@ -1,4 +1,4 @@
-== Externalize Configuration
+= Externalize Configuration
 
 *_An app’s config is everything that is likely to vary between deploys (staging, production, developer environments, etc)._*
 
@@ -24,51 +24,44 @@ MyRESTController.java includes a small chunk of code that looks to the environme
    }
 ----
 
-Environment variables can be manipulated at the Deployment level. Changes cause pod redeployment.
+Environment variables can be manipulated at the Deployment level. 
+Changes cause Pod redeployment.
 
+Deploy `myboot`:
 
-Deploy myboot
+[#deploy-myboot-configmaps]
+[source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment.yml
 ----
+copyToClipboard::deploy-myboot-configmaps[]
 
-Deploy myboot Service
+Deploy `myboot` Service:
+
+[#deploy-myboot-service-configmaps]
+[source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-service.yml
 ----
+copyToClipboard::deploy-myboot-service-configmaps[]
 
-----
-watch kubectl get pods
-----
+And watch the Pos status:
 
-Ask the application for its configuration
+:section-k8s: configmap
+include::partial$watching-pods.adoc[]
 
-OpenShift:
-[#openshift-ip-port]
-[source,bash,subs="+macros,+attributes"]
-----
-IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")
-----
-copyToClipboard::openshift-ip-port[]
+Ask the application for its configuration:
 
-OR
+:section-k8s: configmaps
+:service-exposed: myboot
+include::partial$env-curl.adoc[]
 
-Minikube:
-[#minikube-ip-port]
-[source,bash,subs="+macros,+attributes"]
-----
-IP=$(minikube ip)
-PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")
-----
-copyToClipboard::minikube-ip-port[]
-
-[#get-config]
+[#get-config-configmaps]
 [source,bash,subs="+macros,+attributes"]
 ----
 curl $IP:$PORT/configure
 ----
-copyToClipboard::get-config[]
+copyToClipboard::get-config-configmaps[]
 
 ----
 Configuration for : myboot-66d7d57687-jsbz7
@@ -78,7 +71,7 @@ greeting=Default
 love=Default
 ----
 
-Set env vars
+== Set Environment Variables
 
 [#set-env-vars]
 [source,bash,subs="+macros,+attributes"]
@@ -89,19 +82,20 @@ kubectl set env deployment/myboot DBCONN="jdbc:sqlserver://45.91.12.123:1443;use
 ----
 copyToClipboard::set-env-vars[]
 
-Watch the pods being reborn
+Watch the pods being reborn:
+
 ----
 NAME                      READY   STATUS        RESTARTS   AGE
 myboot-66d7d57687-jsbz7   1/1     Terminating   0          5m
 myboot-785ff6bddc-ghwpc   1/1     Running       0          13s
 ----
 
-[#get-config2]
+[#get-config2-configmaps]
 [source,bash,subs="+macros,+attributes"]
 ----
 curl $IP:$PORT/configure
 ----
-copyToClipboard::get-config2[]
+copyToClipboard::get-config2-configmaps[]
 
 ----
 Configuration for : myboot-5fd9dd9c59-58xbh
@@ -111,9 +105,12 @@ greeting=namaste
 love=Aloha
 ----
 
-----
-kubectl describe deployment myboot
-----
+Describe the deployment:
+
+:section-k8s: configmaps
+:describe-deployment-name: myboot
+
+include::partial$describe-deployment.adoc[]
 
 ----
 ...
@@ -131,19 +128,25 @@ kubectl describe deployment myboot
 ...  
 ----
 
-Remove env var
+Remove environment variables:
+
+[#remove-env-vars-configmaps]
+[source,bash,subs="+macros,+attributes"]
 ----
 kubectl set env deployment/myboot GREETING-
 kubectl set env deployment/myboot LOVE-
 kubectl set env deployment/myboot DBCONN-
 ----
+copyToClipboard::remove-env-vars-configmaps[]
 
-[#get-config3]
+And verify that they have been removed:
+
+[#get-config3-configmaps]
 [source,bash,subs="+macros,+attributes"]
 ----
 curl $IP:$PORT/configure
 ----
-copyToClipboard::get-config3[]
+copyToClipboard::get-config3-configmaps[]
 
 ----
 Configuration for : myboot-66d7d57687-xkgw6
@@ -153,17 +156,23 @@ greeting=Default
 love=Default
 ----
 
-===  Create a ConfigMap
+==  Create a ConfigMap
 
+[#create-configmap-configmaps]
+[source,bash,subs="+macros,+attributes"]
 ----
 kubectl create cm my-config --from-env-file=apps/config/some.properties
 ----
+copyToClipboard::create-configmap-configmaps[]
 
+[#get-configmap-configmaps]
+[source,bash,subs="+macros,+attributes"]
 ----
 kubectl get cm
 kubectl get cm my-config
 kubectl get cm my-config -o json
 ----
+copyToClipboard::get-configmap-configmaps[]
 
 ----
 ...
@@ -175,8 +184,16 @@ kubectl get cm my-config -o json
 ...    
 ----
 
+Or you can describe the `ConfigMap` object:
+
+[#describe-configmap-configmaps]
+[source,bash,subs="+macros,+attributes"]
 ----
- kubectl describe cm my-config
+kubectl describe cm my-config
+----
+copyToClipboard::describe-configmap-configmaps[]
+
+----
 Name:         my-config
 Namespace:    myspace
 Labels:       <none>
@@ -193,20 +210,23 @@ Amour
 Events:  <none>
 ----
 
-Now deploy the app with its request for the configmap
+Now deploy the app with its request for the `ConfigMap`:
 
+[#deploy-myboot-configmap-configmaps]
+[source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment-configuration.yml
 ----
+copyToClipboard::deploy-myboot-configmap-configmaps[]
 
-And can its configure endpoint
+And get its configure endpoint:
 
-[#get-config4]
+[#get-config4-configmaps]
 [source,bash,subs="+macros,+attributes"]
 ----
 curl $IP:$PORT/configure
 ----
-copyToClipboard::get-config4[]
+copyToClipboard::get-config4-configmaps[]
 
 ----
 Configuration for : myboot-84bfcff474-x6xnt
@@ -216,16 +236,25 @@ greeting=jambo
 love=Amour
 ----
 
-and switch to the other properties file by recreating the CM
+And switch to the other properties file by recreating the `ConfigMap`:
+
+[#delete-pod-configmap-configmaps]
+[source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete cm my-config
 kubectl create cm my-config --from-env-file=apps/config/other.properties
 kubectl delete pod -l app=myboot
 ----
+copyToClipboard::delete-pod-configmap-configmaps[]
 
+[#get-config5-configmaps]
+[source,bash,subs="+macros,+attributes"]
 ----
 curl $IP:$PORT/configure
+----
+copyToClipboard::get-config5-configmaps[]
 
+----
 Configuration for : myboot-694954fc6d-nzdvx
 databaseConn=jdbc:sqlserver://123.123.123.123:1443;user=MyUserName;password=*****;
 msgBroker=tcp://localhost:61616?jms.useAsyncSend=true
@@ -233,15 +262,17 @@ hello=Default
 love=Default
 ----
 
-
-
 There are a lot more ways to have fun with ConfigMaps, the core documentation has you manipulate a Pod specification instead of a Deployment but the results are basically the same
 https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap
 
 
-Clean Up
+== Clean Up
+
+[#clean-configmaps]
+[source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete deployment myboot
 kubectl delete cm my-config
 kubectl delete service myboot
 ----
+copyToClipboard::clean-configmaps[]

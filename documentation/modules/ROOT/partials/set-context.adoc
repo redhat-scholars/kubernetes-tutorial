@@ -1,0 +1,6 @@
+[#{section-k8s}-change-context-resource]
+[source, bash, subs="+macros,+attributes"]
+----
+kubectl config set-context --current --namespace={set-namespace}
+----
+copyToClipboard::{section-k8s}-change-context-resource[]

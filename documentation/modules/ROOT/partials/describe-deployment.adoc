@@ -1,0 +1,6 @@
+[#{section-k8s}-kubectl-describe-deployment]
+[source, bash,subs="+macros,+attributes"]
+----
+kubectl describe deployment {describe-deployment-name}
+----
+copyToClipboard::{section-k8s}-kubectl-describe-deployment[]

@@ -26,7 +26,7 @@ copyToClipboard::kubectl-get-nodes[]
 [[view-pods]]
 == View out-of-the-box Pods
 
-Your Kubernetes vendor likely includes many pods out-of-the-box
+Your Kubernetes vendor likely includes many pods out-of-the-box:
 
 [#kubectl-get-pods]
 [source,bash,subs="+macros,+attributes"]
@@ -40,7 +40,7 @@ copyToClipboard::kubectl-get-pods[]
 [[deploy-app]]
 == Deploy Something
 
-Create a Namespace and Deploy something
+Create a Namespace and Deploy something:
 
 [#kubectl-deploy-app]
 [source,bash,subs="+macros,+attributes"]
@@ -76,9 +76,9 @@ o:1.0.0"
 ----
 
 [[created-objects]]
-=== Created Objects
+== Created Objects
 
-==== Deployments
+=== Deployments
 [#kubectl-get-deployments]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -91,7 +91,7 @@ NAME    READY   UP-TO-DATE   AVAILABLE   AGE
 myapp   1/1     1            1           95s
 ----
 
-==== Replicasets
+=== Replicasets
 [#kubectl-get-replicasets]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -104,7 +104,7 @@ NAME               DESIRED   CURRENT   READY   AGE
 myapp-5dcbf46dfc   1         1         1       2m1s
 ----
 
-==== Pods
+=== Pods
 
 [#kubectl-get-podsx]
 [source,bash,subs="+macros,+attributes"]
@@ -118,7 +118,7 @@ NAME                     READY   STATUS    RESTARTS   AGE     LABELS
 myapp-5dcbf46dfc-ghrk4   1/1     Running   0          2m18s   app=myapp,pod-template-hash=5dcbf46dfc
 ----
 
-==== Logs
+=== Logs
 [#kubectl-logs]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -140,47 +140,19 @@ kubectl expose deployment myapp --port=8080 --type=LoadBalancer
 copyToClipboard::kubectl-expose[]
 
 === while watching Services
-[#kubectl-get-services]
-[source,bash,subs="+macros,+attributes"]
-----
-watch kubectl get services
-----
-copyToClipboard::kubectl-get-services[]
 
-----
-NAME    TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-myapp   LoadBalancer   172.30.103.41   <pending>     8080:31974/TCP   4s
-----
-
-----
-NAME    TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)          AGE
-myapp   LoadBalancer   172.30.103.41   34.71.122.153   8080:31974/TCP   44s
-----
-
-NOTE: On Minikube without an Ingress controller, <pending> will not become a real external IP.  https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/[Optional: Setup Minikube Ingres]
+:section-k8s: kubectl
+include::partial$watching-services.adoc[]
 
 == Talk to the App
 
-If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port `8080`
-
-[source,bash,subs="+macros,+attributes"]
-----
-curl 34.71.122.153:8080
-Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:1
-----
-
-If using *Minikube* then use the following:
-
-[#curl-minikube-ip]
-[source,bash,subs="+macros,+attributes"]
-----
-curl $(minikube ip):$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")
-----
-copyToClipboard::curl-minikube-ip[]
+:section-k8s: kubectl
+:service-exposed: myapp
+include::partial$env-curl.adoc[]
 
 == Scale the App
 
-Three Terminal Windows
+Open three Terminal Windows.
 
 === Terminal 1
 [#watch-pods]
@@ -192,23 +164,31 @@ copyToClipboard::watch-pods[]
 
 === Terminal 2
 
-OpenShift
+[tabs]
+====
+Hosted::
++
+--
 [#env-vars-openshift]
 ----
 IP=$(kubectl get service myapp -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service myapp -o jsonpath="{.spec.ports[*].port}")
 ----
 copyToClipboard::env-vars-openshift[]
-
-Minikube
+--
+Minikube::
++
+--
 [#env-vars-minikube]
 ----
 IP=$(minikube ip)
 PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")
 ----
 copyToClipboard::env-vars-minikube[]
+--
+====
 
-Poll the endpoint
+Poll the endpoint:
 
 [#poll-endpoint]
 [source,bash,subs="+macros,+attributes"]
@@ -229,9 +209,10 @@ Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:292
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:293
 ----
 
-
 === Terminal 3
-Change replicas
+
+Change replicas:
+
 [#change-replicas]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -246,7 +227,7 @@ myapp-5dcbf46dfc-ghrk4   1/1     Running             0          5m32s
 myapp-5dcbf46dfc-z6hqw   0/1     ContainerCreating   0          4s
 ----
 
-Start a rolling update by changing the image
+Start a rolling update by changing the image:
 
 [#set-image-myboot-v1]
 [source,bash,subs="+macros,+attributes"]
@@ -312,4 +293,3 @@ kubectl delete namespace mystuff
 kubectl config set-context --current --namespace=default
 ----
 copyToClipboard::delete-namespace[]
-

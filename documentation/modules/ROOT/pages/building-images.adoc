@@ -1,12 +1,16 @@
-== Building Images
+= Building Images
 
-Compile, build and test the Spring Boot Java project
+Compile, build and test the Spring Boot Java project:
+
+[#build-building-images]
+[source, bash]
 ----
 cd apps/helloworld/springboot
 mvn clean package
 java -jar target/boot-demo-1.0.0.jar
 curl localhost:8080
 ----
+copyToClipboard::build-building-images[]
 
 ----
 Aloha from Spring Boot! 1 on unknown
@@ -14,15 +18,19 @@ Aloha from Spring Boot! 1 on unknown
 
 `unknown` because the environment variable is not currently set, it will be inside of a Docker container and inside of Kubernetes.
 
-Build the Docker Linux container image
+== Build Docker Image
 
-Note: change "quay.io" for your registry (e.g. `docker.io`) and "burrsutter" to your organization.  This next step does assume you have a working installation of Docker for Mac/Windows/Linux.
+NOTE: change "quay.io" for your registry (e.g. `docker.io`) and "burrsutter" to your organization.  This next step does assume you have a working installation of Docker for Mac/Windows/Linux.
 
+[#build-container--building-images]
+[source, bash]
 ----
 docker build -t quay.io/burrsutter/myboot:v1 .
 ----
+copyToClipboard::build-container--building-images[]
 
 Results:
+
 ----
 Sending build context to Docker daemon  14.47MB
 Step 1/6 : FROM openjdk:8u151
@@ -47,88 +55,147 @@ Successfully built 85b78b9b70b1
 Successfully tagged quay.io/burrsutter/myboot:v1
 ----
 
-Run and Test your newly created Docker container
+== Run Created Docker image
 
+Run and Test your newly created Docker container:
+
+[#run-container-building-images]
+[source, bash]
 ----
 docker run --rm -it -p 8080:8080 --name myboot quay.io/burrsutter/myboot:v1
 ----
+copyToClipboard::run-container-building-images[]
 
+[#curl-container-building-images]
+[source, bash]
 ----
 curl localhost:8080
+----
+copyToClipboard::curl-container-building-images[]
+
+----
 Aloha from Spring Boot! 1 on 76851270a3e7
 ----
 
+[#curl-sys-container-building-images]
+[source, bash]
 ----
 curl localhost:8080/sysresources
+----
+copyToClipboard::curl-sys-container-building-images[]
+
+----
 Memory: 1268 Cores: 3
 ----
 
 These numbers are based on the memory and CPUs allocated to the Docker daemon as seen in the image below:
 
-image::https://www.screencast.com/users/BurrSutter/folders/Default/media/c904b1f1-fcdb-4798-9e1f-1f3307d98d57/embed[Docker Settings]
+image::docker-settings.png[Docker Settings]
 
-
+[#curl-consume-container-building-images]
+[source, bash]
 ----
 curl localhost:8080/consume
+----
+copyToClipboard::curl-consume-container-building-images[]
+
+----
 Allocated about 80% (1.2 GiB) of the max allowed JVM memory size (1.2 GiB)
 ----
 
-Stop & remove the Docker container
+Stop & remove the Docker container:
+
 ----
 control-c
 ----
 
 Now, constrain the resources associated with this Linux container
 
+[#run-container-constrained-building-images]
+[source, bash]
 ----
 docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/burrsutter/myboot:v1
 ----
+copyToClipboard::run-container-constrained-building-images[]
 
-Ask for the container's resources
+Ask for the container's resources:
+
+[#curl-sys-constrained-container-building-images]
+[source, bash]
 ----
 curl localhost:8080/sysresources
+----
+copyToClipboard::curl-sys-constrained-container-building-images[]
+
+----
 Memory: 1268 Cores: 3
 ----
 
-Crash it
+Crash it:
+
+[#curl-consume-crash-container-building-images]
+[source, bash]
 ----
 curl localhost:8080/consume
 ----
+copyToClipboard::curl-consume-crash-container-building-images[]
 
-To correct this behavior use a different Dockerfile
+== Fix Memory Problems
 
+To correct this behavior use a different Dockerfile:
+
+[#build-mem-container-building-images]
+[source, bash]
 ----
 docker build -t quay.io/burrsutter/myboot:v1 -f Dockerfile_Memory .
 ----
+copyToClipboard::build-mem-container-building-images[]
 
+Now docker run it:
 
-Now docker run it
+[#run-sys-constrained-fix-container-building-images]
+[source, bash]
 ----
 docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/burrsutter/myboot:v1
 ----
+copyToClipboard::run-sys-constrained-fix-container-building-images[]
 
-and curl it
+And `curl` it:
+
+[#curl-sys-constrained-fix-container-building-images]
+[source, bash]
 ----
 curl localhost:8080/sysresources
+----
+copyToClipboard::curl-sys-constrained-fix-container-building-images[]
+
+----
 Memory: 112 Cores: 3
 ----
 
-and try to crash it
+And try to crash it:
+
+[#curl-consume-fix-container-building-images]
+[source, bash]
 ----
 curl localhost:8080/consume
+----
+copyToClipboard::curl-consume-fix-container-building-images[]
+
+----
 Allocated about 80% (98.0 MiB) of the max allowed JVM memory size (112.0 MiB)
 ----
 
+Once you are happy with your container image, push it up to your favorite registry:
 
-Once you are happy with your container image, push it up to your favorite registry
-
+[#push-container-building-images]
+[source, bash]
 ----
 docker login quay.io
-# docker login docker.io
 
 docker push quay.io/burrsutter/myboot:v1
-# docker push docker.io/burrsutter/myboot:v1
 ----
+copyToClipboard::push-container-building-images[]
 
 ----
 .
@@ -140,4 +207,3 @@ bcbe43405751: Pushed
 e1df5dc88d2c: Pushed
 v1: digest: sha256:d22d4af6e297a024b061dbaae05be76c771fdb1db51643dc2dd8b8e047f79647 size: 2630
 ----
-

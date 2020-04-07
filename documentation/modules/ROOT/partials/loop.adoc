@@ -1,0 +1,9 @@
+[#{section-k8s}-curl-loop]
+[source,bash,subs="+macros,+attributes"]
+----
+while true
+do curl $IP:$PORT
+sleep .3
+done
+----
+copyToClipboard::{section-k8s}-curl-loop[]

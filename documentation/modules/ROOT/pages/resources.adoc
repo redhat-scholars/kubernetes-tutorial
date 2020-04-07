@@ -1,29 +1,39 @@
-== Resources
+= Resources
 
-Make sure you are in the correct namespace
+Make sure you are in the correct namespace:
 
-----
-kubectl config set-context --current --namespace=myspace
-----
+:section-k8s: resource
+:set-namespace: myspace
 
-Make sure nothing is running in your namespace
+include::partial$set-context.adoc[]
 
+Make sure nothing is running in your namespace:
+
+[#no-resources-resource]
+[source, bash]
 ----
 kubectl get all
+----
+copyToClipboard::no-resources-resource[]
+
+----
 No resources found in myspace namespace.
 ----
 
-First deploy an application without any Requests nor Limits
+First deploy an application without any Requests nor Limits:
 
+[#no-limits-resource]
+[source, bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment.yml
 ----
+copyToClipboard::no-limits-resource[]
 
-Describe the pod
-----
-PODNAME=$(kubectl get pod  -l app=myboot -o name)
-kubectl describe pod $PODNAME
-----
+Describe the pod:
+
+:section-k8s: resource
+:label-describe: app=myboot
+include::partial$describe.adoc[]
 
 There are not resource limits configured for the pod.
 
@@ -91,27 +101,46 @@ Events:
   Normal  Started    12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Started container myboot
 ----
 
-Delete that deployment
+Delete that deployment:
 
+[#delete-deployment-resource]
+[source, bash]
 ----
 kubectl delete deployment myboot
 ----
+copyToClipboard::delete-deployment-resource[]
 
-Create a new deployment with resource requests
+Create a new deployment with resource requests:
 
+[#limits-resource]
+[source, bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment-resources.yml
 ----
+copyToClipboard::limits-resource[]
 
+And check the status of the Pod:
+
+[#limits-get-pod-resource]
+[source, bash]
 ----
 kubectl get pods
+----
+copyToClipboard::limits-get-pod-resource[]
+
+----
 NAME                      READY   STATUS    RESTARTS   AGE
 myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s
 ----
 
+If you want to get more information of the error:
+
+[#get-events-resource]
+[source, bash]
 ----
 kubectl get events --sort-by=.metadata.creationTimestamp
 ----
+copyToClipboard::get-events-resource[]
 
 ----
 <unknown>   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.
@@ -122,80 +151,75 @@ The "resource requests" of the pod specification require that at least one worke
 
 You can also use `kubectl describe` on the pod to find more informatoin about the failure.
 
-----
-PODNAME=$(kubectl get pod  -l app=myboot -o name)
-kubectl describe $PODNAME
-----
+:section-k8s: resource-limit
+:label-describe: app=myboot
+include::partial$describe.adoc[]
 
-Delete the deployment
+Delete the deployment:
+
+[#delete-deployment-limit-resource]
+[source, bash]
 ----
 kubectl delete -f apps/kubefiles/myboot-deployment-resources.yml
 ----
+copyToClipboard::delete-deployment-limit-resource[]
 
-Create a new deployment with a more sane resource request and a hard limit
+Create a new deployment with a more sane resource request and a hard limit:
 
+[#apply-deployment-sane-limit-resource]
+[source, bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
 ----
+copyToClipboard::apply-deployment-sane-limit-resource[]
 
-Describe the pod
-----
-PODNAME=$(kubectl get pod  -l app=myboot -o name)
-kubectl describe $PODNAME
-----
+Describe the Pod:
 
-Deploy the service
+:section-k8s: resource-soft-limit
+:label-describe: app=myboot
+include::partial$describe.adoc[]
+
+Deploy the service:
+
+[#apply-service-sane-limit-resource]
+[source, bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-service.yml
 ----
+copyToClipboard::apply-service-sane-limit-resource[]
 
-and watch your pods
-----
-watch kubectl get pods
-----
+And watch your Pods:
+
+include::partial$watching-pods.adoc[]
 
 In another Terminal, loop and curl that service
 
-OpenShift:
-[#openshift-ip-port]
-[source,bash,subs="+macros,+attributes"]
-----
-IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")
-----
-copyToClipboard::openshift-ip-port[]
+:section-k8s: resource-soft-limit
+:service-exposed: myboot
+include::partial$env-curl.adoc[]
 
-Minikube:
-[#minikube-ip-port]
-[source,bash,subs="+macros,+attributes"]
-----
-IP=$(minikube ip)
-PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")
-----
-copyToClipboard::minikube-ip-port[]
+Execute in loop:
 
-[#curl-loop]
-[source,bash,subs="+macros,+attributes"]
-----
-while true
-do curl $IP:$PORT
-sleep .3
-done
-----
-copyToClipboard::curl-loop[]
+include::partial$loop.adoc[]
 
 In yet another terminal window, curl the /sysresources endpoint
 
+[#sysresources-sane-limit-resource]
+[source, bash]
 ----
- curl $IP:$PORT/sysresources
+curl $IP:$PORT/sysresources
 ----
+copyToClipboard::sysresources-sane-limit-resource[]
 
-Note: the reported memory vs what was set in the resource limits
+NOTE: The reported memory vs what was set in the resource limits
 
+[#podresources-sane-limit-resource]
+[source, bash]
 ----
-PODNAME=$(kubectl get pod  -l app=myboot -o name)
+PODNAME=$(kubectl get pod -l app=myboot -o name)
 kubectl get $PODNAME -o json | jq ".spec.containers[0].resources"
 ----
+copyToClipboard::podresources-sane-limit-resource[]
 
 ----
 {
@@ -210,36 +234,46 @@ kubectl get $PODNAME -o json | jq ".spec.containers[0].resources"
 }
 ----
 
-Curl the /consume endpoint
+Then `curl` the `/consume` endpoint:
 
+[#consume-sane-limit-resource]
+[source, bash]
 ----
 curl $IP:$PORT/consume
+----
+copyToClipboard::consume-sane-limit-resource[]
+
+----
 curl: (52) Empty reply from server
 ----
 
-And you should notice that your loop also fails
+And you should notice that your loop also fails:
 
 ----
 Aloha from Spring Boot! 1120 on myboot-d78fb6d58-69kl7
 curl: (56) Recv failure: Connection reset by peer
 ----
 
-Describe the pod
-----
-kubectl describe $PODNAME
-----
+Describe the Pod to see the error:
 
-and look for
+:section-k8s: resource-soft-limit-fail
+:label-describe: app=myboot
+include::partial$describe.adoc[]
+
+And look for the following part:
 
 ----
-    Last State:     Terminated
+   Last State:     Terminated
       Reason:       OOMKilled
       Exit Code:    137
-----      
+----
 
+[#terminated-pod-resource]
+[source, bash]
 ----
 kubectl get $PODNAME -o json | jq ".status.containerStatuses[0].lastState.terminated"
 ----
+copyToClipboard::terminated-pod-resource[]
 
 ----
 {
@@ -251,15 +285,11 @@ kubectl get $PODNAME -o json | jq ".status.containerStatuses[0].lastState.termin
 }
 ----
 
-You might even see the STATUS column of the `watch kubectl get pods` reflect the OOMKilled
+You might even see the STATUS column of the `watch kubectl get pods` reflect the OOMKilled:
 
 ----
 NAME                     READY   STATUS      RESTARTS   AGE
 myboot-d78fb6d58-69kl7   0/1     OOMKilled   1          30m
 ----
 
-And you will notice that the RESTARTS column increments with each crash of the Spring Boot pod.
-
-
-
-
+And you will notice that the RESTARTS column increments with each crash of the Spring Boot Pod.

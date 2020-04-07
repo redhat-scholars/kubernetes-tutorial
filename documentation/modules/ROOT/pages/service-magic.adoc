@@ -1,6 +1,7 @@
-== Service Magic
+= Service Magic
 
-Create a Namespace 
+Create a Namespace:
+
 [#create-namespace]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -9,7 +10,8 @@ kubectl config set-context --current --namespace=funstuff
 ----
 copyToClipboard::create-namespace[]
 
-=== Deploy mypython
+== Deploy mypython
+
 [#deploy-mypython]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -37,7 +39,8 @@ EOF
 ----
 copyToClipboard::deploy-mypython[]
 
-=== Deploy mygo
+== Deploy mygo
+
 [#deploy-mygo]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -65,7 +68,8 @@ EOF
 ----
 copyToClipboard::deploy-mygo[]
 
-=== Deploy mynode
+== Deploy mynode
+
 [#deploy-mynode]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -93,12 +97,14 @@ EOF
 ----
 copyToClipboard::deploy-mynode[]
 
+[#labels-service-magic]
+[source, bash]
 ----
 watch kubectl get pods --show-labels
 ----
+copyToClipboard::labels-service-magic[]
 
 ----
-kubectl get pods --show-labels
 NAME                                   READY   STATUS    RESTARTS   AGE     LABELS
 mygo-deployment-6d944c5c69-kcvmk       1/1     Running   0          2m11s   app=mygo,pod-template-hash=6d944c5c69
 mynode-deployment-fb5457c5-hhz7h       1/1     Running   0          2m1s    app=mynode,pod-template-hash=fb5457c5
@@ -126,13 +132,21 @@ EOF
 ----
 copyToClipboard::deploy-myservice[]
 
-
+[#describe-myservice-service-magic]
+[source,bash,subs="+macros,+attributes"]
 ----
 kubectl describe service my-service
 ----
+copyToClipboard::describe-myservice-service-magic[]
 
+[#get-endpoints-myservice]
+[source,bash,subs="+macros,+attributes"]
 ----
 kubectl get endpoints
+----
+copyToClipboard::get-endpoints-myservice[]
+
+----
 NAME         ENDPOINTS   AGE
 my-service   <none>      2m6s
 ----
@@ -145,36 +159,13 @@ jq: error (at <stdin>:18): Cannot iterate over null (null)
 ----
 copyToClipboard::get-endpoints1[]
 
-Curl Loop
-OpenShift:
-[#openshift-ip-port]
-[source,bash,subs="+macros,+attributes"]
-----
-IP=$(kubectl get service my-service -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-PORT=$(kubectl get service my-service -o jsonpath="{.spec.ports[*].port}")
-----
-copyToClipboard::openshift-ip-port[]
+:section-k8s: servicemagic
+:service-exposed: myboot
+include::partial$env-curl.adoc[]
 
-OR
+And run loop script:
 
-Minikube:
-[#minikube-ip-port]
-[source,bash,subs="+macros,+attributes"]
-----
-IP=$(minikube ip)
-PORT=$(kubectl get service/my-service -o jsonpath="{.spec.ports[*].nodePort}")
-----
-copyToClipboard::minikube-ip-port[]
-
-[#curl-loop]
-[source,bash,subs="+macros,+attributes"]
-----
-while true
-do curl $IP:$PORT
-sleep .3
-done
-----
-copyToClipboard::curl-loop[]
+include::partial$loop.adoc[]
 
 ----
 curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
@@ -240,7 +231,8 @@ copyToClipboard::get-endpoints2[]
 "10.130.2.45"
 ----
 
-See the Pod IPs
+See the Pod IPs:
+
 [#pod-ips]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -248,14 +240,14 @@ kubectl get pods -o wide
 ----
 copyToClipboard::pod-ips[]
 
-Remove mypython pod from the Service
+Remove `mypython` Pod from the Service:
+
 [#remove-label]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl label pod -l app=mypython inservice-
 ----
 copyToClipboard::remove-label[]
-
 
 [#get-endpoints3]
 [source,bash,subs="+macros,+attributes"]
@@ -269,12 +261,11 @@ copyToClipboard::get-endpoints3[]
 "10.130.2.45"
 ----
 
-Clean Up
+== Clean Up
+
 [#clean-up]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete namespace funstuff
 ----
 copyToClipboard::clean-up[]
-
-
