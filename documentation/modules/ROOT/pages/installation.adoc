@@ -111,7 +111,7 @@ export KUBE_EDITOR="code -w"
 [#start-minikube]
 === Start Minikube
 
-There are series of commands as steps that allows you get started with minikube. The following section shows how to start minikube with minimal and required configurtions:
+There are series of commands as steps that allows you get started with minikube. The following section shows how to start minikube with minimal and required configurations:
 
 [#minikube-set-cpu]
 [source,bash,subs="+macros,+attributes"]
