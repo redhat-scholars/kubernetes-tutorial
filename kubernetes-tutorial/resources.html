@@ -177,7 +177,7 @@
 <div id="resource-kubectl-describe-services" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot -o name)
-kubectl describe pod $PODNAME</code></pre>
+kubectl describe $PODNAME</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#resource-kubectl-describe-services"><i class="fa fa-clipboard"></i></button><br/>
@@ -306,7 +306,7 @@ myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s</pre>
 <div id="resource-limit-kubectl-describe-services" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot -o name)
-kubectl describe pod $PODNAME</code></pre>
+kubectl describe $PODNAME</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#resource-limit-kubectl-describe-services"><i class="fa fa-clipboard"></i></button><br/>
@@ -334,7 +334,7 @@ kubectl describe pod $PODNAME</code></pre>
 <div id="resource-soft-limit-kubectl-describe-services" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot -o name)
-kubectl describe pod $PODNAME</code></pre>
+kubectl describe $PODNAME</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#resource-soft-limit-kubectl-describe-services"><i class="fa fa-clipboard"></i></button><br/>
@@ -486,7 +486,7 @@ curl: (56) Recv failure: Connection reset by peer</pre>
 <div id="resource-soft-limit-fail-kubectl-describe-services" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot -o name)
-kubectl describe pod $PODNAME</code></pre>
+kubectl describe $PODNAME</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#resource-soft-limit-fail-kubectl-describe-services"><i class="fa fa-clipboard"></i></button><br/>
