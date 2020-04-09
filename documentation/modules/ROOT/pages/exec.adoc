@@ -1,4 +1,4 @@
-= kubectl exec
+= Kubectl exec
 
 The exec command allows you to "shell into" your pod and execute commands inside of that tiny linux machine that is running your application. 
 
@@ -10,25 +10,40 @@ kubectl exec {podname} /somecommand
 
 In this section, we will be debugging an OOMKilled that is often seen when running Java inside of a container, inside of Kubernetes.
 
-Make sure the Spring Boot pod from the Resources chapter is still running
+Make sure the Spring Boot pod from the Resources chapter is still running:
+
+[#get-pods-exec]
+[source, bash]
 ----
 kubectl get pods
 ----
+copyToClipboard::get-pods-exec[]
 
 ----
 NAME                     READY   STATUS    RESTARTS   AGE
 myboot-d78fb6d58-69kl7   1/1     Running   2          32m
 ----
 
-Exec into that running pod
+Then let's move inside the container by running `exec` into that running Pod:
 
+[#exec-pod-exec]
+[source, bash]
 ----
 PODNAME=$(kubectl get pod  -l app=myboot -o name)
 kubectl exec -it $PODNAME /bin/bash
 ----
+copyToClipboard::exec-pod-exec[]
 
+Run `ps` command to see the current running processes:
+
+[#exec-ps-exec]
+[source, bash]
 ----
 ps -ef
+----
+copyToClipboard::exec-ps-exec[]
+
+----
 UID          PID    PPID  C STIME TTY          TIME CMD
 1000610+       1       0  0 19:20 ?        00:00:00 /bin/sh -c java -XX:+PrintFlagsFinal -XX:+PrintGCDetails $JAVA
 1000610+       7       1  2 19:20 ?        00:00:14 java -XX:+PrintFlagsFinal -XX:+PrintGCDetails -jar boot-demo-0
@@ -36,8 +51,16 @@ UID          PID    PPID  C STIME TTY          TIME CMD
 1000610+      49      43  0 19:29 pts/0    00:00:00 ps -ef
 ----
 
+Execute a `top` to get an overview of the memory:
+
+[#exec-top-exec]
+[source, bash]
 ----
 top
+----
+copyToClipboard::exec-top-exec[]
+
+----
 top - 19:29:34 up 2 days,  7:02,  0 users,  load average: 0.16, 0.13, 0.14
 Tasks:   4 total,   1 running,   3 sleeping,   0 stopped,   0 zombie
 %Cpu(s):  2.8 us,  3.4 sy,  0.0 ni, 93.1 id,  0.1 wa,  0.3 hi,  0.3 si,  0.0 st
@@ -51,8 +74,16 @@ KiB Swap:        0 total,        0 free,        0 used. 13142476 avail Mem
      50 1000610+  20   0   42672   3516   3080 R   0.0  0.0   0:00.00 top
 ----
 
+Get the distro:
+
+[#exec-cat-release-exec]
+[source, bash]
 ----
 cat /etc/os-release
+----
+copyToClipboard::exec-cat-release-exec[]
+
+----
 PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
 NAME="Debian GNU/Linux"
 VERSION_ID="9"
@@ -63,42 +94,67 @@ SUPPORT_URL="https://www.debian.org/support"
 BUG_REPORT_URL="https://bugs.debian.org/"
 ----
 
+Check the free memory:
+
+[#exec-free-exec]
+[source, bash]
 ----
 free -h
+----
+copyToClipboard::exec-free-exec[]
+
+----
               total        used        free      shared  buff/cache   available
 Mem:            14G        2.2G        6.1G         17M        6.4G         12G
 Swap:            0B          0B          0B
 ----
 
-And now you might see part of the problem. "free" is not cgroups aware, it thinks it has access to the whole VMs memory.
+And now you might see part of the problem. "free" is not `cgroups` aware, it thinks it has access to the whole VMs memory.
 
-No wonder the JVM reports a larger than accurate Max memory
+No wonder the JVM reports a larger than accurate Max memory:
 
+[#curl-sysresources-exec]
+[source, bash]
 ----
 curl localhost:8080/sysresources
+----
+copyToClipboard::curl-sysresources-exec[]
+
+----
 Memory: 1324 Cores: 4
----- 
+----
 
-Note: If using Minikube, the cores are the core count provided by
+[NOTE]
+==== 
+If using Minikube, the cores are the core count provided by
 
-minikube --profile devnation config set cpus 4
+`minikube --profile devnation config set cpus 4`
 
 and the memory is a subset of the memory provided by
 
-minikube --profile devnation config set memory 6144
+`minikube --profile devnation config set memory 6144`
+====
 
-Check your Java version
+Check your Java version:
+
+[#java-version-181-exec]
+[source, bash]
 ----
 java -version
 openjdk version "1.8.0_181"
 OpenJDK Runtime Environment (build 1.8.0_181-8u181-b13-2~deb9u1-b13)
 OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)
 ----
+copyToClipboard::java-version-181-exec[]
 
-Ask the JVM about its resource availability
+Ask the JVM about its resource availability:
+
+[#java-version-181-settings-exec]
+[source, bash]
 ----
 java -XshowSettings:vm -version
 ----
+copyToClipboard::java-version-181-settings-exec[]
 
 ----
 VM settings:
@@ -111,22 +167,31 @@ OpenJDK Runtime Environment (build 1.8.0_181-8u181-b13-2~deb9u1-b13)
 OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)
 ----
 
-Now check the actual cgroups settings
+Now check the actual `cgroups` settings:
+
+[#cat-cgroup-exec]
+[source, bash]
 ----
 cd /sys/fs/cgroup/memory/
 cat memory.limit_in_bytes
 ----
+copyToClipboard::cat-cgroup-exec[]
+
 ----
 419430400
 ----
 
-And if you divide that 419430400 by 1024 and 1024, you end up with the 400 that was specified in the deployment yaml
+And if you divide that 419430400 by 1024 and 1024, you end up with the 400 that was specified in the deployment YAML.
 
 If you have a JVM of 1.8.0_131 or higher then you can try the experimental options
 
+[#java-version-131-settings-exec]
+[source, bash]
 ----
 java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XshowSettings:vm -version
 ----
+copyToClipboard::java-version-131-settings-exec[]
+
 ----
 VM settings:
     Max. Heap Size (Estimated): 112.00M
@@ -138,12 +203,14 @@ OpenJDK Runtime Environment (build 1.8.0_181-8u181-b13-2~deb9u1-b13)
 OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)
 ----
 
-To leave this pod, simply type "exit" and hit enter
+To leave this pod, simply type `exit` and hit enter:
+
 ----
 exit
 ----
 
-Clean up
+== Clean Up
+
 ----
 kubectl delete deployment myboot
 kubectl delete service myboot

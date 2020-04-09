@@ -4,85 +4,93 @@ https://martinfowler.com/bliki/BlueGreenDeployment.html[Description of Blue/Gree
 
 Make sure you are in the correct namespace
 
-----
-kubectl config set-context --current --namespace=myspace
-----
+:section-k8s: bluegreen
+:set-namespace: myspace
 
-Make sure nothing else is deployed
+include::partial$set-context.adoc[]
+
+
+Make sure nothing else is deployed:
+
+[#no-resources-blue-green]
+[source, bash]
 ----
 kubectl get all
+----
+copyToClipboard::no-resources-blue-green[]
+
+----
 No resources found in myspace namespace.
 ----
 
-Deploy V1 of myboot
+Deploy V1 of `myboot`:
+
+[#deploy-v1-blue-green]
+[source, bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
 ----
+copyToClipboard::deploy-v1-blue-green[]
 
-Scale to 2 replicas 
+Scale to 2 replicas:
+
+[#scale-v1-blue-green]
+[source, bash]
 ----
 kubectl scale deployment/myboot --replicas=2
 ----
+copyToClipboard::scale-v1-blue-green[]
 
-Watch and show-labels
+Watch and `show-labels`:
+
+[#labels-v1-blue-green]
+[source, bash]
 ----
 watch kubectl get pods --show-labels
 ----
+copyToClipboard::labels-v1-blue-green[]
 
-Deploy the service
+Deploy the service:
+
+[#deploy-service-blue-green]
+[source, bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-service.yml
 ----
+copyToClipboard::deploy-service-blue-green[]
 
-Curl Loop
-OpenShift:
-[#openshift-ip-port]
-[source,bash,subs="+macros,+attributes"]
-----
-IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")
-----
-copyToClipboard::openshift-ip-port[]
+:section-k8s: bluegreen
+:service-exposed: myboot
+include::partial$env-curl.adoc[]
 
-OR
+And run loop script:
 
-Minikube:
-[#minikube-ip-port]
-[source,bash,subs="+macros,+attributes"]
-----
-IP=$(minikube ip)
-PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")
-----
-copyToClipboard::minikube-ip-port[]
+include::partial$loop.adoc[]
 
-[#curl-loop]
-[source,bash,subs="+macros,+attributes"]
-----
-while true
-do curl $IP:$PORT
-sleep .3
-done
-----
-copyToClipboard::curl-loop[]
+Deploy V2 of `myboot`:
 
-
-
-Deploy V2 of myboot
+[#deploy-v2-blue-green]
+[source, bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits-v2.yml
 ----
+copyToClipboard::deploy-v2-blue-green[]
 
-Verify that the new pod/deployment carries the new code
+Verify that the new pod/deployment carries the new code:
+
+[#exec-v2-blue-green]
+[source, bash]
 ----
 PODNAME=$(kubectl get pod -l app=myboot-next -o name)
 kubectl exec -it $PODNAME -- curl localhost:8080
 ----
+copyToClipboard::exec-v2-blue-green[]
 
 ----
 Bonjour from Spring Boot! 1 on myboot-next-66b68c6659-ftcjr
 ----
 
-Now update the single Service to point to the new pod and go GREEN
+Now update the single Service to point to the new pod and go GREEN:
 
 [#patch-service-green]
 [source,bash,subs="+macros,+attributes"]
@@ -98,9 +106,9 @@ Bonjour from Spring Boot! 3 on myboot-next-66b68c6659-ftcjr
 Bonjour from Spring Boot! 4 on myboot-next-66b68c6659-ftcjr
 ----
 
-Determine that you prefer Hawaiian (blue) to French (green) and fallback
+Determine that you prefer Hawaiian (blue) to French (green) and fallback:
 
-Now update the single Service to point to the new pod and go GREEN
+Now update the single Service to point to the new pod and go BLUE:
 
 [#patch-service-blue]
 [source,bash,subs="+macros,+attributes"]
@@ -115,7 +123,7 @@ Aloha from Spring Boot! 257 on myboot-d78fb6d58-vqvlb
 Aloha from Spring Boot! 258 on myboot-d78fb6d58-vqvlb
 ----
 
-Clean Up
+== Clean Up
 
 [#clean]
 [source,bash,subs="+macros,+attributes"]

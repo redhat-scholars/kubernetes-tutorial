@@ -1,0 +1,7 @@
+[#{section-k8s}-kubectl-describe-services]
+[source,bash,subs="+macros,+attributes"]
+----
+PODNAME=$(kubectl get pod -l {label-describe} -o name)
+kubectl describe pod $PODNAME
+----
+copyToClipboard::{section-k8s}-kubectl-describe-services[]

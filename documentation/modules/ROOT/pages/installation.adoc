@@ -1,8 +1,8 @@
 = Installation & Setup
 include::_attributes.adoc[]
 
-[[tutorial-all-local]]
-=== CLI tools
+[#tutorial-all-local]
+== CLI tools
 
 The following CLI tools are required for running the exercises in this tutorial. Please have them installed and configured before you get started with any of the tutorial chapters.
 
@@ -49,7 +49,6 @@ The following CLI tools are required for running the exercises in this tutorial.
 | `brew install kubectx`
 | https://github.com/ahmetb/kubectx
 |
-
 |===
 
 [#download-tutorial-sources]
@@ -75,7 +74,6 @@ This tutorial was developed and tested with:
 - OpenShift `{openshift-version}`
 ====
 
-
 [#download-minikube-kubectl]
 [source,bash,subs="attributes+,+macros"]
 ----
@@ -91,9 +89,7 @@ chmod +x minikube
 curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl
 
 chmod +x kubectl
-
 ----
-
 
 [#env-path]
 === Env and PATH
@@ -163,12 +159,9 @@ copyToClipboard::minikube-stick-profile[]
 You could also use the `minikube profile list` command to list the available profiles
 ====
 
-
-[[openshift]]
+[#openshift]
 === OpenShift Installation 
 
 https://www.openshift.com/try
 
 Once you have an OpenShift cluster, setup your KUBECONFIG correctly and then use `oc login`.  The rest of the `kubectl` commands will simply work.
-
-

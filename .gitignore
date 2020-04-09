@@ -14,4 +14,12 @@ node_modules
 .settings
 .kube
 .minikube
+.DS_Store
+.vscode
+firebase*
+yarn*
+package*
+node_modules
+.firebaserc
+.firebase
 

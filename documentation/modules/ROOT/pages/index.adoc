@@ -2,19 +2,26 @@
 :page-layout: home
 :!sectids:
 
-
 [.tiles.browse]
-== Kubernetes Tutorial
+== Get started with your Kubernetes journey
 
 [.tile]
-* xref:kubernetes-tutorial:ROOT:installation.adoc[Install]
-* xref:kubernetes-tutorial:ROOT:kubectl.adoc[kubectl]
-* xref:kubernetes-tutorial:ROOT:pod-rs-deployment.adoc[Pod, ReplicaSet, Deployment]
-* xref:kubernetes-tutorial:ROOT:service.adoc[Service]
-* xref:kubernetes-tutorial:ROOT:logs.adoc[logs]
-* xref:kubernetes-tutorial:ROOT:resources.adoc[Resources/Limits]
-* xref:kubernetes-tutorial:ROOT:exec.adoc[exec]
+.xref:installation.adoc[Installation & Setup]
+* xref:installation.adoc#tutorial-all-local[Requirements]
+* xref:installation.adoc#download-tutorial-sources[Installation & Setup]
+
+[.tile]
+.xref:kubectl.adoc[Basics]
+* xref:kubectl.adoc[Kubectl]
+* xref:pod-rs-deployment.adoc[Pod, ReplicaSet, Deployment]
+* xref:service.adoc[Service]
+* xref:logs.adoc[Logs]
+* xref:resources.adoc[Resources/Limits]
+* xref:exec.adoc[Exec]
 * xref:kubernetes-tutorial:ROOT:rolling-updates.adoc[Rolling updates]
+
+[.tile]
+.xref:kubernetes-tutorial:ROOT:rolling-updates.adoc[Advanced]
 * xref:kubernetes-tutorial:ROOT:building-images.adoc[Building Images]
 * xref:kubernetes-tutorial:ROOT:live-ready.adoc[Live & Ready]
 * xref:kubernetes-tutorial:ROOT:service-magic.adoc[Service Magic]

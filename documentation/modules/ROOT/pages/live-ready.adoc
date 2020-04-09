@@ -1,18 +1,26 @@
-== Live & Ready
+= Live & Ready
 
 Make sure you are in the correct namespace
 
-----
-kubectl config set-context --current --namespace=myspace
-----
+:section-k8s: liveready
+:set-namespace: myspace
 
-Make sure nothing else is deployed
+include::partial$set-context.adoc[]
+
+Make sure nothing else is deployed:
+
+[#no-resources-live-ready]
+[source, bash]
 ----
 kubectl get all
+----
+copyToClipboard::no-resources-live-ready[]
+
+----
 No resources found in myspace namespace.
 ----
 
-Deploy an application with the Live and Ready probe set
+Deploy an application with the Live and Ready probe set:
 
 [#create-app-live-ready]
 [source,bash,subs="+macros,+attributes"]
@@ -64,10 +72,14 @@ EOF
 copyToClipboard::create-app-live-ready[]
 
 
-Describe the deployment
+Describe the deployment:
+
+:describe-deployment-name: myboot
+:section-k8s: live-ready
+
+include::partial$describe-deployment.adoc[]
 
 ----
-kubectl describe deployment myboot
 ...
     Image:      quay.io/burrsutter/myboot:v1
     Port:       8080/TCP
@@ -83,48 +95,34 @@ kubectl describe deployment myboot
 ...    
 ----
 
-Deploy a Service
+Deploy a Service:
+
+[#deploy-service-live-ready]
+[source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-service.yml
 ----
+copyToClipboard::deploy-service-live-ready[]
 
-Start a poller
-OpenShift:
-[#openshift-ip-port]
+:section-k8s: liveready
+:service-exposed: myboot
+include::partial$env-curl.adoc[]
+
+And run loop script:
+
+include::partial$loop.adoc[]
+
+Change the image:
+
+[#change-deployment-v2-live-ready]
 [source,bash,subs="+macros,+attributes"]
-----
-IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")
-----
-copyToClipboard::openshift-ip-port[]
-
-OR
-
-Minikube:
-[#minikube-ip-port]
-[source,bash,subs="+macros,+attributes"]
-----
-IP=$(minikube ip)
-PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")
-----
-copyToClipboard::minikube-ip-port[]
-
-[#curl-loop]
-[source,bash,subs="+macros,+attributes"]
-----
-while true
-do curl $IP:$PORT
-sleep .3
-done
-----
-copyToClipboard::curl-loop[]
-
-Change the image
 ----
 kubectl set image deployment/myboot myboot=quay.io/burrsutter/myboot:v2
 ----
+copyToClipboard::change-deployment-v2-live-ready[]
 
-and notice the error free rolling update:
+And notice the error free rolling update:
+
 ----
 Aloha from Spring Boot! 131 on myboot-845968c6ff-k4rvb
 Aloha from Spring Boot! 134 on myboot-845968c6ff-9wvt9
@@ -137,7 +135,7 @@ Aloha from Spring Boot! 137 on myboot-845968c6ff-9wvt9
 Bonjour from Spring Boot! 3 on myboot-8449d5468d-m88z4
 ----
 
-Look at the Endpoints to see which pods are part of the Service
+Look at the Endpoints to see which pods are part of the Service:
 
 [#get-endpoints-before]
 [source,bash,subs="+macros,+attributes"]
@@ -146,21 +144,29 @@ kubectl get endpoints myboot -o json | jq '.subsets[].addresses[].ip'
 ----
 copyToClipboard::get-endpoints-before[]
 
-These are the Pod IPs that have passed their readiness probe
+These are the Pod IPs that have passed their readiness probe:
+
 ----
 "10.129.2.40"
 "10.130.2.37"
 "10.130.2.38"
 ----
 
-Exec into a single pod and change its readiness flag
+== Readiness Probe
+
+Exec into a single Pod and change its readiness flag:
+
+[#misbehave-app-live-ready]
+[source,bash,subs="+macros,+attributes"]
 ----
 kubectl exec -it myboot-845968c6ff-k5lcb /bin/bash
 curl localhost:8080/misbehave
 exit
 ----
+copyToClipboard::misbehave-app-live-ready[]
 
-See that the pod is no longer Ready
+See that the pod is no longer Ready:
+
 ----
 NAME                      READY   STATUS    RESTARTS   AGE
 myboot-845968c6ff-9wshg   1/1     Running   0          11m
@@ -168,7 +174,8 @@ myboot-845968c6ff-k5lcb   0/1     Running   0          12m
 myboot-845968c6ff-zsgx2   1/1     Running   0          11m
 ----
 
-Now check the Endpoints
+Now check the Endpoints:
+
 [#get-endpoints-after]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -176,26 +183,32 @@ kubectl get endpoints myboot -o json | jq '.subsets[].addresses[].ip'
 ----
 copyToClipboard::get-endpoints-after[]
 
-And that pod is now missing from the Service's loadbalancer
+And that pod is now missing from the Service's loadbalancer:
+
 ----
 "10.130.2.37"
 "10.130.2.38"
 ----
 
-Which is also self-evident in the curl loop
+Which is also self-evident in the curl loop:
+
 ----
 Aloha from Spring Boot! 845 on myboot-845968c6ff-9wshg
 Aloha from Spring Boot! 604 on myboot-845968c6ff-zsgx2
 Aloha from Spring Boot! 846 on myboot-845968c6ff-9wshg
 ----
 
-Testing the Liveness Probe
+== Liveness Probe
 
+[#change-deployment-v3-live-ready]
+[source,bash,subs="+macros,+attributes"]
 ----
 kubectl set image deployment/myboot myboot=quay.io/burrsutter/myboot:v3
 ----
+copyToClipboard::change-deployment-v3-live-ready[]
 
-Let the rollout finish to completion across all 3 replicas
+Let the rollout finish to completion across all 3 replicas:
+
 ----
 watch kubectl get pods
 NAME                      READY   STATUS    RESTARTS   AGE
@@ -204,18 +217,28 @@ myboot-56659c9d69-mdllq   1/1     Running   0          97s
 myboot-56659c9d69-zjt6q   1/1     Running   0          72s
 ----
 
-and as seen in the curl loop/poller
+And as seen in the curl loop/poller:
+
 ----
 Jambo from Spring Boot! 40 on myboot-56659c9d69-mdllq
 Jambo from Spring Boot! 26 on myboot-56659c9d69-zjt6q
 Jambo from Spring Boot! 71 on myboot-56659c9d69-6sglj
 ----
 
-Edit the Deployment to point to the /alive URL
+Edit the Deployment to point to the /alive URL:
+
+[#change-liveness-v3-live-ready]
+[source,bash,subs="+macros,+attributes"]
 ----
 export KUBE_EDITOR="code -w"
 
 kubectl edit deployment myboot
+----
+copyToClipboard::change-liveness-v3-live-ready[]
+
+And chnage the liveness probe:
+
+----
 ...
     spec:
       containers:
@@ -245,13 +268,18 @@ myboot-558b4f8678-qbrgc   1/1     Running       0          81s
 myboot-558b4f8678-z7f9n   1/1     Running       0          36s
 ----
 
-Now pick one of the pods, exec into it and shoot it
+Now pick one of the pods, `exec` into it and shoot it:
+
+[#shot-v3-live-ready]
+[source,bash,subs="+macros,+attributes"]
 ----
 kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
 curl localhost:8080/shot
 ----
+copyToClipboard::shot-v3-live-ready[]
 
-And you will see it get restarted
+And you will see it get restarted:
+
 ----
 NAME                      READY   STATUS    RESTARTS   AGE
 myboot-558b4f8678-nw762   1/1     Running   0          4m7s
@@ -259,14 +287,16 @@ myboot-558b4f8678-qbrgc   1/1     Running   1          4m29s
 myboot-558b4f8678-z7f9n   1/1     Running   0          3m44s
 ----
 
-Plus, your exec will be terminated
+Plus, your exec will be terminated:
+
 ----
- kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
+kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
 1000610000@myboot-558b4f8678-qbrgc:/app$ curl localhost:8080/shot
 I have been shot in the head1000610000@myboot-558b4f8678-qbrgc:/app$ command terminated with exit code 137
 ----
 
-And your end-users will not see any errors
+And your end-users will not see any errors:
+
 ----
 Jambo from Spring Boot! 174 on myboot-558b4f8678-z7f9n
 Jambo from Spring Boot! 11 on myboot-558b4f8678-qbrgc
@@ -277,8 +307,12 @@ Jambo from Spring Boot! 175 on myboot-558b4f8678-z7f9n
 Jambo from Spring Boot! 176 on myboot-558b4f8678-z7f9n
 ----
 
-Clean up
+== Clean up
+
+[#cleanup-live-ready]
+[source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete deployment myboot
 kubectl delete service myboot
 ----
+copyToClipboard::cleanup-live-ready[]

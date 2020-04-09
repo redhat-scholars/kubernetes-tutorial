@@ -1,0 +1,39 @@
+
+[tabs]
+====
+Hosted::
++
+--
+If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port `8080` or get it using `kubectl`:
+
+:tmp-service-exposed: {service-exposed}
+
+[#{section-k8s}-ip-port-openshift]
+[source,bash,subs="+macros,+attributes"]
+----
+IP=$(kubectl get service {tmp-service-exposed} -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+PORT=$(kubectl get service {tmp-service-exposed} -o jsonpath="{.spec.ports[*].port}")
+----
+copyToClipboard::{section-k8s}-ip-port-openshift[]
+--
+Minikube::
++
+--
+[#{section-k8s}-ip-port-minikube]
+[source,bash,subs="+macros,+attributes"]
+----
+IP=$(minikube ip)
+PORT=$(kubectl get service/{tmp-service-exposed} -o jsonpath="{.spec.ports[*].nodePort}")
+----
+copyToClipboard::{section-k8s}-ip-port-minikube[]
+--
+====
+
+Curl the Service:
+
+[#{section-k8s}-curl-the-service]
+[source,bash,subs="+macros,+attributes"]
+----
+curl $IP:$PORT
+----
+copyToClipboard::{section-k8s}-curl-the-service[]
