@@ -39,7 +39,7 @@
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="1">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="installation.html">Install</a>
+    <a class="nav-link" href="installation.html">1. Install</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="#tutorial-all-local">CLI</a>
@@ -59,46 +59,58 @@
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="kubectl.html">kubectl</a>
+    <button class="nav-toggle"></button>
+    <span class="nav-text">2. Basics</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kubectl.html">Kubectl</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="pod-rs-deployment.html">Pod, ReplicaSet, Deployment</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="service.html">Service</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="logs.html">logs</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logs.html">Logs</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="resources.html">Resources/Limits</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="exec.html">exec</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="exec.html">Exec</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
   </li>
+</ul>
+  </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <span class="nav-text">3. Advanced</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="building-images.html">Building Images</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="live-ready.html">Live &amp; Ready</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="service-magic.html">Service Magic</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="blue-green.html">Blue Green</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="configmap.html">ConfigMap</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="secrets.html">Secrets</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="crds.html">CRDs</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -120,14 +132,15 @@
   <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="index.html">Kubernetes Tutorial</a></li>
-    <li class="crumb"><a href="installation.html">Install</a></li>
+    <li class="crumb"><a href="installation.html">1. Install</a></li>
   </ul>
 </nav>
 </div>
 <article class="doc">
 <h1>Kubernetes Tutorial</h1>
-<div class="sect2">
-<h3 id="tutorial-all-local"><a class="anchor" href="#tutorial-all-local"></a>CLI tools</h3>
+<div class="sect1">
+<h2 id="tutorial-all-local"><a class="anchor" href="#tutorial-all-local"></a>CLI tools</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The following CLI tools are required for running the exercises in this tutorial. Please have them installed and configured before you get started with any of the tutorial chapters.</p>
 </div>
@@ -197,6 +210,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 <div class="sect1">
 <h2 id="download-tutorial-sources"><a class="anchor" href="#download-tutorial-sources"></a>Download Tutorial Sources</h2>

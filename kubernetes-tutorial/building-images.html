@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Untitled :: Kubernetes Tutorial</title>
+    <title>Kubernetes Tutorial :: Kubernetes Tutorial</title>
     <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/building-images.html">
     <meta name="generator" content="Antora 2.2.0">
     <link rel="stylesheet" href="../_/css/site.css">
@@ -39,7 +39,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="installation.html">Install</a>
+    <a class="nav-link" href="installation.html">1. Install</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="installation.html#tutorial-all-local">CLI</a>
@@ -59,46 +59,58 @@
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="kubectl.html">kubectl</a>
+    <button class="nav-toggle"></button>
+    <span class="nav-text">2. Basics</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kubectl.html">Kubectl</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="pod-rs-deployment.html">Pod, ReplicaSet, Deployment</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="service.html">Service</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="logs.html">logs</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logs.html">Logs</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="resources.html">Resources/Limits</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="exec.html">exec</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="exec.html">Exec</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <span class="nav-text">3. Advanced</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="building-images.html">Building Images</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="live-ready.html">Live &amp; Ready</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="service-magic.html">Service Magic</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="blue-green.html">Blue Green</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="configmap.html">ConfigMap</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="secrets.html">Secrets</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="crds.html">CRDs</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -120,25 +132,27 @@
   <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="index.html">Kubernetes Tutorial</a></li>
+    <li class="crumb">3. Advanced</li>
     <li class="crumb"><a href="building-images.html">Building Images</a></li>
   </ul>
 </nav>
 </div>
 <article class="doc">
-<div class="sect1">
-<h2 id="_building_images"><a class="anchor" href="#_building_images"></a>Building Images</h2>
+<h1>Kubernetes Tutorial</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Compile, build and test the Spring Boot Java project</p>
+<p>Compile, build and test the Spring Boot Java project:</p>
 </div>
-<div class="listingblock">
+<div id="build-building-images" class="listingblock">
 <div class="content">
-<pre>cd apps/helloworld/springboot
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd apps/helloworld/springboot
 mvn clean package
 java -jar target/boot-demo-1.0.0.jar
-curl localhost:8080</pre>
+curl localhost:8080</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#build-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Aloha from Spring Boot! 1 on unknown</pre>
@@ -147,17 +161,29 @@ curl localhost:8080</pre>
 <div class="paragraph">
 <p><code>unknown</code> because the environment variable is not currently set, it will be inside of a Docker container and inside of Kubernetes.</p>
 </div>
-<div class="paragraph">
-<p>Build the Docker Linux container image</p>
 </div>
-<div class="paragraph">
-<p>Note: change "quay.io" for your registry (e.g. <code>docker.io</code>) and "burrsutter" to your organization.  This next step does assume you have a working installation of Docker for Mac/Windows/Linux.</p>
 </div>
-<div class="listingblock">
+<div class="sect1">
+<h2 id="_build_docker_image"><a class="anchor" href="#_build_docker_image"></a>Build Docker Image</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+change "quay.io" for your registry (e.g. <code>docker.io</code>) and "burrsutter" to your organization.  This next step does assume you have a working installation of Docker for Mac/Windows/Linux.
+</td>
+</tr>
+</table>
+</div>
+<div id="build-container--building-images" class="listingblock">
 <div class="content">
-<pre>docker build -t quay.io/burrsutter/myboot:v1 .</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker build -t quay.io/burrsutter/myboot:v1 .</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#build-container--building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Results:</p>
 </div>
@@ -186,24 +212,40 @@ Successfully built 85b78b9b70b1
 Successfully tagged quay.io/burrsutter/myboot:v1</pre>
 </div>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_run_created_docker_image"><a class="anchor" href="#_run_created_docker_image"></a>Run Created Docker image</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Run and Test your newly created Docker container</p>
+<p>Run and Test your newly created Docker container:</p>
 </div>
+<div id="run-container-building-images" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -p 8080:8080 --name myboot quay.io/burrsutter/myboot:v1</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#run-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
+<div id="curl-container-building-images" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>docker run --rm -it -p 8080:8080 --name myboot quay.io/burrsutter/myboot:v1</pre>
+<pre>Aloha from Spring Boot! 1 on 76851270a3e7</pre>
 </div>
 </div>
+<div id="curl-sys-container-building-images" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/sysresources</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-sys-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>curl localhost:8080
-Aloha from Spring Boot! 1 on 76851270a3e7</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>curl localhost:8080/sysresources
-Memory: 1268 Cores: 3</pre>
+<pre>Memory: 1268 Cores: 3</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -211,17 +253,22 @@ Memory: 1268 Cores: 3</pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://www.screencast.com/users/BurrSutter/folders/Default/media/c904b1f1-fcdb-4798-9e1f-1f3307d98d57/embed" alt="Docker Settings">
+<img src="_images/docker-settings.png" alt="Docker Settings">
 </div>
 </div>
+<div id="curl-consume-container-building-images" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/consume</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-consume-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>curl localhost:8080/consume
-Allocated about 80% (1.2 GiB) of the max allowed JVM memory size (1.2 GiB)</pre>
+<pre>Allocated about 80% (1.2 GiB) of the max allowed JVM memory size (1.2 GiB)</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Stop &amp; remove the Docker container</p>
+<p>Stop &amp; remove the Docker container:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -231,74 +278,97 @@ Allocated about 80% (1.2 GiB) of the max allowed JVM memory size (1.2 GiB)</pre>
 <div class="paragraph">
 <p>Now, constrain the resources associated with this Linux container</p>
 </div>
+<div id="run-container-constrained-building-images" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/burrsutter/myboot:v1</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#run-container-constrained-building-images"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>Ask for the container&#8217;s resources:</p>
+</div>
+<div id="curl-sys-constrained-container-building-images" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/sysresources</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-sys-constrained-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/burrsutter/myboot:v1</pre>
+<pre>Memory: 1268 Cores: 3</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Ask for the container&#8217;s resources</p>
+<p>Crash it:</p>
 </div>
+<div id="curl-consume-crash-container-building-images" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/consume</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-consume-crash-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_fix_memory_problems"><a class="anchor" href="#_fix_memory_problems"></a>Fix Memory Problems</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To correct this behavior use a different Dockerfile:</p>
+</div>
+<div id="build-mem-container-building-images" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker build -t quay.io/burrsutter/myboot:v1 -f Dockerfile_Memory .</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#build-mem-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>Now docker run it:</p>
+</div>
+<div id="run-sys-constrained-fix-container-building-images" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/burrsutter/myboot:v1</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#run-sys-constrained-fix-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>And <code>curl</code> it:</p>
+</div>
+<div id="curl-sys-constrained-fix-container-building-images" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/sysresources</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-sys-constrained-fix-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>curl localhost:8080/sysresources
-Memory: 1268 Cores: 3</pre>
+<pre>Memory: 112 Cores: 3</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Crash it</p>
+<p>And try to crash it:</p>
 </div>
+<div id="curl-consume-fix-container-building-images" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/consume</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-consume-fix-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>curl localhost:8080/consume</pre>
+<pre>Allocated about 80% (98.0 MiB) of the max allowed JVM memory size (112.0 MiB)</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>To correct this behavior use a different Dockerfile</p>
+<p>Once you are happy with your container image, push it up to your favorite registry:</p>
 </div>
-<div class="listingblock">
+<div id="push-container-building-images" class="listingblock">
 <div class="content">
-<pre>docker build -t quay.io/burrsutter/myboot:v1 -f Dockerfile_Memory .</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Now docker run it</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/burrsutter/myboot:v1</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and curl it</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>curl localhost:8080/sysresources
-Memory: 112 Cores: 3</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and try to crash it</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>curl localhost:8080/consume
-Allocated about 80% (98.0 MiB) of the max allowed JVM memory size (112.0 MiB)</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Once you are happy with your container image, push it up to your favorite registry</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>docker login quay.io
-# docker login docker.io
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker login quay.io
 
-docker push quay.io/burrsutter/myboot:v1
-# docker push docker.io/burrsutter/myboot:v1</pre>
+docker push quay.io/burrsutter/myboot:v1</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#push-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>.

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Untitled :: Kubernetes Tutorial</title>
+    <title>Kubernetes Tutorial :: Kubernetes Tutorial</title>
     <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/logs.html">
     <meta name="generator" content="Antora 2.2.0">
     <link rel="stylesheet" href="../_/css/site.css">
@@ -39,7 +39,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="installation.html">Install</a>
+    <a class="nav-link" href="installation.html">1. Install</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="installation.html#tutorial-all-local">CLI</a>
@@ -59,46 +59,58 @@
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="kubectl.html">kubectl</a>
+    <button class="nav-toggle"></button>
+    <span class="nav-text">2. Basics</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kubectl.html">Kubectl</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="pod-rs-deployment.html">Pod, ReplicaSet, Deployment</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="service.html">Service</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="logs.html">logs</a>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="logs.html">Logs</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="resources.html">Resources/Limits</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="exec.html">exec</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="exec.html">Exec</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
   </li>
+</ul>
+  </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <span class="nav-text">3. Advanced</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="building-images.html">Building Images</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="live-ready.html">Live &amp; Ready</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="service-magic.html">Service Magic</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="blue-green.html">Blue Green</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="configmap.html">ConfigMap</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="secrets.html">Secrets</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="crds.html">CRDs</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -120,13 +132,14 @@
   <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="index.html">Kubernetes Tutorial</a></li>
-    <li class="crumb"><a href="logs.html">logs</a></li>
+    <li class="crumb">2. Basics</li>
+    <li class="crumb"><a href="logs.html">Logs</a></li>
   </ul>
 </nav>
 </div>
 <article class="doc">
-<div class="sect1">
-<h2 id="_kubectl_logs"><a class="anchor" href="#_kubectl_logs"></a>kubectl logs</h2>
+<h1>Kubernetes Tutorial</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>There are various "production-ready" ways to do log gathering and viewing across a Kubernetes/OpenShift cluster. Many folks like some flavor of ELK (ElasticSearch, Logstash, Kibana) or EFK (ElasticSearch, FluentD, Kibana).</p>
@@ -135,7 +148,7 @@
 <p>The focus here is on things a developer needs to get access to do help understand the behavior of their application running inside of a pod.</p>
 </div>
 <div class="paragraph">
-<p>Make sure you have an application (Deployment) running</p>
+<p>Make sure you have an application (Deployment) running:</p>
 </div>
 <div id="create-deployment" class="listingblock">
 <div class="content">
@@ -166,21 +179,23 @@ EOF</code></pre>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-deployment"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>Make sure you are running 3 replicas (3 pods/instances of your application)</p>
+<p>Make sure you are running 3 replicas (3 pods/instances of your application):</p>
 </div>
-<div class="listingblock">
+<div id="logs-get-replicas" class="listingblock">
 <div class="content">
-<pre>kubectl get deployment my-deployment -o json | jq '.status.replicas'</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployment my-deployment -o json | jq '.status.replicas'</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-get-replicas"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>If not</p>
+<p>If not, scale up to 3:</p>
 </div>
-<div class="listingblock">
+<div id="logs-scale-replicas" class="listingblock">
 <div class="content">
-<pre>kubectl scale --replicas=3 deployment/my-deployment</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale --replicas=3 deployment/my-deployment</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-scale-replicas"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                             READY   STATUS    RESTARTS   AGE
@@ -189,11 +204,15 @@ my-deployment-5dc67997c7-m7z9f   1/1     Running   0          34s
 my-deployment-5dc67997c7-s4jc6   1/1     Running   0          34s</pre>
 </div>
 </div>
+<div id="logs-log-deployment" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs my-deployment-5dc67997c7-m7z9f</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-log-deployment"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>kubectl logs my-deployment-5dc67997c7-m7z9f
-
-  .   ____          _            __ _ _
+<pre>  .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
 ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
@@ -203,20 +222,20 @@ my-deployment-5dc67997c7-s4jc6   1/1     Running   0          34s</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Follow logs with -f</p>
+<p>You can follow logs with <code>-f</code> parameter:</p>
 </div>
-<div class="listingblock">
+<div id="logs-log-deployment-follow" class="listingblock">
 <div class="content">
-<pre>kubectl logs my-deployment-5dc67997c7-m7z9f -f</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs my-deployment-5dc67997c7-m7z9f -f</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-log-deployment-follow"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>In another Terminal</p>
+<p>And in another Terminal:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre>kubectl exec -it my-deployment-5dc67997c7-m7z9f /bin/bash
-
 curl localhost:8080</pre>
 </div>
 </div>
@@ -226,7 +245,7 @@ curl localhost:8080</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Deploy a Service for my-deployment</p>
+<p>Deploy a Service for <code>my-deployment</code>:</p>
 </div>
 <div id="create-service" class="listingblock">
 <div class="content">
@@ -250,25 +269,54 @@ EOF</code></pre>
 <div class="paragraph">
 <p>In another Terminal, loop and curl that service</p>
 </div>
-<div class="paragraph">
-<p>OpenShift:</p>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset1_hosted"></a>Hosted</p>
+</li>
+<li>
+<p><a id="tabset1_minikube"></a>Minikube</p>
+</li>
+</ul>
 </div>
-<div class="listingblock">
 <div class="content">
-<pre>IP=$(kubectl get service the-service -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-PORT=$(kubectl get service the-service -o jsonpath="{.spec.ports[*].port}")</pre>
+<div class="tab-pane" aria-labelledby="tabset1_hosted">
+<div class="paragraph">
+<p>If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port <code>8080</code> or get it using <code>kubectl</code>:</p>
+</div>
+<div id="logs-ip-port-openshift" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service the-service -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+PORT=$(kubectl get service the-service -o jsonpath="{.spec.ports[*].port}")</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-ip-port-openshift"><i class="fa fa-clipboard"></i></button><br/>
+</div>
+<div class="tab-pane" aria-labelledby="tabset1_minikube">
+<div id="logs-ip-port-minikube" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
+PORT=$(kubectl get service/the-service -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-ip-port-minikube"><i class="fa fa-clipboard"></i></button><br/>
+</div>
 </div>
 </div>
 <div class="paragraph">
-<p>Minikube:</p>
+<p>Curl the Service:</p>
 </div>
-<div class="listingblock">
+<div id="logs-curl-the-service" class="listingblock">
 <div class="content">
-<pre>IP=$(minikube ip)
-PORT=$(kubectl get service/the-service -o jsonpath="{.spec.ports[*].nodePort}")</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
 </div>
-<div id="curl-loop" class="listingblock">
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-curl-the-service"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>Start sending request in a loop:</p>
+</div>
+<div id="logs-curl-loop" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true
 do curl $IP:$PORT
@@ -276,7 +324,7 @@ sleep .3
 done</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-loop"><i class="fa fa-clipboard"></i></button><br/>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-curl-loop"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Then use Stern to view the logs across all pods</p>
 </div>
@@ -295,16 +343,21 @@ my-deployment-5dc67997c7-s4jc6 myapp Aloha from my-deployment-5dc67997c7-s4jc6</
 </div>
 </div>
 <div class="paragraph">
-<p>Another option is <a href="https://github.com/boz/kail">kail</a></p>
+<p>Another option is <a href="https://github.com/boz/kail">kail</a>:</p>
 </div>
-<div class="listingblock">
+<div id="install-kail" class="listingblock">
 <div class="content">
-<pre>brew tap boz/repo
-brew install boz/repo/kail
-
-kail --deploy=my-deployment -c myapp --since=1h</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">brew tap boz/repo
+brew install boz/repo/kail</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#install-kail"><i class="fa fa-clipboard"></i></button><br/>
+<div id="run-kail" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kail --deploy=my-deployment -c myapp --since=1h</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#run-kail"><i class="fa fa-clipboard"></i></button><br/>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -312,15 +365,17 @@ kail --deploy=my-deployment -c myapp --since=1h</pre>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-To potentially pull the logs from a failing pod use <code>-p</code>
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>To potentially pull the logs from a failing pod use <code>-p</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre>kubectl logs my-deployment-5dc67997c7-s4jc6 -p</pre>
 </div>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>

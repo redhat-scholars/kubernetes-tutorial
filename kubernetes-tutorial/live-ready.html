@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Untitled :: Kubernetes Tutorial</title>
+    <title>Kubernetes Tutorial :: Kubernetes Tutorial</title>
     <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/live-ready.html">
     <meta name="generator" content="Antora 2.2.0">
     <link rel="stylesheet" href="../_/css/site.css">
@@ -39,7 +39,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="installation.html">Install</a>
+    <a class="nav-link" href="installation.html">1. Install</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="installation.html#tutorial-all-local">CLI</a>
@@ -59,46 +59,58 @@
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="kubectl.html">kubectl</a>
+    <button class="nav-toggle"></button>
+    <span class="nav-text">2. Basics</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kubectl.html">Kubectl</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="pod-rs-deployment.html">Pod, ReplicaSet, Deployment</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="service.html">Service</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="logs.html">logs</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logs.html">Logs</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="resources.html">Resources/Limits</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="exec.html">exec</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="exec.html">Exec</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
   </li>
+</ul>
+  </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <span class="nav-text">3. Advanced</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="building-images.html">Building Images</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="live-ready.html">Live &amp; Ready</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="service-magic.html">Service Magic</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="blue-green.html">Blue Green</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="configmap.html">ConfigMap</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="secrets.html">Secrets</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="crds.html">CRDs</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -120,33 +132,40 @@
   <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="index.html">Kubernetes Tutorial</a></li>
+    <li class="crumb">3. Advanced</li>
     <li class="crumb"><a href="live-ready.html">Live &amp; Ready</a></li>
   </ul>
 </nav>
 </div>
 <article class="doc">
-<div class="sect1">
-<h2 id="_live_ready"><a class="anchor" href="#_live_ready"></a>Live &amp; Ready</h2>
+<h1>Kubernetes Tutorial</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Make sure you are in the correct namespace</p>
 </div>
+<div id="liveready-change-context-resource" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl config set-context --current --namespace=myspace</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#liveready-change-context-resource"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>Make sure nothing else is deployed:</p>
+</div>
+<div id="no-resources-live-ready" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get all</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#no-resources-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>kubectl config set-context --current --namespace=myspace</pre>
+<pre>No resources found in myspace namespace.</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Make sure nothing else is deployed</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl get all
-No resources found in myspace namespace.</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Deploy an application with the Live and Ready probe set</p>
+<p>Deploy an application with the Live and Ready probe set:</p>
 </div>
 <div id="create-app-live-ready" class="listingblock">
 <div class="content">
@@ -197,12 +216,17 @@ EOF</code></pre>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-app-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>Describe the deployment</p>
+<p>Describe the deployment:</p>
 </div>
+<div id="live-ready-kubectl-describe-deployment" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe deployment myboot</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#live-ready-kubectl-describe-deployment"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>kubectl describe deployment myboot
-...
+<pre>...
     Image:      quay.io/burrsutter/myboot:v1
     Port:       8080/TCP
     Host Port:  0/TCP
@@ -218,38 +242,62 @@ EOF</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Deploy a Service</p>
+<p>Deploy a Service:</p>
 </div>
-<div class="listingblock">
+<div id="deploy-service-live-ready" class="listingblock">
 <div class="content">
-<pre>kubectl apply -f apps/kubefiles/myboot-service.yml</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-service.yml</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-service-live-ready"><i class="fa fa-clipboard"></i></button><br/>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset1_hosted"></a>Hosted</p>
+</li>
+<li>
+<p><a id="tabset1_minikube"></a>Minikube</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset1_hosted">
 <div class="paragraph">
-<p>Start a poller
-OpenShift:</p>
+<p>If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port <code>8080</code> or get it using <code>kubectl</code>:</p>
 </div>
-<div id="openshift-ip-port" class="listingblock">
+<div id="liveready-ip-port-openshift" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#openshift-ip-port"><i class="fa fa-clipboard"></i></button><br/>
-<div class="paragraph">
-<p>OR</p>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#liveready-ip-port-openshift"><i class="fa fa-clipboard"></i></button><br/>
 </div>
-<div class="paragraph">
-<p>Minikube:</p>
-</div>
-<div id="minikube-ip-port" class="listingblock">
+<div class="tab-pane" aria-labelledby="tabset1_minikube">
+<div id="liveready-ip-port-minikube" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
 PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#minikube-ip-port"><i class="fa fa-clipboard"></i></button><br/>
-<div id="curl-loop" class="listingblock">
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#liveready-ip-port-minikube"><i class="fa fa-clipboard"></i></button><br/>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Curl the Service:</p>
+</div>
+<div id="liveready-curl-the-service" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#liveready-curl-the-service"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>And run loop script:</p>
+</div>
+<div id="liveready-curl-loop" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true
 do curl $IP:$PORT
@@ -257,17 +305,18 @@ sleep .3
 done</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-loop"><i class="fa fa-clipboard"></i></button><br/>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#liveready-curl-loop"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>Change the image</p>
+<p>Change the image:</p>
 </div>
-<div class="listingblock">
+<div id="change-deployment-v2-live-ready" class="listingblock">
 <div class="content">
-<pre>kubectl set image deployment/myboot myboot=quay.io/burrsutter/myboot:v2</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myboot myboot=quay.io/burrsutter/myboot:v2</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#change-deployment-v2-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>and notice the error free rolling update:</p>
+<p>And notice the error free rolling update:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -283,7 +332,7 @@ Bonjour from Spring Boot! 3 on myboot-8449d5468d-m88z4</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Look at the Endpoints to see which pods are part of the Service</p>
+<p>Look at the Endpoints to see which pods are part of the Service:</p>
 </div>
 <div id="get-endpoints-before" class="listingblock">
 <div class="content">
@@ -292,7 +341,7 @@ Bonjour from Spring Boot! 3 on myboot-8449d5468d-m88z4</pre>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-endpoints-before"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>These are the Pod IPs that have passed their readiness probe</p>
+<p>These are the Pod IPs that have passed their readiness probe:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -301,18 +350,24 @@ Bonjour from Spring Boot! 3 on myboot-8449d5468d-m88z4</pre>
 "10.130.2.38"</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Exec into a single pod and change its readiness flag</p>
 </div>
-<div class="listingblock">
+</div>
+<div class="sect1">
+<h2 id="_readiness_probe"><a class="anchor" href="#_readiness_probe"></a>Readiness Probe</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Exec into a single Pod and change its readiness flag:</p>
+</div>
+<div id="misbehave-app-live-ready" class="listingblock">
 <div class="content">
-<pre>kubectl exec -it myboot-845968c6ff-k5lcb /bin/bash
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it myboot-845968c6ff-k5lcb /bin/bash
 curl localhost:8080/misbehave
-exit</pre>
+exit</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#misbehave-app-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>See that the pod is no longer Ready</p>
+<p>See that the pod is no longer Ready:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -323,7 +378,7 @@ myboot-845968c6ff-zsgx2   1/1     Running   0          11m</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now check the Endpoints</p>
+<p>Now check the Endpoints:</p>
 </div>
 <div id="get-endpoints-after" class="listingblock">
 <div class="content">
@@ -332,7 +387,7 @@ myboot-845968c6ff-zsgx2   1/1     Running   0          11m</pre>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-endpoints-after"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>And that pod is now missing from the Service&#8217;s loadbalancer</p>
+<p>And that pod is now missing from the Service&#8217;s loadbalancer:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -341,7 +396,7 @@ myboot-845968c6ff-zsgx2   1/1     Running   0          11m</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Which is also self-evident in the curl loop</p>
+<p>Which is also self-evident in the curl loop:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -350,16 +405,19 @@ Aloha from Spring Boot! 604 on myboot-845968c6ff-zsgx2
 Aloha from Spring Boot! 846 on myboot-845968c6ff-9wshg</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Testing the Liveness Probe</p>
 </div>
-<div class="listingblock">
+</div>
+<div class="sect1">
+<h2 id="_liveness_probe"><a class="anchor" href="#_liveness_probe"></a>Liveness Probe</h2>
+<div class="sectionbody">
+<div id="change-deployment-v3-live-ready" class="listingblock">
 <div class="content">
-<pre>kubectl set image deployment/myboot myboot=quay.io/burrsutter/myboot:v3</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myboot myboot=quay.io/burrsutter/myboot:v3</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#change-deployment-v3-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>Let the rollout finish to completion across all 3 replicas</p>
+<p>Let the rollout finish to completion across all 3 replicas:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -371,7 +429,7 @@ myboot-56659c9d69-zjt6q   1/1     Running   0          72s</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>and as seen in the curl loop/poller</p>
+<p>And as seen in the curl loop/poller:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -381,14 +439,22 @@ Jambo from Spring Boot! 71 on myboot-56659c9d69-6sglj</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Edit the Deployment to point to the /alive URL</p>
+<p>Edit the Deployment to point to the /alive URL:</p>
+</div>
+<div id="change-liveness-v3-live-ready" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export KUBE_EDITOR="code -w"
+
+kubectl edit deployment myboot</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#change-liveness-v3-live-ready"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>And chnage the liveness probe:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>export KUBE_EDITOR="code -w"
-
-kubectl edit deployment myboot
-...
+<pre>...
     spec:
       containers:
       - image: quay.io/burrsutter/myboot:v3
@@ -420,16 +486,17 @@ myboot-558b4f8678-z7f9n   1/1     Running       0          36s</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now pick one of the pods, exec into it and shoot it</p>
+<p>Now pick one of the pods, <code>exec</code> into it and shoot it:</p>
 </div>
-<div class="listingblock">
+<div id="shot-v3-live-ready" class="listingblock">
 <div class="content">
-<pre>kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
-curl localhost:8080/shot</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
+curl localhost:8080/shot</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#shot-v3-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>And you will see it get restarted</p>
+<p>And you will see it get restarted:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -440,17 +507,17 @@ myboot-558b4f8678-z7f9n   1/1     Running   0          3m44s</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Plus, your exec will be terminated</p>
+<p>Plus, your exec will be terminated:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre> kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
+<pre>kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
 1000610000@myboot-558b4f8678-qbrgc:/app$ curl localhost:8080/shot
 I have been shot in the head1000610000@myboot-558b4f8678-qbrgc:/app$ command terminated with exit code 137</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And your end-users will not see any errors</p>
+<p>And your end-users will not see any errors:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -463,15 +530,18 @@ Jambo from Spring Boot! 175 on myboot-558b4f8678-z7f9n
 Jambo from Spring Boot! 176 on myboot-558b4f8678-z7f9n</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Clean up</p>
 </div>
-<div class="listingblock">
+</div>
+<div class="sect1">
+<h2 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean up</h2>
+<div class="sectionbody">
+<div id="cleanup-live-ready" class="listingblock">
 <div class="content">
-<pre>kubectl delete deployment myboot
-kubectl delete service myboot</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete deployment myboot
+kubectl delete service myboot</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#cleanup-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 </article>

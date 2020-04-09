@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Untitled :: Kubernetes Tutorial</title>
+    <title>Kubernetes Tutorial :: Kubernetes Tutorial</title>
     <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/rolling-updates.html">
     <meta name="generator" content="Antora 2.2.0">
     <link rel="stylesheet" href="../_/css/site.css">
@@ -39,7 +39,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="installation.html">Install</a>
+    <a class="nav-link" href="installation.html">1. Install</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="installation.html#tutorial-all-local">CLI</a>
@@ -59,46 +59,58 @@
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="kubectl.html">kubectl</a>
+    <button class="nav-toggle"></button>
+    <span class="nav-text">2. Basics</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kubectl.html">Kubectl</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="pod-rs-deployment.html">Pod, ReplicaSet, Deployment</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="service.html">Service</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="logs.html">logs</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logs.html">Logs</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="resources.html">Resources/Limits</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="exec.html">exec</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="exec.html">Exec</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
   </li>
+</ul>
+  </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <span class="nav-text">3. Advanced</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="building-images.html">Building Images</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="live-ready.html">Live &amp; Ready</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="service-magic.html">Service Magic</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="blue-green.html">Blue Green</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="configmap.html">ConfigMap</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="secrets.html">Secrets</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="crds.html">CRDs</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -120,64 +132,92 @@
   <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="index.html">Kubernetes Tutorial</a></li>
+    <li class="crumb">2. Basics</li>
     <li class="crumb"><a href="rolling-updates.html">Rolling updates</a></li>
   </ul>
 </nav>
 </div>
 <article class="doc">
-<div class="sect1">
-<h2 id="_rolling_updates"><a class="anchor" href="#_rolling_updates"></a>Rolling updates</h2>
-<div class="sectionbody">
+<h1>Kubernetes Tutorial</h1>
 <div class="paragraph">
 <p>Make sure you are in the correct namespace</p>
 </div>
-<div class="listingblock">
+<div id="rolling-change-context-resource" class="listingblock">
 <div class="content">
-<pre>kubectl config set-context --current --namespace=myspace</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl config set-context --current --namespace=myspace</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-change-context-resource"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>Deploy the Spring Boot app if needed</p>
+<p>Deploy the Spring Boot app if needed:</p>
 </div>
-<div class="listingblock">
+<div id="deploy-myboot-rolling" class="listingblock">
 <div class="content">
-<pre>kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
-kubectl apply -f apps/kubefiles/myboot-service.yml</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
+kubectl apply -f apps/kubefiles/myboot-service.yml</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-myboot-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>Terminal 1: watch the pods</p>
+<p>Terminal 1: watch the Pods.</p>
 </div>
-<div class="listingblock">
+<div id="rolling-kubectl-watch-pods" class="listingblock">
 <div class="content">
-<pre>watch kubectl get pods</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-kubectl-watch-pods"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>Terminal 2: curl loop the service
-OpenShift:</p>
+<p>Terminal 2: curl loop the service.</p>
 </div>
-<div id="openshift-ip-port" class="listingblock">
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset1_hosted"></a>Hosted</p>
+</li>
+<li>
+<p><a id="tabset1_minikube"></a>Minikube</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset1_hosted">
+<div class="paragraph">
+<p>If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port <code>8080</code> or get it using <code>kubectl</code>:</p>
+</div>
+<div id="rolling-ip-port-openshift" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#openshift-ip-port"><i class="fa fa-clipboard"></i></button><br/>
-<div class="paragraph">
-<p>OR</p>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-ip-port-openshift"><i class="fa fa-clipboard"></i></button><br/>
 </div>
-<div class="paragraph">
-<p>Minikube:</p>
-</div>
-<div id="minikube-ip-port" class="listingblock">
+<div class="tab-pane" aria-labelledby="tabset1_minikube">
+<div id="rolling-ip-port-minikube" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
 PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#minikube-ip-port"><i class="fa fa-clipboard"></i></button><br/>
-<div id="curl-loop" class="listingblock">
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-ip-port-minikube"><i class="fa fa-clipboard"></i></button><br/>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Curl the Service:</p>
+</div>
+<div id="rolling-curl-the-service" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-curl-the-service"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>And run loop script:</p>
+</div>
+<div id="rolling-curl-loop" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true
 do curl $IP:$PORT
@@ -185,14 +225,22 @@ sleep .3
 done</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-loop"><i class="fa fa-clipboard"></i></button><br/>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-curl-loop"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>Describe the Deployment</p>
+<p>Terminal 3: Run commands.</p>
 </div>
+<div class="paragraph">
+<p>Describe the Deployment:</p>
+</div>
+<div id="rolling-init-kubectl-describe-deployment" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe deployment myboot</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-init-kubectl-describe-deployment"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>kubectl describe deployment myboot
-.
+<pre>.
 .
 .
 Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
@@ -205,47 +253,55 @@ RollingUpdateStrategy:  25% max unavailable, 25% max surge
 </div>
 </div>
 <div class="paragraph">
-<p>StrategyType options include RollingUpdate and Recreate</p>
+<p><code>StrategyType</code> options include <code>RollingUpdate</code> and <code>Recreate</code>:</p>
 </div>
 <div class="paragraph">
-<p>Change the replicas</p>
+<p>Change the replicas:</p>
+</div>
+<div id="edit-deployment-replicas-rolling" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export KUBE_EDITOR="code -w"
+kubectl edit deployment myboot</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#edit-deployment-replicas-rolling"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>Look for "replicas":</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>export KUBE_EDITOR="code -w"
-kubectl edit deployment myboot</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Look for "replicas"</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>spec:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: myboot
----
-
-And update to "2"</pre>
+      app: myboot</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>spec:
+<p>And update to "2":</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
   progressDeadlineSeconds: 600
   replicas: 2
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: myboot
----</p>
+      app: myboot</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Save and close the VS Code window and a new pod will come to life</p>
+<p>Save and close the VS Code window and a new pod will come to life:</p>
 </div>
+<div id="edit-deployment-replicas-get-pod-rolling" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#edit-deployment-replicas-get-pod-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                     READY   STATUS    RESTARTS   AGE
@@ -254,37 +310,44 @@ myboot-d78fb6d58-ljkjp   1/1     Running   0          3m</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Change the image associated with the deployment</p>
+<p>Change the image associated with the deployment:</p>
 </div>
-<div class="listingblock">
+<div id="edit-deployment-v2-rolling" class="listingblock">
 <div class="content">
-<pre>kubectl edit deployment myboot</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl edit deployment myboot</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#edit-deployment-v2-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>Find the image attribute</p>
+<p>Find the image attribute:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>    spec:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">    spec:
       containers:
       - image: quay.io/burrsutter/myboot:v1
         imagePullPolicy: IfNotPresent
-        name: myboot</pre>
+        name: myboot</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>and change the image <code>myboot:v2</code></p>
+<p>and change the image <code>myboot:v2</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>    spec:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">    spec:
       containers:
       - image: quay.io/burrsutter/myboot:v2
         imagePullPolicy: IfNotPresent
-        name: myboot</pre>
+        name: myboot</code></pre>
 </div>
 </div>
+<div id="edit-deployment-v2-get-pod-rolling" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#edit-deployment-v2-get-pod-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                      READY   STATUS              RESTARTS   AGE
@@ -293,6 +356,9 @@ myboot-7fbc4b97df-qtkzj   0/1     ContainerCreating   0          0s
 myboot-d78fb6d58-2fqml    1/1     Running             0          3m29s
 myboot-d78fb6d58-ljkjp    1/1     Terminating         0          8m</pre>
 </div>
+</div>
+<div class="paragraph">
+<p>And the output from terminal 2:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -303,35 +369,46 @@ Bonjour from Spring Boot! 1 on myboot-7fbc4b97df-4ntmk</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Check the status</p>
+<p>Check the status of the deployment:</p>
 </div>
+<div id="rollout-v2-rolling" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl rollout status deployment myboot</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rollout-v2-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>kubectl rollout status deployment myboot
-deployment "myboot" successfully rolled out</pre>
+<pre>deployment "myboot" successfully rolled out</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Notice the new RS</p>
+<p>Notice that there is a new RS:</p>
 </div>
+<div id="rs-v2-rolling" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get rs</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rs-v2-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>kubectl get rs
-NAME                DESIRED   CURRENT   READY   AGE
+<pre>NAME                DESIRED   CURRENT   READY   AGE
 myboot-7fbc4b97df   2         2         2       116s
 myboot-d78fb6d58    0         0         0       10m</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Describe the Deployment</p>
+<p>Describe the Deployment:</p>
 </div>
-<div class="listingblock">
+<div id="rolling-kubectl-describe-deployment" class="listingblock">
 <div class="content">
-<pre>kubectl describe deployment myboot</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe deployment myboot</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-kubectl-describe-deployment"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>And check out the Events section</p>
+<p>And check out the Events section:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -348,15 +425,16 @@ Events:
 </div>
 </div>
 <div class="paragraph">
-<p>Rollback to v1</p>
+<p>Rollback to v1:</p>
 </div>
-<div class="listingblock">
+<div id="describe-rollback-rolling" class="listingblock">
 <div class="content">
-<pre>kubectl set image deployment myboot myboot=quay.io/burrsutter/myboot:v1</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment myboot myboot=quay.io/burrsutter/myboot:v1</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#describe-rollback-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>and it rolls back to Aloha</p>
+<p>And it rolls back to Aloha:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -365,8 +443,15 @@ Bonjour from Spring Boot! 502 on myboot-7fbc4b97df-qtkzj
 Aloha from Spring Boot! 0 on myboot-d78fb6d58-vnlch</pre>
 </div>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>Note: On minikube, you may receive errors from curl during the rollover activity.</p>
+<p>On minikube, you may receive errors from curl during the rollover activity.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -380,11 +465,12 @@ curl: (7) Failed to connect to 192.168.99.100 port 31528: Connection refused</pr
 <div class="paragraph">
 <p>Try using the Quarkus image instead of the Spring Boot one</p>
 </div>
-<div class="listingblock">
+<div id="describe-rollback-quarkus-rolling" class="listingblock">
 <div class="content">
-<pre>kubectl set image deployment/myboot myboot=quay.io/burrsutter/quarkus-demo:1.0.0</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myboot myboot=quay.io/burrsutter/quarkus-demo:1.0.0</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#describe-rollback-quarkus-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>And there should be no errors, Quarkus simply boots up crazy fast</p>
 </div>
@@ -396,7 +482,9 @@ Supersonic Subatomic Java with Quarkus myboot-5cf696848b-tlt6l:1
 Supersonic Subatomic Java with Quarkus myboot-5cf696848b-tlt6l:2</pre>
 </div>
 </div>
-</div>
+</td>
+</tr>
+</table>
 </div>
 </article>
   </main>

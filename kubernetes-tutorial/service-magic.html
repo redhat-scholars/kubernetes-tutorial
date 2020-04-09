@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Untitled :: Kubernetes Tutorial</title>
+    <title>Kubernetes Tutorial :: Kubernetes Tutorial</title>
     <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/service-magic.html">
     <meta name="generator" content="Antora 2.2.0">
     <link rel="stylesheet" href="../_/css/site.css">
@@ -39,7 +39,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="installation.html">Install</a>
+    <a class="nav-link" href="installation.html">1. Install</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="installation.html#tutorial-all-local">CLI</a>
@@ -59,46 +59,58 @@
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="kubectl.html">kubectl</a>
+    <button class="nav-toggle"></button>
+    <span class="nav-text">2. Basics</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kubectl.html">Kubectl</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="pod-rs-deployment.html">Pod, ReplicaSet, Deployment</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="service.html">Service</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="logs.html">logs</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logs.html">Logs</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="resources.html">Resources/Limits</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="exec.html">exec</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="exec.html">Exec</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
   </li>
+</ul>
+  </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <span class="nav-text">3. Advanced</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="building-images.html">Building Images</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="live-ready.html">Live &amp; Ready</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="service-magic.html">Service Magic</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="blue-green.html">Blue Green</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="configmap.html">ConfigMap</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="secrets.html">Secrets</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="crds.html">CRDs</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -120,16 +132,17 @@
   <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="index.html">Kubernetes Tutorial</a></li>
+    <li class="crumb">3. Advanced</li>
     <li class="crumb"><a href="service-magic.html">Service Magic</a></li>
   </ul>
 </nav>
 </div>
 <article class="doc">
-<div class="sect1">
-<h2 id="_service_magic"><a class="anchor" href="#_service_magic"></a>Service Magic</h2>
+<h1>Kubernetes Tutorial</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Create a Namespace</p>
+<p>Create a Namespace:</p>
 </div>
 <div id="create-namespace" class="listingblock">
 <div class="content">
@@ -138,8 +151,11 @@ kubectl config set-context --current --namespace=funstuff</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-namespace"><i class="fa fa-clipboard"></i></button><br/>
-<div class="sect2">
-<h3 id="_deploy_mypython"><a class="anchor" href="#_deploy_mypython"></a>Deploy mypython</h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_deploy_mypython"><a class="anchor" href="#_deploy_mypython"></a>Deploy mypython</h2>
+<div class="sectionbody">
 <div id="deploy-mypython" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
@@ -167,8 +183,10 @@ EOF</code></pre>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-mypython"><i class="fa fa-clipboard"></i></button><br/>
 </div>
-<div class="sect2">
-<h3 id="_deploy_mygo"><a class="anchor" href="#_deploy_mygo"></a>Deploy mygo</h3>
+</div>
+<div class="sect1">
+<h2 id="_deploy_mygo"><a class="anchor" href="#_deploy_mygo"></a>Deploy mygo</h2>
+<div class="sectionbody">
 <div id="deploy-mygo" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
@@ -196,8 +214,10 @@ EOF</code></pre>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-mygo"><i class="fa fa-clipboard"></i></button><br/>
 </div>
-<div class="sect2">
-<h3 id="_deploy_mynode"><a class="anchor" href="#_deploy_mynode"></a>Deploy mynode</h3>
+</div>
+<div class="sect1">
+<h2 id="_deploy_mynode"><a class="anchor" href="#_deploy_mynode"></a>Deploy mynode</h2>
+<div class="sectionbody">
 <div id="deploy-mynode" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
@@ -224,15 +244,15 @@ EOF</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-mynode"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
+<div id="labels-service-magic" class="listingblock">
 <div class="content">
-<pre>watch kubectl get pods --show-labels</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods --show-labels</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#labels-service-magic"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>kubectl get pods --show-labels
-NAME                                   READY   STATUS    RESTARTS   AGE     LABELS
+<pre>NAME                                   READY   STATUS    RESTARTS   AGE     LABELS
 mygo-deployment-6d944c5c69-kcvmk       1/1     Running   0          2m11s   app=mygo,pod-template-hash=6d944c5c69
 mynode-deployment-fb5457c5-hhz7h       1/1     Running   0          2m1s    app=mynode,pod-template-hash=fb5457c5
 mypython-deployment-6874f84d85-2kpjl   1/1     Running   0          3m53s   app=mypython,pod-template-hash=6874f84d85</pre>
@@ -258,15 +278,21 @@ EOF</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-myservice"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
+<div id="describe-myservice-service-magic" class="listingblock">
 <div class="content">
-<pre>kubectl describe service my-service</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe service my-service</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#describe-myservice-service-magic"><i class="fa fa-clipboard"></i></button><br/>
+<div id="get-endpoints-myservice" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-endpoints-myservice"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>kubectl get endpoints
-NAME         ENDPOINTS   AGE
+<pre>NAME         ENDPOINTS   AGE
 my-service   &lt;none&gt;      2m6s</pre>
 </div>
 </div>
@@ -277,31 +303,54 @@ jq: error (at &lt;stdin&gt;:18): Cannot iterate over null (null)</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-endpoints1"><i class="fa fa-clipboard"></i></button><br/>
-<div class="paragraph">
-<p>Curl Loop
-OpenShift:</p>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset1_hosted"></a>Hosted</p>
+</li>
+<li>
+<p><a id="tabset1_minikube"></a>Minikube</p>
+</li>
+</ul>
 </div>
-<div id="openshift-ip-port" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service my-service -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-PORT=$(kubectl get service my-service -o jsonpath="{.spec.ports[*].port}")</code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#openshift-ip-port"><i class="fa fa-clipboard"></i></button><br/>
+<div class="tab-pane" aria-labelledby="tabset1_hosted">
 <div class="paragraph">
-<p>OR</p>
+<p>If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port <code>8080</code> or get it using <code>kubectl</code>:</p>
 </div>
-<div class="paragraph">
-<p>Minikube:</p>
+<div id="servicemagic-ip-port-openshift" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
-<div id="minikube-ip-port" class="listingblock">
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#servicemagic-ip-port-openshift"><i class="fa fa-clipboard"></i></button><br/>
+</div>
+<div class="tab-pane" aria-labelledby="tabset1_minikube">
+<div id="servicemagic-ip-port-minikube" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
-PORT=$(kubectl get service/my-service -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
+PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#minikube-ip-port"><i class="fa fa-clipboard"></i></button><br/>
-<div id="curl-loop" class="listingblock">
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#servicemagic-ip-port-minikube"><i class="fa fa-clipboard"></i></button><br/>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Curl the Service:</p>
+</div>
+<div id="servicemagic-curl-the-service" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#servicemagic-curl-the-service"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>And run loop script:</p>
+</div>
+<div id="servicemagic-curl-loop" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true
 do curl $IP:$PORT
@@ -309,7 +358,7 @@ sleep .3
 done</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-loop"><i class="fa fa-clipboard"></i></button><br/>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#servicemagic-curl-loop"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
@@ -376,7 +425,7 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>See the Pod IPs</p>
+<p>See the Pod IPs:</p>
 </div>
 <div id="pod-ips" class="listingblock">
 <div class="content">
@@ -385,7 +434,7 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#pod-ips"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>Remove mypython pod from the Service</p>
+<p>Remove <code>mypython</code> Pod from the Service:</p>
 </div>
 <div id="remove-label" class="listingblock">
 <div class="content">
@@ -405,16 +454,17 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
 "10.130.2.45"</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Clean Up</p>
 </div>
+</div>
+<div class="sect1">
+<h2 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h2>
+<div class="sectionbody">
 <div id="clean-up" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete namespace funstuff</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#clean-up"><i class="fa fa-clipboard"></i></button><br/>
-</div>
 </div>
 </div>
 </article>

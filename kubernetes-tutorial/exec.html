@@ -39,7 +39,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="installation.html">Install</a>
+    <a class="nav-link" href="installation.html">1. Install</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="installation.html#tutorial-all-local">CLI</a>
@@ -59,46 +59,58 @@
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="kubectl.html">kubectl</a>
+    <button class="nav-toggle"></button>
+    <span class="nav-text">2. Basics</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kubectl.html">Kubectl</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="pod-rs-deployment.html">Pod, ReplicaSet, Deployment</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="service.html">Service</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="logs.html">logs</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logs.html">Logs</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="resources.html">Resources/Limits</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="exec.html">exec</a>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="exec.html">Exec</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
   </li>
+</ul>
+  </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <span class="nav-text">3. Advanced</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="building-images.html">Building Images</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="live-ready.html">Live &amp; Ready</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="service-magic.html">Service Magic</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="blue-green.html">Blue Green</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="configmap.html">ConfigMap</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="secrets.html">Secrets</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="crds.html">CRDs</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -120,12 +132,15 @@
   <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="index.html">Kubernetes Tutorial</a></li>
-    <li class="crumb"><a href="exec.html">exec</a></li>
+    <li class="crumb">2. Basics</li>
+    <li class="crumb"><a href="exec.html">Exec</a></li>
   </ul>
 </nav>
 </div>
 <article class="doc">
 <h1>Kubernetes Tutorial</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
 <p>The exec command allows you to "shell into" your pod and execute commands inside of that tiny linux machine that is running your application.</p>
 </div>
@@ -140,13 +155,14 @@ kubectl exec {podname} /somecommand</pre>
 <p>In this section, we will be debugging an OOMKilled that is often seen when running Java inside of a container, inside of Kubernetes.</p>
 </div>
 <div class="paragraph">
-<p>Make sure the Spring Boot pod from the Resources chapter is still running</p>
+<p>Make sure the Spring Boot pod from the Resources chapter is still running:</p>
 </div>
-<div class="listingblock">
+<div id="get-pods-exec" class="listingblock">
 <div class="content">
-<pre>kubectl get pods</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-pods-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                     READY   STATUS    RESTARTS   AGE
@@ -154,28 +170,45 @@ myboot-d78fb6d58-69kl7   1/1     Running   2          32m</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Exec into that running pod</p>
+<p>Then let&#8217;s move inside the container by running <code>exec</code> into that running Pod:</p>
 </div>
+<div id="exec-pod-exec" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod  -l app=myboot -o name)
+kubectl exec -it $PODNAME /bin/bash</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#exec-pod-exec"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>Run <code>ps</code> command to see the current running processes:</p>
+</div>
+<div id="exec-ps-exec" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ps -ef</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#exec-ps-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>PODNAME=$(kubectl get pod  -l app=myboot -o name)
-kubectl exec -it $PODNAME /bin/bash</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>ps -ef
-UID          PID    PPID  C STIME TTY          TIME CMD
+<pre>UID          PID    PPID  C STIME TTY          TIME CMD
 1000610+       1       0  0 19:20 ?        00:00:00 /bin/sh -c java -XX:+PrintFlagsFinal -XX:+PrintGCDetails $JAVA
 1000610+       7       1  2 19:20 ?        00:00:14 java -XX:+PrintFlagsFinal -XX:+PrintGCDetails -jar boot-demo-0
 1000610+      43       0  0 19:27 pts/0    00:00:00 /bin/bash
 1000610+      49      43  0 19:29 pts/0    00:00:00 ps -ef</pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Execute a <code>top</code> to get an overview of the memory:</p>
+</div>
+<div id="exec-top-exec" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">top</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#exec-top-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>top
-top - 19:29:34 up 2 days,  7:02,  0 users,  load average: 0.16, 0.13, 0.14
+<pre>top - 19:29:34 up 2 days,  7:02,  0 users,  load average: 0.16, 0.13, 0.14
 Tasks:   4 total,   1 running,   3 sleeping,   0 stopped,   0 zombie
 %Cpu(s):  2.8 us,  3.4 sy,  0.0 ni, 93.1 id,  0.1 wa,  0.3 hi,  0.3 si,  0.0 st
 KiB Mem : 15389256 total,  6438576 free,  2289352 used,  6661328 buff/cache
@@ -188,10 +221,18 @@ KiB Swap:        0 total,        0 free,        0 used. 13142476 avail Mem
      50 1000610+  20   0   42672   3516   3080 R   0.0  0.0   0:00.00 top</pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Get the distro:</p>
+</div>
+<div id="exec-cat-release-exec" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat /etc/os-release</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#exec-cat-release-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>cat /etc/os-release
-PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
+<pre>PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
 NAME="Debian GNU/Linux"
 VERSION_ID="9"
 VERSION="9 (stretch)"
@@ -201,57 +242,83 @@ SUPPORT_URL="https://www.debian.org/support"
 BUG_REPORT_URL="https://bugs.debian.org/"</pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Check the free memory:</p>
+</div>
+<div id="exec-free-exec" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">free -h</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#exec-free-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>free -h
-              total        used        free      shared  buff/cache   available
+<pre>              total        used        free      shared  buff/cache   available
 Mem:            14G        2.2G        6.1G         17M        6.4G         12G
 Swap:            0B          0B          0B</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And now you might see part of the problem. "free" is not cgroups aware, it thinks it has access to the whole VMs memory.</p>
+<p>And now you might see part of the problem. "free" is not <code>cgroups</code> aware, it thinks it has access to the whole VMs memory.</p>
 </div>
 <div class="paragraph">
-<p>No wonder the JVM reports a larger than accurate Max memory</p>
+<p>No wonder the JVM reports a larger than accurate Max memory:</p>
 </div>
+<div id="curl-sysresources-exec" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/sysresources</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-sysresources-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>curl localhost:8080/sysresources
-Memory: 1324 Cores: 4</pre>
+<pre>Memory: 1324 Cores: 4</pre>
 </div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If using Minikube, the cores are the core count provided by</p>
 </div>
 <div class="paragraph">
-<p>Note: If using Minikube, the cores are the core count provided by</p>
-</div>
-<div class="paragraph">
-<p>minikube --profile devnation config set cpus 4</p>
+<p><code>minikube --profile devnation config set cpus 4</code></p>
 </div>
 <div class="paragraph">
 <p>and the memory is a subset of the memory provided by</p>
 </div>
 <div class="paragraph">
-<p>minikube --profile devnation config set memory 6144</p>
+<p><code>minikube --profile devnation config set memory 6144</code></p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>Check your Java version</p>
+<p>Check your Java version:</p>
 </div>
-<div class="listingblock">
+<div id="java-version-181-exec" class="listingblock">
 <div class="content">
-<pre>java -version
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">java -version
 openjdk version "1.8.0_181"
 OpenJDK Runtime Environment (build 1.8.0_181-8u181-b13-2~deb9u1-b13)
-OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)</pre>
+OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#java-version-181-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>Ask the JVM about its resource availability</p>
+<p>Ask the JVM about its resource availability:</p>
 </div>
-<div class="listingblock">
+<div id="java-version-181-settings-exec" class="listingblock">
 <div class="content">
-<pre>java -XshowSettings:vm -version</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">java -XshowSettings:vm -version</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#java-version-181-settings-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>VM settings:
@@ -265,30 +332,32 @@ OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now check the actual cgroups settings</p>
+<p>Now check the actual <code>cgroups</code> settings:</p>
 </div>
-<div class="listingblock">
+<div id="cat-cgroup-exec" class="listingblock">
 <div class="content">
-<pre>cd /sys/fs/cgroup/memory/
-cat memory.limit_in_bytes</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd /sys/fs/cgroup/memory/
+cat memory.limit_in_bytes</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#cat-cgroup-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>419430400</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And if you divide that 419430400 by 1024 and 1024, you end up with the 400 that was specified in the deployment yaml</p>
+<p>And if you divide that 419430400 by 1024 and 1024, you end up with the 400 that was specified in the deployment YAML.</p>
 </div>
 <div class="paragraph">
 <p>If you have a JVM of 1.8.0_131 or higher then you can try the experimental options</p>
 </div>
-<div class="listingblock">
+<div id="java-version-131-settings-exec" class="listingblock">
 <div class="content">
-<pre>java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XshowSettings:vm -version</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XshowSettings:vm -version</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#java-version-131-settings-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>VM settings:
@@ -302,20 +371,24 @@ OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>To leave this pod, simply type "exit" and hit enter</p>
+<p>To leave this pod, simply type <code>exit</code> and hit enter:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre>exit</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Clean up</p>
 </div>
+</div>
+<div class="sect1">
+<h2 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h2>
+<div class="sectionbody">
 <div class="listingblock">
 <div class="content">
 <pre>kubectl delete deployment myboot
 kubectl delete service myboot</pre>
+</div>
+</div>
 </div>
 </div>
 </article>

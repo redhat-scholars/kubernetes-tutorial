@@ -39,7 +39,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="installation.html">Install</a>
+    <a class="nav-link" href="installation.html">1. Install</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="installation.html#tutorial-all-local">CLI</a>
@@ -59,46 +59,58 @@
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="kubectl.html">kubectl</a>
+    <button class="nav-toggle"></button>
+    <span class="nav-text">2. Basics</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kubectl.html">Kubectl</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="pod-rs-deployment.html">Pod, ReplicaSet, Deployment</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="service.html">Service</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="logs.html">logs</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logs.html">Logs</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="resources.html">Resources/Limits</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="exec.html">exec</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="exec.html">Exec</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
   </li>
+</ul>
+  </li>
   <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <span class="nav-text">3. Advanced</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="building-images.html">Building Images</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="live-ready.html">Live &amp; Ready</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="service-magic.html">Service Magic</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="blue-green.html">Blue Green</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="configmap.html">ConfigMap</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="secrets.html">Secrets</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="crds.html">CRDs</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -120,6 +132,7 @@
   <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="index.html">Kubernetes Tutorial</a></li>
+    <li class="crumb">3. Advanced</li>
     <li class="crumb"><a href="crds.html">CRDs</a></li>
   </ul>
 </nav>
@@ -145,8 +158,9 @@
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_crds"><a class="anchor" href="#_crds"></a>CRDs</h3>
+<div class="sect1">
+<h2 id="_crds"><a class="anchor" href="#_crds"></a>CRDs</h2>
+<div class="sectionbody">
 <div id="get-crds" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get crds --all-namespaces
@@ -154,12 +168,11 @@ kubectl api-resources</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-crds"><i class="fa fa-clipboard"></i></button><br/>
-</div>
 <div class="sect2">
 <h3 id="_example_crd"><a class="anchor" href="#_example_crd"></a>Example CRD</h3>
 <div class="listingblock">
 <div class="content">
-<pre>apiVersion: apiextensions.k8s.io/v1beta1
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   name: pizzas.mykubernetes.burrsutter.com
@@ -178,7 +191,7 @@ spec:
     plural: pizzas
     singular: pizza
     shortNames:
-    - pz</pre>
+    - pz</code></pre>
 </div>
 </div>
 </div>
@@ -193,11 +206,12 @@ spec:
 </div>
 <div class="sect2">
 <h3 id="_now_part_of_the_api"><a class="anchor" href="#_now_part_of_the_api"></a>Now part of the API</h3>
-<div class="listingblock">
+<div id="get-pizzas-crds" class="listingblock">
 <div class="content">
-<pre>kubectl get crds | grep pizza</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get crds | grep pizza</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-pizzas-crds"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Results:</p>
 </div>
@@ -206,11 +220,12 @@ spec:
 <pre>pizzas.mykubernetes.burrsutter.com                          2020-03-31T20:36:10Z</pre>
 </div>
 </div>
-<div class="listingblock">
+<div id="get-api-pizzas-crds" class="listingblock">
 <div class="content">
-<pre>kubectl api-resources | grep burr</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl api-resources | grep burr</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-api-pizzas-crds"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Results:</p>
 </div>
@@ -222,9 +237,9 @@ spec:
 </div>
 <div class="sect2">
 <h3 id="_make_some_pizzas"><a class="anchor" href="#_make_some_pizzas"></a>Make some Pizzas</h3>
-<div class="listingblock">
+<div id="create-pizzas-crds" class="listingblock">
 <div class="content">
-<pre>kubectl create namespace pizzahat
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create namespace pizzahat
 
 kubectl config set-context --current --namespace=pizzahat
 
@@ -232,27 +247,32 @@ kubectl apply -f apps/pizzas/cheese-pizza.yaml
 
 kubectl get pizzas
 
-kubectl describe pizza burrcheese</pre>
+kubectl describe pizza burrcheese</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-pizzas-crds"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 <div class="sect2">
 <h3 id="_make_more_pizzas"><a class="anchor" href="#_make_more_pizzas"></a>Make more Pizzas</h3>
-<div class="listingblock">
+<div id="create-more-pizzas-crds" class="listingblock">
 <div class="content">
-<pre>kubectl apply -f apps/pizzas/meat-lovers.yaml
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/pizzas/meat-lovers.yaml
 
 kubectl apply -f apps/pizzas/veggie-lovers.yaml
 
-kubectl get pizzas --all-namespaces</pre>
+kubectl get pizzas --all-namespaces</code></pre>
 </div>
 </div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-more-pizzas-crds"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 <div class="sect2">
 <h3 id="_eat_all_pizzas"><a class="anchor" href="#_eat_all_pizzas"></a>Eat all Pizzas</h3>
-<div class="listingblock">
+<div id="delete-pizzas-crds" class="listingblock">
 <div class="content">
-<pre>kubectl delete pizzas --all</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pizzas --all</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#delete-pizzas-crds"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 </div>
@@ -265,7 +285,7 @@ kubectl get pizzas --all-namespaces</pre>
 <div class="sect2">
 <h3 id="_kafka_for_minikube"><a class="anchor" href="#_kafka_for_minikube"></a>Kafka for Minikube</h3>
 <div class="paragraph">
-<p>Create a new namespace for this experiment</p>
+<p>Create a new namespace for this experiment:</p>
 </div>
 <div id="create-namespace-franz" class="listingblock">
 <div class="content">
@@ -281,7 +301,7 @@ kubectl config set-context --current --namespace=franz</code></pre>
 <p><a href="https://operatorhub.io/operator/strimzi-kafka-operator">Click Install</a></p>
 </div>
 <div class="paragraph">
-<p>What follows were the instructions from a moment in time</p>
+<p>What follows were the instructions from a moment in time:</p>
 </div>
 <div id="minikube-install" class="listingblock">
 <div class="content">
@@ -308,7 +328,7 @@ kubectl get crds | grep kafka</code></pre>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#verify-install"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>Start a watch in another terminal</p>
+<p>Start a watch in another terminal:</p>
 </div>
 <div id="watch-pods" class="listingblock">
 <div class="content">
@@ -317,7 +337,7 @@ kubectl get crds | grep kafka</code></pre>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#watch-pods"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
-<p>Then deploy the resource requesting a Kafka cluster</p>
+<p>Then deploy the resource requesting a Kafka cluster:</p>
 </div>
 <div id="deploy-cluster" class="listingblock">
 <div class="content">
@@ -337,10 +357,18 @@ my-cluster-zookeeper-1                        2/2     Running   0          92s
 my-cluster-zookeeper-2                        2/2     Running   0          92s</pre>
 </div>
 </div>
+<div class="paragraph">
+<p>And you can get all information from Kafka:</p>
+</div>
+<div id="get-kafkas-crd" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get kafkas</code></pre>
+</div>
+</div>
+<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-kafkas-crd"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
-<pre>kubectl get kafkas
-NAME         DESIRED KAFKA REPLICAS   DESIRED ZK REPLICAS
+<pre>NAME         DESIRED KAFKA REPLICAS   DESIRED ZK REPLICAS
 my-cluster   3                        3</pre>
 </div>
 </div>
