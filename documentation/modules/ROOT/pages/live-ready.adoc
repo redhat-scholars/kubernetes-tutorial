@@ -43,7 +43,7 @@ spec:
     spec:
       containers:
       - name: myboot
-        image: quay.io/burrsutter/myboot:v1
+        image: quay.io/rhdevelopers/myboot:v1
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -81,7 +81,7 @@ include::partial$describe-deployment.adoc[]
 
 ----
 ...
-    Image:      quay.io/burrsutter/myboot:v1
+    Image:      quay.io/rhdevelopers/myboot:v1
     Port:       8080/TCP
     Host Port:  0/TCP
     Limits:
@@ -117,7 +117,7 @@ Change the image:
 [#change-deployment-v2-live-ready]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl set image deployment/myboot myboot=quay.io/burrsutter/myboot:v2
+kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/myboot:v2
 ----
 copyToClipboard::change-deployment-v2-live-ready[]
 
@@ -203,7 +203,7 @@ Aloha from Spring Boot! 846 on myboot-845968c6ff-9wshg
 [#change-deployment-v3-live-ready]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl set image deployment/myboot myboot=quay.io/burrsutter/myboot:v3
+kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/myboot:v3
 ----
 copyToClipboard::change-deployment-v3-live-ready[]
 
@@ -242,7 +242,7 @@ And chnage the liveness probe:
 ...
     spec:
       containers:
-      - image: quay.io/burrsutter/myboot:v3
+      - image: quay.io/rhdevelopers/myboot:v3
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
