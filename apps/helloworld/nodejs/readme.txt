@@ -36,7 +36,3 @@ docker ps | grep mynode
 
 docker stop 08efa083696b
 
-
-deploy it into minikube/minishift
-
-kubectl create -f kubefiles/mynode-deployment.yml
