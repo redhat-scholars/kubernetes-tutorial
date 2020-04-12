@@ -187,7 +187,7 @@ spec:
     spec:
       containers:
       - name: myboot
-        image: quay.io/burrsutter/myboot:v1
+        image: quay.io/rhdevelopers/myboot:v1
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -227,7 +227,7 @@ EOF</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre>...
-    Image:      quay.io/burrsutter/myboot:v1
+    Image:      quay.io/rhdevelopers/myboot:v1
     Port:       8080/TCP
     Host Port:  0/TCP
     Limits:
@@ -311,7 +311,7 @@ done</code></pre>
 </div>
 <div id="change-deployment-v2-live-ready" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myboot myboot=quay.io/burrsutter/myboot:v2</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/myboot:v2</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#change-deployment-v2-live-ready"><i class="fa fa-clipboard"></i></button><br/>
@@ -412,7 +412,7 @@ Aloha from Spring Boot! 846 on myboot-845968c6ff-9wshg</pre>
 <div class="sectionbody">
 <div id="change-deployment-v3-live-ready" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myboot myboot=quay.io/burrsutter/myboot:v3</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/myboot:v3</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#change-deployment-v3-live-ready"><i class="fa fa-clipboard"></i></button><br/>
@@ -457,7 +457,7 @@ kubectl edit deployment myboot</code></pre>
 <pre>...
     spec:
       containers:
-      - image: quay.io/burrsutter/myboot:v3
+      - image: quay.io/rhdevelopers/myboot:v3
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3

@@ -191,7 +191,7 @@ kubectl get pods --all-namespaces -o wide</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create namespace mystuff
 kubectl config set-context --current --namespace=mystuff
 
-kubectl create deployment myapp --image=quay.io/burrsutter/quarkus-demo:1.0.0</code></pre>
+kubectl create deployment myapp --image=quay.io/rhdevelopers/quarkus-demo:v1</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-deploy-app"><i class="fa fa-clipboard"></i></button><br/>
@@ -481,7 +481,7 @@ myapp-5dcbf46dfc-z6hqw   0/1     ContainerCreating   0          4s</pre>
 </div>
 <div id="set-image-myboot-v1" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myapp quarkus-demo=quay.io/burrsutter/myboot:v1</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/myboot:v1</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#set-image-myboot-v1"><i class="fa fa-clipboard"></i></button><br/>
@@ -498,7 +498,7 @@ Aloha from Spring Boot! 2 on myapp-58b97dbd95-vxd87</pre>
 </div>
 <div id="set-image-myboot-v2" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myapp quarkus-demo=quay.io/burrsutter/myboot:v2</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/myboot:v2</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#set-image-myboot-v2"><i class="fa fa-clipboard"></i></button><br/>

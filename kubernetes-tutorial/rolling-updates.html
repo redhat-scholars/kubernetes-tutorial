@@ -325,7 +325,7 @@ myboot-d78fb6d58-ljkjp   1/1     Running   0          3m</pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">    spec:
       containers:
-      - image: quay.io/burrsutter/myboot:v1
+      - image: quay.io/rhdevelopers/myboot:v1
         imagePullPolicy: IfNotPresent
         name: myboot</code></pre>
 </div>
@@ -337,7 +337,7 @@ myboot-d78fb6d58-ljkjp   1/1     Running   0          3m</pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">    spec:
       containers:
-      - image: quay.io/burrsutter/myboot:v2
+      - image: quay.io/rhdevelopers/myboot:v2
         imagePullPolicy: IfNotPresent
         name: myboot</code></pre>
 </div>
@@ -429,7 +429,7 @@ Events:
 </div>
 <div id="describe-rollback-rolling" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment myboot myboot=quay.io/burrsutter/myboot:v1</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment myboot myboot=quay.io/rhdevelopers/myboot:v1</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#describe-rollback-rolling"><i class="fa fa-clipboard"></i></button><br/>
@@ -467,7 +467,7 @@ curl: (7) Failed to connect to 192.168.99.100 port 31528: Connection refused</pr
 </div>
 <div id="describe-rollback-quarkus-rolling" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myboot myboot=quay.io/burrsutter/quarkus-demo:1.0.0</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/quarkus-demo:1.0.0</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#describe-rollback-quarkus-rolling"><i class="fa fa-clipboard"></i></button><br/>

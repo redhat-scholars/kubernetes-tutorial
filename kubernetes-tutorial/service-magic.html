@@ -175,7 +175,7 @@ spec:
     spec:
       containers:
       - name: mypython
-        image: docker.io/burrsutter/mypython:1.0.0
+        image: quay.io/rhdevelopers/mypython:v1
         ports:
         - containerPort: 8000
 EOF</code></pre>
@@ -206,7 +206,7 @@ spec:
     spec:
       containers:
       - name: mygo
-        image: quay.io/burrsutter/mygo:1.0.0
+        image: quay.io/rhdevelopers/mygo:v1
         ports:
         - containerPort: 8000
 EOF</code></pre>
@@ -237,7 +237,7 @@ spec:
     spec:
       containers:
       - name: mynode
-        image: quay.io/burrsutter/mynode:1.0.0
+        image: quay.io/rhdevelopers/mynode:v1
         ports:
         - containerPort: 8000
 EOF</code></pre>
@@ -321,8 +321,8 @@ jq: error (at &lt;stdin&gt;:18): Cannot iterate over null (null)</code></pre>
 </div>
 <div id="servicemagic-ip-port-openshift" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service my-service -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+PORT=$(kubectl get service my-service -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#servicemagic-ip-port-openshift"><i class="fa fa-clipboard"></i></button><br/>
@@ -331,7 +331,7 @@ PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></p
 <div id="servicemagic-ip-port-minikube" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
-PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
+PORT=$(kubectl get service/my-service -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#servicemagic-ip-port-minikube"><i class="fa fa-clipboard"></i></button><br/>

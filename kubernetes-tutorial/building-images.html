@@ -173,14 +173,14 @@ curl localhost:8080</code></pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-change "quay.io" for your registry (e.g. <code>docker.io</code>) and "burrsutter" to your organization.  This next step does assume you have a working installation of Docker for Mac/Windows/Linux.
+change "quay.io" for your registry (e.g. <code>docker.io</code>) and "rhdevelopers" to your organization.  This next step does assume you have a working installation of Docker for Mac/Windows/Linux.
 </td>
 </tr>
 </table>
 </div>
 <div id="build-container--building-images" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker build -t quay.io/burrsutter/myboot:v1 .</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker build -t quay.io/rhdevelopers/myboot:v1 .</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#build-container--building-images"><i class="fa fa-clipboard"></i></button><br/>
@@ -209,7 +209,7 @@ Step 6/6 : CMD java $JAVA_OPTIONS -jar $JAVA_APP_JAR
 Removing intermediate container 46bcab555de7
  ---&gt; 85b78b9b70b1
 Successfully built 85b78b9b70b1
-Successfully tagged quay.io/burrsutter/myboot:v1</pre>
+Successfully tagged quay.io/rhdevelopers/myboot:v1</pre>
 </div>
 </div>
 </div>
@@ -222,7 +222,7 @@ Successfully tagged quay.io/burrsutter/myboot:v1</pre>
 </div>
 <div id="run-container-building-images" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -p 8080:8080 --name myboot quay.io/burrsutter/myboot:v1</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -p 8080:8080 --name myboot quay.io/rhdevelopers/myboot:v1</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#run-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
@@ -280,7 +280,7 @@ Successfully tagged quay.io/burrsutter/myboot:v1</pre>
 </div>
 <div id="run-container-constrained-building-images" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/burrsutter/myboot:v1</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdevelopers/myboot:v1</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#run-container-constrained-building-images"><i class="fa fa-clipboard"></i></button><br/>
@@ -317,7 +317,7 @@ Successfully tagged quay.io/burrsutter/myboot:v1</pre>
 </div>
 <div id="build-mem-container-building-images" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker build -t quay.io/burrsutter/myboot:v1 -f Dockerfile_Memory .</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker build -t quay.io/rhdevelopers/myboot:v1 -f Dockerfile_Memory .</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#build-mem-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
@@ -326,7 +326,7 @@ Successfully tagged quay.io/burrsutter/myboot:v1</pre>
 </div>
 <div id="run-sys-constrained-fix-container-building-images" class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/burrsutter/myboot:v1</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdevelopers/myboot:v1</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#run-sys-constrained-fix-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
@@ -365,7 +365,7 @@ Successfully tagged quay.io/burrsutter/myboot:v1</pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker login quay.io
 
-docker push quay.io/burrsutter/myboot:v1</code></pre>
+docker push quay.io/rhdevelopers/myboot:v1</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#push-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
