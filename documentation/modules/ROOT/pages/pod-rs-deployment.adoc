@@ -127,7 +127,7 @@ spec:
        spec:
           containers:
           - name: quarkus-demo
-            image: quay.io/burrsutter/quarkus-demo:1.0.0
+            image: quay.io/rhdevelopers/quarkus-demo:v1
 EOF
 ----
 copyToClipboard::create-replicaset[]
@@ -183,7 +183,7 @@ Pod Template:
            env=dev
   Containers:
    quarkus-demo:
-    Image:        quay.io/burrsutter/quarkus-demo:1.0.0
+    Image:        quay.io/rhdevelopers/quarkus-demo:v1
     Port:         <none>
     Host Port:    <none>
     Environment:  <none>
@@ -267,7 +267,7 @@ spec:
     spec:
       containers:
       - name: quarkus-demo
-        image: quay.io/burrsutter/quarkus-demo:1.0.0
+        image: quay.io/rhdevelopers/quarkus-demo:v1
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
