@@ -20,12 +20,12 @@ Aloha from Spring Boot! 1 on unknown
 
 == Build Docker Image
 
-NOTE: change "quay.io" for your registry (e.g. `docker.io`) and "burrsutter" to your organization.  This next step does assume you have a working installation of Docker for Mac/Windows/Linux.
+NOTE: change "quay.io" for your registry (e.g. `docker.io`) and "rhdevelopers" to your organization.  This next step does assume you have a working installation of Docker for Mac/Windows/Linux.
 
 [#build-container--building-images]
 [source, bash]
 ----
-docker build -t quay.io/burrsutter/myboot:v1 .
+docker build -t quay.io/rhdevelopers/myboot:v1 .
 ----
 copyToClipboard::build-container--building-images[]
 
@@ -52,7 +52,7 @@ Step 6/6 : CMD java $JAVA_OPTIONS -jar $JAVA_APP_JAR
 Removing intermediate container 46bcab555de7
  ---> 85b78b9b70b1
 Successfully built 85b78b9b70b1
-Successfully tagged quay.io/burrsutter/myboot:v1
+Successfully tagged quay.io/rhdevelopers/myboot:v1
 ----
 
 == Run Created Docker image
@@ -62,7 +62,7 @@ Run and Test your newly created Docker container:
 [#run-container-building-images]
 [source, bash]
 ----
-docker run --rm -it -p 8080:8080 --name myboot quay.io/burrsutter/myboot:v1
+docker run --rm -it -p 8080:8080 --name myboot quay.io/rhdevelopers/myboot:v1
 ----
 copyToClipboard::run-container-building-images[]
 
@@ -114,7 +114,7 @@ Now, constrain the resources associated with this Linux container
 [#run-container-constrained-building-images]
 [source, bash]
 ----
-docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/burrsutter/myboot:v1
+docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdevelopers/myboot:v1
 ----
 copyToClipboard::run-container-constrained-building-images[]
 
@@ -147,7 +147,7 @@ To correct this behavior use a different Dockerfile:
 [#build-mem-container-building-images]
 [source, bash]
 ----
-docker build -t quay.io/burrsutter/myboot:v1 -f Dockerfile_Memory .
+docker build -t quay.io/rhdevelopers/myboot:v1 -f Dockerfile_Memory .
 ----
 copyToClipboard::build-mem-container-building-images[]
 
@@ -156,7 +156,7 @@ Now docker run it:
 [#run-sys-constrained-fix-container-building-images]
 [source, bash]
 ----
-docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/burrsutter/myboot:v1
+docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdevelopers/myboot:v1
 ----
 copyToClipboard::run-sys-constrained-fix-container-building-images[]
 
@@ -193,7 +193,7 @@ Once you are happy with your container image, push it up to your favorite regist
 ----
 docker login quay.io
 
-docker push quay.io/burrsutter/myboot:v1
+docker push quay.io/rhdevelopers/myboot:v1
 ----
 copyToClipboard::push-container-building-images[]
 

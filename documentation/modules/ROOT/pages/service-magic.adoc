@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: mypython
-        image: docker.io/burrsutter/mypython:1.0.0
+        image: quay.io/rhdevelopers/mypython:v1
         ports:
         - containerPort: 8000
 EOF
@@ -61,7 +61,7 @@ spec:
     spec:
       containers:
       - name: mygo
-        image: quay.io/burrsutter/mygo:1.0.0
+        image: quay.io/rhdevelopers/mygo:v1
         ports:
         - containerPort: 8000
 EOF
@@ -90,7 +90,7 @@ spec:
     spec:
       containers:
       - name: mynode
-        image: quay.io/burrsutter/mynode:1.0.0
+        image: quay.io/rhdevelopers/mynode:v1
         ports:
         - containerPort: 8000
 EOF
@@ -160,7 +160,7 @@ jq: error (at <stdin>:18): Cannot iterate over null (null)
 copyToClipboard::get-endpoints1[]
 
 :section-k8s: servicemagic
-:service-exposed: myboot
+:service-exposed: my-service
 include::partial$env-curl.adoc[]
 
 And run loop script:

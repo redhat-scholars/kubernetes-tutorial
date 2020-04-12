@@ -119,7 +119,7 @@ Find the image attribute:
 ----
     spec:
       containers:
-      - image: quay.io/burrsutter/myboot:v1
+      - image: quay.io/rhdevelopers/myboot:v1
         imagePullPolicy: IfNotPresent
         name: myboot
 ----
@@ -130,7 +130,7 @@ and change the image `myboot:v2`:
 ----
     spec:
       containers:
-      - image: quay.io/burrsutter/myboot:v2
+      - image: quay.io/rhdevelopers/myboot:v2
         imagePullPolicy: IfNotPresent
         name: myboot
 ----
@@ -215,7 +215,7 @@ Rollback to v1:
 [#describe-rollback-rolling]
 [source, bash]
 ----
-kubectl set image deployment myboot myboot=quay.io/burrsutter/myboot:v1
+kubectl set image deployment myboot myboot=quay.io/rhdevelopers/myboot:v1
 ----
 copyToClipboard::describe-rollback-rolling[]
 
@@ -243,7 +243,7 @@ Try using the Quarkus image instead of the Spring Boot one
 [#describe-rollback-quarkus-rolling]
 [source, bash]
 ----
-kubectl set image deployment/myboot myboot=quay.io/burrsutter/quarkus-demo:1.0.0
+kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/quarkus-demo:1.0.0
 ----
 copyToClipboard::describe-rollback-quarkus-rolling[]
 

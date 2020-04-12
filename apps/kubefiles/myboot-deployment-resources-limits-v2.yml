@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: myboot
-        image: quay.io/burrsutter/myboot:v2
+        image: quay.io/rhdevelopers/myboot:v2
         ports:
           - containerPort: 8080
         resources:
