@@ -265,7 +265,7 @@ Bonjour from Spring Boot! 5 on myapp-7d58855c6b-6c8gd
 [#set-image-quarkus-demo]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl set image deployment/myapp quarkus-demo=quay.io/burrsutter/quarkus-demo:1.0.0
+kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/quarkus-demo:v1
 ----
 copyToClipboard::set-image-quarkus-demo[]
 
