@@ -1,6 +1,7 @@
 # Kubernetes Tutorial 
 
 image:https://github.com/redhat-developer-demos/kubernetes-tutorial/workflows/docs/badge.svg[]
+image:https://github.com/redhat-developer-demos/kubernetes-tutorial/workflows/helloworld-go/badge.svg[]
 
 You can access the HTML version of this tutorial here: https://redhat-developer-demos.github.io/kubernetes-tutorial/
 
