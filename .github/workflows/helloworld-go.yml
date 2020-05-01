@@ -9,7 +9,7 @@ on:
     - 'apps/helloworld/go/**'
 
 jobs:
-  build-and-publish:
+  build:
     runs-on: ubuntu-18.04
     steps:
     - name: Checkout project
