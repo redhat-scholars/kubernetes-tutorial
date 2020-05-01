@@ -1,10 +1,11 @@
-name: docs
+name: helloworld-go
 
 on:
   push:
     branches: 
     - master
     paths:
+    - '.github/workflows/helloworld-go.yml'
     - 'apps/helloworld/go/**'
 
 jobs:
