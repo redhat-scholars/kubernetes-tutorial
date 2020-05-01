@@ -15,7 +15,7 @@ jobs:
     - name: Checkout project
       uses: actions/checkout@v2
     - name: Run antora
-      uses: docker://antora/antora:2.2.0
+      uses: docker://antora/antora:2.3.1
       with:
         args: github-pages.yml
     - name: Deploy to GitHub Pages
