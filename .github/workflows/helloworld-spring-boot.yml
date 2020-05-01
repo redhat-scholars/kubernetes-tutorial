@@ -1,0 +1,23 @@
+name: helloworld-spring-boot
+
+on:
+  push:
+    branches: 
+    - master
+    paths:
+    - '.github/workflows/helloworld-spring-boot.yml'
+    - 'apps/helloworld/springboot/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v2
+    - name: Setup Java JDK
+      uses: actions/setup-java@v1.3.0
+      with:
+        java-version: 11
+    - name: Maven build
+      working-directory: apps/helloworld/springboot
+      run: mvn package
