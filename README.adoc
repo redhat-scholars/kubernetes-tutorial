@@ -4,26 +4,16 @@ image:https://github.com/redhat-developer-demos/kubernetes-tutorial/workflows/do
 
 You can access the HTML version of this tutorial here: https://redhat-developer-demos.github.io/kubernetes-tutorial/
 
-IMPORTANT: Instructions are in Bash
+## Building the HTML locally
 
-## Master Course I
+In the root of your git repository, run:
 
-. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/installation.adoc[Installation]
-. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/kubectl.adoc[kubectl]
-. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/pod-rs-deployment.adoc[pod, replicaset, deployment]
-. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/service.adoc[Service]
-. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/logs.adoc[logs]
-. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/resources.adoc[Resource Limits]
-. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/exec.adoc[exec]
-. https://github.com/redhat-developer-demos/kubernetes-tutorial/blob/master/documentation/modules/ROOT/pages/rolling-updates.adoc[Rolling Updates]
+```
+bin/build-site.sh
+```
 
-## Master Course II
+And then open your `gh-pages/index.html` file:
 
-[start=9]
-. Building Images
-. Live & Ready 
-. Service Magic
-. Blue/Green
-. Env & ConfigMap
-. Secrets
-. Custom Resource Definitions (CRDs)
+```
+open gh-pages/index.html
+```
