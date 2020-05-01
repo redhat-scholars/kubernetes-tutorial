@@ -5,6 +5,7 @@ on:
     branches: 
     - master
     paths:
+    - .github/workflows/docs.yml
     - 'documentation/**'
     - '*.yml'
 
