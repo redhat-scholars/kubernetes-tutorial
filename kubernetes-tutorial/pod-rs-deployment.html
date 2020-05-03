@@ -39,43 +39,67 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="installation.html">1. Install</a>
+    <span class="nav-text">1. Requirements</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="installation.html">Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="installation.html#tutorial-all-local">CLI</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="installation.html#env-path">Env and Path</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="installation.html#start-minikube">Start Minikube</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="installation.html#verify-setup">Verify Setup</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="installation.html#openshift">OpenShift</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
-    <span class="nav-text">2. Basics</span>
+    <span class="nav-text">2. Beginner</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="kubectl.html">Kubectl</a>
+    <a class="nav-link" href="kubectl.html">kubectl</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="pod-rs-deployment.html">Pod, ReplicaSet, Deployment</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="service.html">Service</a>
-  </li>
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="logs.html">Logs</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="service.html">Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="service-magic.html">Service Magic</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="blue-green.html">Blue/Green Deployments</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <span class="nav-text">3. Elementary</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="building-images.html">Building Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="resources.html">Resources/Limits</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="live-ready.html">Liveness &amp; Readiness</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="exec.html">Exec</a>
@@ -83,27 +107,15 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
   </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configmap.html">ConfigMap</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
-    <span class="nav-text">3. Advanced</span>
+    <span class="nav-text">4. Advanced</span>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="building-images.html">Building Images</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="live-ready.html">Live &amp; Ready</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="service-magic.html">Service Magic</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="blue-green.html">Blue Green</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="configmap.html">ConfigMap</a>
-  </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="secrets.html">Secrets</a>
   </li>
@@ -132,7 +144,7 @@
   <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="index.html">Kubernetes Tutorial</a></li>
-    <li class="crumb">2. Basics</li>
+    <li class="crumb">2. Beginner</li>
     <li class="crumb"><a href="pod-rs-deployment.html">Pod, ReplicaSet, Deployment</a></li>
   </ul>
 </nav>
