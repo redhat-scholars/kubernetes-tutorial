@@ -1,22 +1,27 @@
-* xref:installation.adoc[1. Install]
-** xref:installation.adoc#tutorial-all-local[CLI]
-** xref:installation.adoc#env-path[Env and Path]
-** xref:installation.adoc#start-minikube[Start Minikube]
-** xref:installation.adoc#verify-setup[Verify Setup]
-** xref:installation.adoc#openshift[OpenShift]
-* 2. Basics
-** xref:kubectl.adoc[Kubectl]
+* 1. Requirements
+** xref:installation.adoc[Installation]
+*** xref:installation.adoc#tutorial-all-local[CLI]
+*** xref:installation.adoc#env-path[Env and Path]
+*** xref:installation.adoc#start-minikube[Start Minikube]
+*** xref:installation.adoc#verify-setup[Verify Setup]
+*** xref:installation.adoc#openshift[OpenShift]
+
+* 2. Beginner
+** xref:kubectl.adoc[kubectl]
 ** xref:pod-rs-deployment.adoc[Pod, ReplicaSet, Deployment]
-** xref:service.adoc[Service]
 ** xref:logs.adoc[Logs]
+** xref:service.adoc[Service]
+** xref:service-magic.adoc[Service Magic]
+** xref:blue-green.adoc[Blue/Green Deployments]
+
+* 3. Elementary
+** xref:building-images.adoc[Building Images]
 ** xref:resources.adoc[Resources/Limits]
+** xref:live-ready.adoc[Liveness & Readiness]
 ** xref:exec.adoc[Exec]
 ** xref:rolling-updates.adoc[Rolling updates]
-* 3. Advanced
-** xref:building-images.adoc[Building Images]
-** xref:live-ready.adoc[Live & Ready]
-** xref:service-magic.adoc[Service Magic]
-** xref:blue-green.adoc[Blue Green]
 ** xref:configmap.adoc[ConfigMap]
+
+* 4. Advanced
 ** xref:secrets.adoc[Secrets]
 ** xref:crds.adoc[CRDs]
