@@ -7,26 +7,17 @@ site:
   start_page: kubernetes-tutorial::index.adoc
 
 content:
-  sources:
-    - url: ./
-      start_path: documentation
-      
+  sources: []
+   
 asciidoc:
-  attributes:
-    release-version: master
+  attributes: []
   extensions:
     - ./lib/copy-to-clipboard.js
     - ./lib/tab-block.js
     - ./lib/remote-include-processor.js
-    
 ui:
   bundle:
-    url: https://github.com/redhat-developer-demos/rhd-tutorial-ui/releases/download/v0.1.2/ui-bundle.zip
-  supplemental_files:
-    - path: ./supplemental-ui
-    - path: .nojekyll
-    - path: ui.yml
-      contents: "static_files: [ .nojekyll ]"
-
+    url: https://github.com/redhat-developer-demos/rhd-tutorial-ui/releases/download/v0.0.4/ui-bundle.zip
+  supplemental_files: ./supplemental-ui
 output:
   dir: ./gh-pages

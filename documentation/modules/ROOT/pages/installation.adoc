@@ -4,66 +4,20 @@ include::_attributes.adoc[]
 [#tutorial-all-local]
 == CLI tools
 
-The following CLI tools are required for running the exercises in this tutorial. Please have them installed and configured before you get started with any of the tutorial chapters.
-
-[cols="4*^,4*.",options="header,+attributes"]
+include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/prerequisites-kubernetes.adoc[]
 |===
-|**Tool**|**macOS**|**Fedora**|**windows**
 
-| Git
-| https://git-scm.com/download/mac[Download]
-| https://git-scm.com/download/win[Download]
-| https://git-scm.com/download/linux[Download]
-
-| `Docker`
-| https://docs.docker.com/docker-for-mac/install[Docker for Mac]
-| `dnf install docker`
-| https://docs.docker.com/docker-for-windows/install[Docker for Windows]
-
-| `kubectl {kubernetes-version}`
-| https://storage.googleapis.com/kubernetes-release/release/{kubernetes-version}/bin/darwin/amd64/kubectl[Download]
-| https://storage.googleapis.com/kubernetes-release/release/{kubernetes-version}/bin/linux/amd64/kubectl[Download]
-| https://storage.googleapis.com/kubernetes-release/release/{kubernetes-version}/bin/windows/amd64/kubectl.exe[Download]
-
-| https://github.com/wercker/stern[stern]
-| `brew install stern`
-| https://github.com/wercker/stern/releases/download/1.6.0/stern_linux_amd64[Download]
-| https://github.com/wercker/stern/releases/download/1.11.0/stern_windows_amd64.exe[Download]
-
-| https://github.com/mikefarah/yq[yq v2.4.1]
-| https://github.com/mikefarah/yq/releases/download/2.4.1/yq_darwin_amd64[Download]
-| https://github.com/mikefarah/yq/releases/download/2.4.1/yq_linux_amd64[Download]
-| https://github.com/mikefarah/yq/releases/download/2.4.1/yq_windows_amd64.exe[Download]
-
-| https://httpie.org/[httpie]
-| `brew install httpie`
-| `dnf install httpie`
-| https://httpie.org/doc#windows-etc
-
-| watch
-| `brew install watch`
-| `dnf install procps-ng`
-|
-
-| kubectx and kubens
-| `brew install kubectx`
-| https://github.com/ahmetb/kubectx
-|
+include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/optional-requisites.adoc[]
 |===
 
 [#download-tutorial-sources]
 == Download Tutorial Sources
+
 Before we start setting up the environment, let's clone the tutorial sources and set the `TUTORIAL_HOME` environment variable to point to the root directory of the tutorial:
 
-[#cloneRepo]
-[source,bash,subs="attributes+,+macros"]
-----
-git clone {github-repo} &&\
-export TUTORIAL_HOME="$(pwd)/kubernetes-tutorial"
-cd $TUTORIAL_HOME
-----
-copyToClipboard::cloneRepo[]
-
+:tutorial-url: {github-repo}
+:folder: kubernetes-tutorial
+include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/download-sources.adoc[]
 
 [IMPORTANT,subs="attributes+,+macros"]
 ====
@@ -74,94 +28,16 @@ This tutorial was developed and tested with:
 - OpenShift `{openshift-version}`
 ====
 
-[#download-minikube-kubectl]
-[source,bash,subs="attributes+,+macros"]
-----
-mkdir bin
-cd bin
-curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.8.2/minikube-darwin-amd64
+[#install-minikube]
+=== Install Minikube
 
-chmod +x minikube
+include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/install-minikube.adoc[]
 
-./minikube version
-
-# Mac version of kubectl
-curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl
-
-chmod +x kubectl
-----
-
-[#env-path]
-=== Env and PATH
-
-Download https://kubernetes.io/docs/setup/minikube[minikube] and add it to your path.
-
-MacOS and Linux
-----
-export MINIKUBE_HOME=$TUTORIAL_HOME;
-export PATH=$MINIKUBE_HOME/bin:$PATH
-export KUBECONFIG=$MINIKUBE_HOME/.kube/config
-export KUBE_EDITOR="code -w"
-----
-
-[#start-minikube]
-=== Start Minikube
+[#start-kubernetes]
+=== Start Kubernetes
 
 There are series of commands as steps that allows you get started with minikube. The following section shows how to start minikube with minimal and required configurations:
 
-[#minikube-set-cpu]
-[source,bash,subs="+macros,+attributes"]
-----
-minikube --profile devnation config set cpus 2 # <1>
-minikube --profile devnation config set memory 6144 # <2>
-minikube --profile devnation config set disk-size 50g # <3>
-minikube --profile devnation config set vm-driver {vm-driver} <4>
-minikube --profile devnation config set kubernetes-version v1.17.0 #<5>
-----
-copyToClipboard::minikube-set-cpu[]
-<1> Using 2 cpus which is good enough for the basics
-There is nothing in this series of exercises that is CPU intensive 
-<2> Memory matters, especially when running traditional Java apps (e.g. Weblogic, Spring, JBoss)
-<3> More disk space for storing container images
-<4> Using virtualbox because it is available on all platforms.  There a number of 
-https://kubernetes.io/docs/tasks/tools/install-minikube/#install-a-hypervisor[hypervisor options] that you can choose with minikube
-<5> Setting the Kubernetes version explicitly so you know what you are getting
 
-[#minikube-set-profile]
-[source,bash,subs="+macros,+attributes"]
-----
-minikube start --profile devnation #<.>
-----
-copyToClipboard::minikube-set-profile[]
-<.> Profiles allow you to manage different configurations 
-
-.Minikube starting
-[source,bash,subs="+macros,+attributes"]
-----
-.
-.
-.
-🚀  Launching Kubernetes ...
-⌛  Waiting for cluster to come online ...
-🏄  Done! kubectl is now configured to use devnation
-----
-
-[TIP]
-====
-[#minikube-stick-profile]
-[source,bash,subs="+macros,+attributes"]
-----
-minikube profile devnation #<.>
-----
-copyToClipboard::minikube-stick-profile[]
-<.> Making the profile "sticky" or the default so you do not have to type --profile going forward
-
-You could also use the `minikube profile list` command to list the available profiles
-====
-
-[#openshift]
-=== OpenShift Installation 
-
-https://www.openshift.com/try
-
-Once you have an OpenShift cluster, setup your KUBECONFIG correctly and then use `oc login`.  The rest of the `kubectl` commands will simply work.
+:profile: devnation
+include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/kubernetes-setup.adoc[]
