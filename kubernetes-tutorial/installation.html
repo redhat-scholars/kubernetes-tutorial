@@ -178,7 +178,8 @@
 <h2 id="tutorial-all-local"><a class="anchor" href="#tutorial-all-local"></a>CLI tools</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The following CLI tools are required for running the exercises in this tutorial. Please have them installed and configured before you get started with any of the tutorial chapters.</p>
+<p>The following CLI tools are required for running the exercises in this tutorial.
+Please have them installed and configured before you get started with any of the tutorial chapters.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -197,7 +198,7 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">Git</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>Git</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://git-scm.com/download/mac">Download</a></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://git-scm.com/download/win">Download</a></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://git-scm.com/download/linux">Download</a></p></td>
@@ -209,10 +210,22 @@
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://docs.docker.com/docker-for-windows/install">Docker for Windows</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>kubectl v1.17.2</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.2/bin/darwin/amd64/kubectl">Download</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.2/bin/linux/amd64/kubectl">Download</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.2/bin/windows/amd64/kubectl.exe">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>VirtualBox</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://download.virtualbox.org/virtualbox/6.1.6/VirtualBox-6.1.6-137129-OSX.dmg">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://download.virtualbox.org/virtualbox/6.1.6/VirtualBox-6.1.6-137129-Win.exe">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://www.virtualbox.org/wiki/Linux_Downloads">Download</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/tasks/tools/install-minikube">Minikube</a> v1.9.2</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/kubernetes/minikube/releases/download/v1.9.2/minikube-darwin-amd64">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/kubernetes/minikube/releases/download/v1.9.2/minikube-windows-amd64.exe">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/kubernetes/minikube/releases/download/v1.9.2/minikube-linux-amd64">Download</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>kubectl v1.17.4</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/linux/amd64/kubectl">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/windows/amd64/kubectl.exe">Download</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/wercker/stern">stern</a></p></td>
@@ -221,10 +234,44 @@
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/wercker/stern/releases/download/1.11.0/stern_windows_amd64.exe">Download</a></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>Apache Maven 3.6.3</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.zip">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz">Download</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The following CLI tools are optional for running the exercises in this tutorial.
+Although they are used in the tutorial, you could use others without any problem.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top"><strong>Tool</strong></th>
+<th class="tableblock halign-center valign-top"><strong>macOS</strong></th>
+<th class="tableblock halign-center valign-top"><strong>Fedora</strong></th>
+<th class="tableblock halign-center valign-top"><strong>windows</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/mikefarah/yq">yq v2.4.1</a></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/mikefarah/yq/releases/download/2.4.1/yq_darwin_amd64">Download</a></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/mikefarah/yq/releases/download/2.4.1/yq_linux_amd64">Download</a></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/mikefarah/yq/releases/download/2.4.1/yq_windows_amd64.exe">Download</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/stedolan/jq">jq v1.6.0</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/stedolan/jq/releases/download/jq-1.6/jq-osx-amd64">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/stedolan/jq/releases/download/jq-1.6/jq-win64.exe">Download</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://httpie.org/">httpie</a></p></td>
@@ -244,6 +291,12 @@
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/ahmetb/kubectx" class="bare">https://github.com/ahmetb/kubectx</a></p></td>
 <td class="tableblock halign-center valign-top"></td>
 </tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/rakyll/hey">hey</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://storage.googleapis.com/hey-release/hey_darwin_amd64">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://storage.googleapis.com/jblabs/dist/hey_linux_v0.1.2">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://storage.googleapis.com/jblabs/dist/hey_win_v0.1.2.exe">Download</a></p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -254,14 +307,16 @@
 <div class="paragraph">
 <p>Before we start setting up the environment, let&#8217;s clone the tutorial sources and set the <code>TUTORIAL_HOME</code> environment variable to point to the root directory of the tutorial:</p>
 </div>
-<div id="cloneRepo" class="listingblock">
+<div class="paragraph">
+<p>Before we start setting up the environment, let’s clone the tutorial sources and set the <code>TUTORIAL_HOME</code> environment variable to point to the root directory of the tutorial:</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone <a href="https://github.com/redhat-developer-demos/kubernetes-tutorial" class="bare">https://github.com/redhat-developer-demos/kubernetes-tutorial</a> &amp;&amp;\
-export TUTORIAL_HOME="$(pwd)/kubernetes-tutorial"
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone <a href="https://github.com/redhat-developer-demos/kubernetes-tutorial" class="bare">https://github.com/redhat-developer-demos/kubernetes-tutorial</a> kubernetes-tutorial &amp;&amp; \
+export TUTORIAL_HOME="$(pwd)/kubernetes-tutorial" &amp;&amp; \
 cd $TUTORIAL_HOME</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#cloneRepo"><i class="fa fa-clipboard"></i></button><br/>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -275,7 +330,7 @@ cd $TUTORIAL_HOME</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p>Minikube <code>1.8.2</code></p>
+<p>Minikube <code>v1.9.2</code></p>
 </li>
 <li>
 <p>OpenShift <code>4.3</code></p>
@@ -286,141 +341,199 @@ cd $TUTORIAL_HOME</code></pre>
 </tr>
 </table>
 </div>
-<div id="download-minikube-kubectl" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir bin
-cd bin
-curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.8.2/minikube-darwin-amd64" class="bare">https://storage.googleapis.com/minikube/releases/v1.8.2/minikube-darwin-amd64</a>
-
-chmod +x minikube
-
-./minikube version
-
-# Mac version of kubectl
-curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl</a>
-
-chmod +x kubectl</code></pre>
-</div>
-</div>
 <div class="sect2">
-<h3 id="env-path"><a class="anchor" href="#env-path"></a>Env and PATH</h3>
-<div class="paragraph">
-<p>Download <a href="https://kubernetes.io/docs/setup/minikube">minikube</a> and add it to your path.</p>
+<h3 id="install-minikube"><a class="anchor" href="#install-minikube"></a>Install Minikube</h3>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset1_macos"></a>MacOS</p>
+</li>
+<li>
+<p><a id="tabset1_linux"></a>Linux</p>
+</li>
+<li>
+<p><a id="tabset1_windows"></a>Windows</p>
+</li>
+</ul>
 </div>
-<div class="paragraph">
-<p>MacOS and Linux</p>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset1_macos">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir bin &amp;&amp; \
+cd bin &amp;&amp; \
+curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-darwin-amd64" class="bare">https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-darwin-amd64</a> &amp;&amp; \
+chmod +x minikube</code></pre>
+</div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>export MINIKUBE_HOME=$TUTORIAL_HOME;
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl</a> &amp;&amp; \
+chmod +x kubectl &amp;&amp; \
+cd ..</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset1_linux">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir bin &amp;&amp; \
+cd bin &amp;&amp; \
+curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-linux-amd64" class="bare">https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-linux-amd64</a> &amp;&amp; \
+chmod +x minikube</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/linux/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/linux/amd64/kubectl</a> &amp;&amp; \
+chmod +x kubectl &amp;&amp; \
+cd ..</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset1_windows">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir bin &amp;&amp; \
+cd bin &amp;&amp; \
+curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-windows-amd64.exe" class="bare">https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-windows-amd64.exe</a></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/windows/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/windows/amd64/kubectl</a> &amp;&amp; \
+cd ..</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>And then set environment variables:</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset2_macos-and-linux"></a>MacOS and Linux</p>
+</li>
+<li>
+<p><a id="tabset2_windows"></a>Windows</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset2_macos-and-linux">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash-session hljs" data-lang="bash-session">export MINIKUBE_HOME=$TUTORIAL_HOME;
 export PATH=$MINIKUBE_HOME/bin:$PATH
 export KUBECONFIG=$MINIKUBE_HOME/.kube/config
-export KUBE_EDITOR="code -w"</pre>
+export KUBE_EDITOR="code -w"</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset2_windows">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash-session hljs" data-lang="bash-session">set MINIKUBE_HOME=%TUTORIAL_HOME%
+set PATH=%MINIKUBE_HOME%/bin:%PATH%
+set KUBECONFIG=%MINIKUBE_HOME%/.kube/config
+set KUBE_EDITOR="code -w"</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="start-minikube"><a class="anchor" href="#start-minikube"></a>Start Minikube</h3>
+<h3 id="start-kubernetes"><a class="anchor" href="#start-kubernetes"></a>Start Kubernetes</h3>
 <div class="paragraph">
 <p>There are series of commands as steps that allows you get started with minikube. The following section shows how to start minikube with minimal and required configurations:</p>
 </div>
-<div id="minikube-set-cpu" class="listingblock">
+<div class="paragraph">
+<p>The profile devnation is created to run the tutorial:</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset3_minikube"></a>Minikube</p>
+</li>
+<li>
+<p><a id="tabset3_openshift"></a>OpenShift</p>
+</li>
+</ul>
+</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube --profile devnation config set cpus 2 <i class="conum" data-value="1"></i><b>(1)</b>
-minikube --profile devnation config set memory 6144 <i class="conum" data-value="2"></i><b>(2)</b>
-minikube --profile devnation config set disk-size 50g <i class="conum" data-value="3"></i><b>(3)</b>
-minikube --profile devnation config set vm-driver virtualbox <i class="conum" data-value="4"></i><b>(4)</b>
-minikube --profile devnation config set kubernetes-version v1.17.0 <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#minikube-set-cpu"><i class="fa fa-clipboard"></i></button><br/>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Using 2 cpus which is good enough for the basics
-There is nothing in this series of exercises that is CPU intensive</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Memory matters, especially when running traditional Java apps (e.g. Weblogic, Spring, JBoss)</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>More disk space for storing container images</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Using virtualbox because it is available on all platforms.  There a number of
-<a href="https://kubernetes.io/docs/tasks/tools/install-minikube/#install-a-hypervisor">hypervisor options</a> that you can choose with minikube</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Setting the Kubernetes version explicitly so you know what you are getting</td>
-</tr>
-</table>
-</div>
-<div id="minikube-set-profile" class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube start --profile devnation <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
-</div>
-</div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#minikube-set-profile"><i class="fa fa-clipboard"></i></button><br/>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Profiles allow you to manage different configurations</td>
-</tr>
-</table>
+<div class="tab-pane" aria-labelledby="tabset3_minikube">
+<div class="paragraph">
+<p>Having <code>minikube</code> installed and in your <code>PATH</code>, then run:</p>
 </div>
 <div class="listingblock">
-<div class="title">Minikube starting</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">.
-.
-.
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube start --memory=8192 --cpus=3 --kubernetes-version=v1.17.4 --vm-driver=virtualbox -p devnation</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the output must be something similar like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">❌  profile "devnation" not found
+✅  Created a new profile : devnation
+✅  minikube profile was successfully set to devnation
+😄  [default] minikube v1.9.2 on Darwin 10.15.2
+✨  Selecting 'virtualbox' driver from user configuration (alternates: [hyperkit])
+🔥  Creating virtualbox VM (CPUs=2, Memory=8192MB, Disk=50000MB) ...
+🐳  Preparing Kubernetes v1.17.4 on Docker '19.03.5' ...
+    ▪ apiserver.enable-admission-plugins=LimitRanger,NamespaceExists,NamespaceLifecycle,ResourceQuota,ServiceAccount,DefaultStorageClass,MutatingAdmissionWebhook
+🚜  Pulling images ...
 🚀  Launching Kubernetes ...
 ⌛  Waiting for cluster to come online ...
-🏄  Done! kubectl is now configured to use devnation</code></pre>
+🏄  Done! kubectl is now configured to use "devnation"</code></pre>
 </div>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div id="minikube-stick-profile" class="listingblock">
+<div class="paragraph">
+<p>Finally configure to use minikube internal docker as docker host:</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube profile devnation <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">eval $(minikube docker-env -p devnation)</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#minikube-stick-profile"><i class="fa fa-clipboard"></i></button><br/>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Making the profile "sticky" or the default so you do not have to type --profile going forward</td>
-</tr>
-</table>
+</div>
+<div class="tab-pane" aria-labelledby="tabset3_openshift">
+<div class="paragraph">
+<p>To run OpenShift4, you need to have one provisioned using <a href="https://try.openshift.com">try.openshift.com</a> or can use any existing OpenShift4 cluster.
+Once you have your cluster, you can download the latest OpenShift client(oc) from <a href="https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/">here</a> and add to your path.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>oc version</pre>
+</div>
 </div>
 <div class="paragraph">
-<p>You could also use the <code>minikube profile list</code> command to list the available profiles</p>
+<p>The output should show oc version &gt;=4.2</p>
 </div>
-</td>
-</tr>
-</table>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc version
+Client Version: openshift-clients-4.3.0-201910250623-88-g6a937dfe
+Kubernetes Version: v1.17.4</code></pre>
 </div>
-</div>
-<div class="sect2">
-<h3 id="openshift"><a class="anchor" href="#openshift"></a>OpenShift Installation</h3>
-<div class="paragraph">
-<p><a href="https://www.openshift.com/try" class="bare">https://www.openshift.com/try</a></p>
 </div>
 <div class="paragraph">
-<p>Once you have an OpenShift cluster, setup your KUBECONFIG correctly and then use <code>oc login</code>.  The rest of the <code>kubectl</code> commands will simply work.</p>
+<p>Then login into the cluster and run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc new-project devnation</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
