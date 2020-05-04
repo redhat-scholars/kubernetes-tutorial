@@ -22,4 +22,4 @@ package*
 node_modules
 .firebaserc
 .firebase
-
+.vscode/
