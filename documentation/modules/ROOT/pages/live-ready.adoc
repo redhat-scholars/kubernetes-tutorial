@@ -1,4 +1,4 @@
-= Live & Ready
+= Liveness & Readiness
 
 Make sure you are in the correct namespace
 

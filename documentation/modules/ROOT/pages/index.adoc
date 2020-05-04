@@ -1,34 +1,28 @@
-= {title}
-:page-layout: home
-:!sectids:
+= Kubernetes Tutorial
 
-[.tiles.browse]
-== Get started with your Kubernetes journey
+Welcome to your Kubernetes Journey!
 
-[.tile]
-.xref:installation.adoc[Installation & Setup]
-* xref:installation.adoc#tutorial-all-local[Requirements]
-* xref:installation.adoc#download-tutorial-sources[Installation & Setup]
+Your journey contains four steps, each one of them in a different section:
 
-[.tile]
-.xref:kubectl.adoc[Basics]
-* xref:kubectl.adoc[Kubectl]
+== Installation
+* xref:installation.adoc[Installation & Setup]
+
+== Beginner
+* xref:kubectl.adoc[kubectl]
 * xref:pod-rs-deployment.adoc[Pod, ReplicaSet, Deployment]
-* xref:service.adoc[Service]
 * xref:logs.adoc[Logs]
+* xref:service.adoc[Service]
+* xref:service-magic.adoc[Service Magic]
+* xref:blue-green.adoc[Blue/Green Deployments]
+
+== Elementary
+* xref:building-images.adoc[Building Images]
 * xref:resources.adoc[Resources/Limits]
+* xref:live-ready.adoc[Liveness & Readiness]
 * xref:exec.adoc[Exec]
-* xref:kubernetes-tutorial:ROOT:rolling-updates.adoc[Rolling updates]
+* xref:rolling-updates.adoc[Rolling Updates]
+* xref:configmap.adoc[ConfigMap]
 
-[.tile]
-.xref:kubernetes-tutorial:ROOT:rolling-updates.adoc[Advanced]
-* xref:kubernetes-tutorial:ROOT:building-images.adoc[Building Images]
-* xref:kubernetes-tutorial:ROOT:live-ready.adoc[Live & Ready]
-* xref:kubernetes-tutorial:ROOT:service-magic.adoc[Service Magic]
-* xref:kubernetes-tutorial:ROOT:blue-green.adoc[Blue Green]
-* xref:kubernetes-tutorial:ROOT:configmap.adoc[ConfigMap]
-* xref:kubernetes-tutorial:ROOT:secrets.adoc[Secrets]
-* xref:kubernetes-tutorial:ROOT:crds.adoc[CRDs]
-
-ifndef::workshop[]
-endif::[]
+== Advanced
+* xref:secrets.adoc[Secrets]
+* xref:crds.adoc[CRDs]

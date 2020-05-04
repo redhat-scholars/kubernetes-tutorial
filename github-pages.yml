@@ -20,7 +20,7 @@ asciidoc:
     
 ui:
   bundle:
-    url: https://github.com/redhat-developer-demos/rhd-tutorial-ui/releases/download/v0.0.5/ui-bundle.zip
+    url: https://github.com/redhat-developer-demos/rhd-tutorial-ui/releases/download/v0.1.2/ui-bundle.zip
   supplemental_files:
     - path: ./supplemental-ui
     - path: .nojekyll
