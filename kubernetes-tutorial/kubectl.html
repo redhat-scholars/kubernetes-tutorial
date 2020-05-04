@@ -179,7 +179,7 @@
 <div class="sect1">
 <h2 id="talk"><a class="anchor" href="#talk"></a>Talk to your Cluster</h2>
 <div class="sectionbody">
-<div id="kubectl-view-config" class="listingblock">
+<div id="kubectl-view-config" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo $KUBECONFIG
 kubectl config view</code></pre>
@@ -191,7 +191,7 @@ kubectl config view</code></pre>
 <div class="sect1">
 <h2 id="view-nodes"><a class="anchor" href="#view-nodes"></a>View Nodes</h2>
 <div class="sectionbody">
-<div id="kubectl-get-nodes" class="listingblock">
+<div id="kubectl-get-nodes" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get nodes
 kubectl get nodes --show-labels
@@ -207,7 +207,7 @@ kubectl get namespaces</code></pre>
 <div class="paragraph">
 <p>Your Kubernetes vendor likely includes many pods out-of-the-box:</p>
 </div>
-<div id="kubectl-get-pods" class="listingblock">
+<div id="kubectl-get-pods" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods --all-namespaces
 kubectl get pods --all-namespaces --show-labels
@@ -223,7 +223,7 @@ kubectl get pods --all-namespaces -o wide</code></pre>
 <div class="paragraph">
 <p>Create a Namespace and Deploy something:</p>
 </div>
-<div id="kubectl-deploy-app" class="listingblock">
+<div id="kubectl-deploy-app" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create namespace mystuff
 kubectl config set-context --current --namespace=mystuff
@@ -237,15 +237,15 @@ kubectl create deployment myapp --image=quay.io/rhdevelopers/quarkus-demo:v1</co
 <div class="sect1">
 <h2 id="monitor-events"><a class="anchor" href="#monitor-events"></a>while monitoring Events</h2>
 <div class="sectionbody">
-<div id="kubectl-get-events" class="listingblock">
+<div id="kubectl-get-events" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get events --sort-by=.metadata.creationTimestamp</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-get-events"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>LAST SEEN   TYPE     REASON              OBJECT                        MESSAGE
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">LAST SEEN   TYPE     REASON              OBJECT                        MESSAGE
 &lt;unknown&gt;   Normal   Scheduled           pod/myapp-5dcbf46dfc-ghrk4    Successfully assigned mystuff/myapp-5dcbf46dfc-ghrk4 to g
 cp-5xldg-w-a-5ptpn.us-central1-a.c.ocp42project.internal
 29s         Normal   SuccessfulCreate    replicaset/myapp-5dcbf46dfc   Created pod: myapp-5dcbf46dfc-ghrk4
@@ -254,7 +254,7 @@ cp-5xldg-w-a-5ptpn.us-central1-a.c.ocp42project.internal
 15s         Normal   Pulled              pod/myapp-5dcbf46dfc-ghrk4    Successfully pulled image "quay.io/burrsutter/quarkus-dem
 o:1.0.0"
 15s         Normal   Created             pod/myapp-5dcbf46dfc-ghrk4    Created container quarkus-demo
-15s         Normal   Started             pod/myapp-5dcbf46dfc-ghrk4    Started container quarkus-demo</pre>
+15s         Normal   Started             pod/myapp-5dcbf46dfc-ghrk4    Started container quarkus-demo</code></pre>
 </div>
 </div>
 </div>
@@ -264,61 +264,61 @@ o:1.0.0"
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_deployments"><a class="anchor" href="#_deployments"></a>Deployments</h3>
-<div id="kubectl-get-deployments" class="listingblock">
+<div id="kubectl-get-deployments" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployments</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-get-deployments"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME    READY   UP-TO-DATE   AVAILABLE   AGE
-myapp   1/1     1            1           95s</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+myapp   1/1     1            1           95s</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_replicasets"><a class="anchor" href="#_replicasets"></a>Replicasets</h3>
-<div id="kubectl-get-replicasets" class="listingblock">
+<div id="kubectl-get-replicasets" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get replicasets</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-get-replicasets"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME               DESIRED   CURRENT   READY   AGE
-myapp-5dcbf46dfc   1         1         1       2m1s</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME               DESIRED   CURRENT   READY   AGE
+myapp-5dcbf46dfc   1         1         1       2m1s</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_pods"><a class="anchor" href="#_pods"></a>Pods</h3>
-<div id="kubectl-get-podsx" class="listingblock">
+<div id="kubectl-get-podsx" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods --show-labels</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-get-podsx"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME                     READY   STATUS    RESTARTS   AGE     LABELS
-myapp-5dcbf46dfc-ghrk4   1/1     Running   0          2m18s   app=myapp,pod-template-hash=5dcbf46dfc</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS    RESTARTS   AGE     LABELS
+myapp-5dcbf46dfc-ghrk4   1/1     Running   0          2m18s   app=myapp,pod-template-hash=5dcbf46dfc</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_logs"><a class="anchor" href="#_logs"></a>Logs</h3>
-<div id="kubectl-logs" class="listingblock">
+<div id="kubectl-logs" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs -l app=myapp</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-logs"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>2020-03-22 14:41:30,497 INFO  [io.quarkus] (main) Quarkus 0.22.0 started in 0.021s. Listening on: http://0.0.0.0:8080
-2020-03-22 14:41:30,497 INFO  [io.quarkus] (main) Installed features: [cdi, resteasy]</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">2020-03-22 14:41:30,497 INFO  [io.quarkus] (main) Quarkus 0.22.0 started in 0.021s. Listening on: <a href="http://0.0.0.0:8080" class="bare">http://0.0.0.0:8080</a>
+2020-03-22 14:41:30,497 INFO  [io.quarkus] (main) Installed features: [cdi, resteasy]</code></pre>
 </div>
 </div>
 </div>
@@ -327,7 +327,7 @@ myapp-5dcbf46dfc-ghrk4   1/1     Running   0          2m18s   app=myapp,pod-temp
 <div class="sect1">
 <h2 id="_expose_a_service"><a class="anchor" href="#_expose_a_service"></a>Expose a Service</h2>
 <div class="sectionbody">
-<div id="kubectl-expose" class="listingblock">
+<div id="kubectl-expose" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl expose deployment myapp --port=8080 --type=LoadBalancer</code></pre>
 </div>
@@ -428,7 +428,7 @@ PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</code>
 </div>
 <div class="sect2">
 <h3 id="_terminal_1"><a class="anchor" href="#_terminal_1"></a>Terminal 1</h3>
-<div id="watch-pods" class="listingblock">
+<div id="watch-pods" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods</code></pre>
 </div>
@@ -450,7 +450,7 @@ PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</code>
 </div>
 <div class="content">
 <div class="tab-pane" aria-labelledby="tabset2_hosted">
-<div id="env-vars-openshift" class="listingblock">
+<div id="env-vars-openshift" class="listingblock console-input">
 <div class="content">
 <pre>IP=$(kubectl get service myapp -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service myapp -o jsonpath="{.spec.ports[*].port}")</pre>
@@ -459,7 +459,7 @@ PORT=$(kubectl get service myapp -o jsonpath="{.spec.ports[*].port}")</pre>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#env-vars-openshift"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 <div class="tab-pane" aria-labelledby="tabset2_minikube">
-<div id="env-vars-minikube" class="listingblock">
+<div id="env-vars-minikube" class="listingblock console-input">
 <div class="content">
 <pre>IP=$(minikube ip)
 PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</pre>
@@ -472,7 +472,7 @@ PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</pre>
 <div class="paragraph">
 <p>Poll the endpoint:</p>
 </div>
-<div id="poll-endpoint" class="listingblock">
+<div id="poll-endpoint" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true
 do curl $IP:$PORT
@@ -484,13 +484,13 @@ done</code></pre>
 <div class="paragraph">
 <p>Results of the polling:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:289
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:289
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:290
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:291
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:292
-Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:293</pre>
+Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:293</code></pre>
 </div>
 </div>
 </div>
@@ -499,65 +499,65 @@ Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:293</pre>
 <div class="paragraph">
 <p>Change replicas:</p>
 </div>
-<div id="change-replicas" class="listingblock">
+<div id="change-replicas" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale deployment myapp --replicas=3</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#change-replicas"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME                     READY   STATUS              RESTARTS   AGE
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS              RESTARTS   AGE
 myapp-5dcbf46dfc-6sn2s   0/1     ContainerCreating   0          4s
 myapp-5dcbf46dfc-ghrk4   1/1     Running             0          5m32s
-myapp-5dcbf46dfc-z6hqw   0/1     ContainerCreating   0          4s</pre>
+myapp-5dcbf46dfc-z6hqw   0/1     ContainerCreating   0          4s</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Start a rolling update by changing the image:</p>
 </div>
-<div id="set-image-myboot-v1" class="listingblock">
+<div id="set-image-myboot-v1" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/myboot:v1</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#set-image-myboot-v1"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-6sn2s:188
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-6sn2s:188
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-z6hqw:169
 Aloha from Spring Boot! 0 on myapp-58b97dbd95-vxd87
 Aloha from Spring Boot! 1 on myapp-58b97dbd95-vxd87
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-6sn2s:189
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-z6hqw:170
-Aloha from Spring Boot! 2 on myapp-58b97dbd95-vxd87</pre>
+Aloha from Spring Boot! 2 on myapp-58b97dbd95-vxd87</code></pre>
 </div>
 </div>
-<div id="set-image-myboot-v2" class="listingblock">
+<div id="set-image-myboot-v2" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/myboot:v2</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#set-image-myboot-v2"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Bonjour from Spring Boot! 2 on myapp-7d58855c6b-6c8gd
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Bonjour from Spring Boot! 2 on myapp-7d58855c6b-6c8gd
 Bonjour from Spring Boot! 3 on myapp-7d58855c6b-6c8gd
 Aloha from Spring Boot! 7 on myapp-58b97dbd95-mjlwx
 Bonjour from Spring Boot! 4 on myapp-7d58855c6b-6c8gd
 Aloha from Spring Boot! 8 on myapp-58b97dbd95-mjlwx
-Bonjour from Spring Boot! 5 on myapp-7d58855c6b-6c8gd</pre>
+Bonjour from Spring Boot! 5 on myapp-7d58855c6b-6c8gd</code></pre>
 </div>
 </div>
-<div id="set-image-quarkus-demo" class="listingblock">
+<div id="set-image-quarkus-demo" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/quarkus-demo:v1</code></pre>
 </div>
 </div>
 <button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#set-image-quarkus-demo"><i class="fa fa-clipboard"></i></button><br/>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Bonjour from Spring Boot! 14 on myapp-7d58855c6b-dw67s
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Bonjour from Spring Boot! 14 on myapp-7d58855c6b-dw67s
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-tcfwp:3
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-tcfwp:4
 Bonjour from Spring Boot! 15 on myapp-7d58855c6b-dw67s
@@ -569,13 +569,13 @@ Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-7lf9t:1
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-7rkxj:3
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-7lf9t:2
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-7lf9t:3
-Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-tcfwp:6</pre>
+Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-tcfwp:6</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h3>
-<div id="delete-namespace" class="listingblock">
+<div id="delete-namespace" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete namespace mystuff
 kubectl config set-context --current --namespace=default</code></pre>
