@@ -3,6 +3,7 @@
 [[talk]]
 == Talk to your Cluster
 [#kubectl-view-config]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 echo $KUBECONFIG
@@ -15,6 +16,7 @@ copyToClipboard::kubectl-view-config[]
 == View Nodes
 
 [#kubectl-get-nodes]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get nodes
@@ -29,6 +31,7 @@ copyToClipboard::kubectl-get-nodes[]
 Your Kubernetes vendor likely includes many pods out-of-the-box:
 
 [#kubectl-get-pods]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get pods --all-namespaces
@@ -43,6 +46,7 @@ copyToClipboard::kubectl-get-pods[]
 Create a Namespace and Deploy something:
 
 [#kubectl-deploy-app]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl create namespace mystuff
@@ -56,12 +60,15 @@ copyToClipboard::kubectl-deploy-app[]
 == while monitoring Events
 
 [#kubectl-get-events]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 watch kubectl get events --sort-by=.metadata.creationTimestamp
 ----
 copyToClipboard::kubectl-get-events[]
 
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
 ----
 LAST SEEN   TYPE     REASON              OBJECT                        MESSAGE
 <unknown>   Normal   Scheduled           pod/myapp-5dcbf46dfc-ghrk4    Successfully assigned mystuff/myapp-5dcbf46dfc-ghrk4 to g
@@ -80,12 +87,15 @@ o:1.0.0"
 
 === Deployments
 [#kubectl-get-deployments]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get deployments
 ----
 copyToClipboard::kubectl-get-deployments[]
 
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
 ----
 NAME    READY   UP-TO-DATE   AVAILABLE   AGE
 myapp   1/1     1            1           95s
@@ -93,12 +103,15 @@ myapp   1/1     1            1           95s
 
 === Replicasets
 [#kubectl-get-replicasets]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get replicasets
 ----
 copyToClipboard::kubectl-get-replicasets[]
 
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
 ----
 NAME               DESIRED   CURRENT   READY   AGE
 myapp-5dcbf46dfc   1         1         1       2m1s
@@ -107,12 +120,15 @@ myapp-5dcbf46dfc   1         1         1       2m1s
 === Pods
 
 [#kubectl-get-podsx]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get pods --show-labels
 ----
 copyToClipboard::kubectl-get-podsx[]
 
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
 ----
 NAME                     READY   STATUS    RESTARTS   AGE     LABELS
 myapp-5dcbf46dfc-ghrk4   1/1     Running   0          2m18s   app=myapp,pod-template-hash=5dcbf46dfc
@@ -120,12 +136,15 @@ myapp-5dcbf46dfc-ghrk4   1/1     Running   0          2m18s   app=myapp,pod-temp
 
 === Logs
 [#kubectl-logs]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl logs -l app=myapp
 ----
 copyToClipboard::kubectl-logs[]
 
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
 ----
 2020-03-22 14:41:30,497 INFO  [io.quarkus] (main) Quarkus 0.22.0 started in 0.021s. Listening on: http://0.0.0.0:8080
 2020-03-22 14:41:30,497 INFO  [io.quarkus] (main) Installed features: [cdi, resteasy]
@@ -133,6 +152,7 @@ copyToClipboard::kubectl-logs[]
 
 == Expose a Service
 [#kubectl-expose]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl expose deployment myapp --port=8080 --type=LoadBalancer
@@ -156,6 +176,7 @@ Open three Terminal Windows.
 
 === Terminal 1
 [#watch-pods]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 watch kubectl get pods
@@ -170,6 +191,7 @@ Hosted::
 +
 --
 [#env-vars-openshift]
+[.console-input]
 ----
 IP=$(kubectl get service myapp -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service myapp -o jsonpath="{.spec.ports[*].port}")
@@ -180,6 +202,7 @@ Minikube::
 +
 --
 [#env-vars-minikube]
+[.console-input]
 ----
 IP=$(minikube ip)
 PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")
@@ -191,6 +214,7 @@ copyToClipboard::env-vars-minikube[]
 Poll the endpoint:
 
 [#poll-endpoint]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 while true
@@ -201,6 +225,8 @@ done
 copyToClipboard::poll-endpoint[]
 
 Results of the polling:
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
 ----
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:289
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:290
@@ -214,12 +240,15 @@ Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:293
 Change replicas:
 
 [#change-replicas]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl scale deployment myapp --replicas=3
 ----
 copyToClipboard::change-replicas[]
 
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
 ----
 NAME                     READY   STATUS              RESTARTS   AGE
 myapp-5dcbf46dfc-6sn2s   0/1     ContainerCreating   0          4s
@@ -230,12 +259,15 @@ myapp-5dcbf46dfc-z6hqw   0/1     ContainerCreating   0          4s
 Start a rolling update by changing the image:
 
 [#set-image-myboot-v1]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/myboot:v1
 ----
 copyToClipboard::set-image-myboot-v1[]
 
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
 ----
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-6sn2s:188
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-z6hqw:169
@@ -247,12 +279,15 @@ Aloha from Spring Boot! 2 on myapp-58b97dbd95-vxd87
 ----
 
 [#set-image-myboot-v2]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/myboot:v2
 ----
 copyToClipboard::set-image-myboot-v2[]
 
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
 ----
 Bonjour from Spring Boot! 2 on myapp-7d58855c6b-6c8gd
 Bonjour from Spring Boot! 3 on myapp-7d58855c6b-6c8gd
@@ -263,12 +298,15 @@ Bonjour from Spring Boot! 5 on myapp-7d58855c6b-6c8gd
 ----
 
 [#set-image-quarkus-demo]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/quarkus-demo:v1
 ----
 copyToClipboard::set-image-quarkus-demo[]
 
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
 ----
 Bonjour from Spring Boot! 14 on myapp-7d58855c6b-dw67s
 Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-tcfwp:3
@@ -287,6 +325,7 @@ Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-tcfwp:6
 
 === Clean Up
 [#delete-namespace]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete namespace mystuff
