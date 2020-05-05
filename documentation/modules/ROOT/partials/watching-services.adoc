@@ -1,10 +1,12 @@
 [#{section-k8s}-kubectl-watch-services]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 watch kubectl get services
 ----
-copyToClipboard::{section-k8s}-kubectl-watch-services[]
 
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
 ----
 NAME    TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
 myapp   LoadBalancer   172.30.103.41   <pending>     8080:31974/TCP   4s
@@ -14,6 +16,8 @@ Wait until you see an external IP assigned.
 
 NOTE: On Minikube without an Ingress controller, <pending> will not become a real external IP.  https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/[Optional: Setup Minikube Ingress]
 
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
 ----
 NAME    TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)          AGE
 myapp   LoadBalancer   172.30.103.41   34.71.122.153   8080:31974/TCP   44s

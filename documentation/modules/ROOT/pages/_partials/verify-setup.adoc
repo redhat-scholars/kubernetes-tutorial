@@ -2,14 +2,15 @@
 The following checks ensure that each chapter exercises are done with the right environment settings.
 
 [#minikube-config-view]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 minikube config view
 ----
-copyToClipboard::minikube-config-view[]
 
 The command should return an output as shown:
 
+[.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
 - profile: devnation
@@ -20,14 +21,15 @@ The command should return an output as shown:
 ----
 
 [#k8s-cluster-info]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl cluster-info
 ----
-copyToClipboard::k8s-cluster-info[]
 
 The command should return an output as shown:
 
+[.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
 Kubernetes master is running at https://192.168.99.100:8443
@@ -39,23 +41,22 @@ KubeDNS is running at https://192.168.99.100:8443/api/v1/namespaces/kube-system/
 To further debug and diagnose cluster problems, use `kubectl cluster-info dump`.
 ====
 
-
 * Set your local docker to use the minikube docker daemon
 
 [#minikube-set-env]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 eval $(minikube docker-env)
 ----
-copyToClipboard::minikube-set-env[]
 
 * Kubernetes should be {kubernetes-version}
 
 [#kubectl-version]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl version
 ----
-copyToClipboard::kubectl-version[]
 --
 

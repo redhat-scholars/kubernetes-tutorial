@@ -1,6 +1,6 @@
 [#{section-k8s}-kubectl-watch-pods]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 watch kubectl get pods
 ----
-copyToClipboard::{section-k8s}-kubectl-watch-pods[]

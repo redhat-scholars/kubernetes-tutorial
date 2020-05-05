@@ -9,6 +9,7 @@ The logs could be watched using the command:
 kubectl::
 +
 --
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl logs -n {kube-ns} -f <pod-name> -c user-container
@@ -18,6 +19,7 @@ oc::
 +
 --
 
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 oc logs -n {kube-ns} -f <pod-name> -c user-container
@@ -29,6 +31,7 @@ oc logs -n {kube-ns} -f <pod-name> -c user-container
 ====
 * Using stern with the command `stern  -n {kube-ns} {kube-svc}`, to filter the logs further add `-c user-container` to the stern command.
 
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 stern -n {kube-ns} -c user-container {kube-svc} 

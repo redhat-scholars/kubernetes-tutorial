@@ -1,6 +1,6 @@
 [#{section-k8s}-kubectl-describe-deployment]
+[.console-input]
 [source, bash,subs="+macros,+attributes"]
 ----
 kubectl describe deployment {describe-deployment-name}
 ----
-copyToClipboard::{section-k8s}-kubectl-describe-deployment[]
