@@ -188,7 +188,6 @@ kubectl config set-context --current --namespace=myspace
 kubens myspace</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-namespace"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 <div class="sect1">
@@ -211,7 +210,6 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-pod"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Watch the pod lifecycle:</p>
 </div>
@@ -220,7 +218,6 @@ EOF</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#watch-pod"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME           READY   STATUS              RESTARTS   AGE
@@ -244,7 +241,6 @@ quarkus-demo   1/1     Running   0          18s</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it quarkus-demo /bin/sh</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#verify-pod"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Run the next command.
 Notice that as you are inside the container instance, the hostname is <code>localhost</code>.</p>
@@ -254,7 +250,6 @@ Notice that as you are inside the container instance, the hostname is <code>loca
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-inside-pod"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Supersonic Subatomic Java with Quarkus quarkus-demo:1
@@ -269,13 +264,11 @@ exit</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pod quarkus-demo</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#delete-naked-pod"><i class="fa fa-clipboard"></i></button><br/>
 <div id="watch-all-naked-pod" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#watch-all-naked-pod"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME           READY   STATUS        RESTARTS   AGE
@@ -319,7 +312,6 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-replicaset"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Get the pods with labels:</p>
 </div>
@@ -328,7 +320,6 @@ EOF</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods --show-labels</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#replicaset-show-labels"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                    READY   STATUS    RESTARTS   AGE   LABELS
@@ -342,7 +333,6 @@ rs-quarkus-demo-t26gt   1/1     Running   0          58s   app=quarkus-demo,env=
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get rs</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-rs"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME              DESIRED   CURRENT   READY   AGE
@@ -357,7 +347,6 @@ rs-quarkus-demo   3         3         3       79s</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe rs rs-quarkus-demo</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#describe-rs-quarkus-demo"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Name:         rs-quarkus-demo
@@ -395,7 +384,6 @@ Events:
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pod rs-quarkus-demo-mlnng -o json | jq ".metadata.ownerReferences[]"</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rs-owned-ref"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>{
@@ -416,7 +404,6 @@ Events:
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pod rs-quarkus-demo-mlnng</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#delete-pod-rs"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>And a new pod will spring to life to replace it:</p>
 </div>
@@ -436,7 +423,6 @@ rs-quarkus-demo-t26gt   1/1     Running             0          109s   app=quarku
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete rs rs-quarkus-demo</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#delete-rs"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 <div class="sect1">
@@ -469,13 +455,11 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-deployment"><i class="fa fa-clipboard"></i></button><br/>
 <div id="pod-show-labels-dep" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods --show-labels</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#pod-show-labels-dep"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                                       READY   STATUS    RESTARTS   AGE   LABELS
@@ -489,7 +473,6 @@ quarkus-demo-deployment-5979886fb7-grf59   1/1     Running   0          17s   ap
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it quarkus-demo-deployment-5979886fb7-c888m -- curl localhost:8080</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#exec-inside-pod-labels"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-c888m:1</pre>
@@ -511,6 +494,7 @@ This is an important element in Kubernetes ecosystem.</p>
 <footer class="footer">
   <p class="rhd-logo">Test</p>
 </footer>
+<script src="../_/js/vendor/clipboard.js"></script>
 <script src="../_/js/site.js"></script>
 <script async src="../_/js/vendor/highlight.js"></script>
   </body>

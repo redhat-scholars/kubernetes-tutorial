@@ -187,7 +187,6 @@
 kubectl config set-context --current --namespace=funstuff</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-namespace"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 <div class="sect1">
@@ -218,7 +217,6 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-mypython"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 <div class="sect1">
@@ -249,7 +247,6 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-mygo"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 <div class="sect1">
@@ -280,13 +277,11 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-mynode"><i class="fa fa-clipboard"></i></button><br/>
 <div id="labels-service-magic" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods --show-labels</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#labels-service-magic"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                                   READY   STATUS    RESTARTS   AGE     LABELS
@@ -314,19 +309,16 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-myservice"><i class="fa fa-clipboard"></i></button><br/>
 <div id="describe-myservice-service-magic" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe service my-service</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#describe-myservice-service-magic"><i class="fa fa-clipboard"></i></button><br/>
 <div id="get-endpoints-myservice" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-endpoints-myservice"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME         ENDPOINTS   AGE
@@ -339,7 +331,6 @@ my-service   &lt;none&gt;      2m6s</pre>
 jq: error (at &lt;stdin&gt;:18): Cannot iterate over null (null)</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-endpoints1"><i class="fa fa-clipboard"></i></button><br/>
 <div class="tabset is-loading">
 <div class="ulist tabs">
 <ul>
@@ -362,7 +353,9 @@ jq: error (at &lt;stdin&gt;:18): Cannot iterate over null (null)</code></pre>
 PORT=$(kubectl get service my-service -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#servicemagic-ip-port-openshift"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::{section-k8s}-ip-port-openshift[]</p>
+</div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_minikube">
 <div id="servicemagic-ip-port-minikube" class="listingblock">
@@ -371,7 +364,9 @@ PORT=$(kubectl get service my-service -o jsonpath="{.spec.ports[*].port}")</code
 PORT=$(kubectl get service/my-service -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#servicemagic-ip-port-minikube"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::{section-k8s}-ip-port-minikube[]</p>
+</div>
 </div>
 </div>
 </div>
@@ -383,7 +378,9 @@ PORT=$(kubectl get service/my-service -o jsonpath="{.spec.ports[*].nodePort}")</
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#servicemagic-curl-the-service"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::{section-k8s}-curl-the-service[]</p>
+</div>
 <div class="paragraph">
 <p>And run loop script:</p>
 </div>
@@ -395,7 +392,9 @@ sleep .3
 done</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#servicemagic-curl-loop"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::{section-k8s}-curl-loop[]</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre>curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
@@ -407,7 +406,6 @@ curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused</pre
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label pod -l app=mypython inservice=mypods</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#label-mypython"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
@@ -421,7 +419,6 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label pod -l app=mynode inservice=mypods</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#label-mynode"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Python Hello on mypython-deployment-6874f84d85-2kpjl
@@ -438,7 +435,6 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label pod -l app=mygo inservice=mypods</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#label-mygo"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Node Hello on mynode-deployment-fb5457c5-hhz7h 59
@@ -453,7 +449,6 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-endpoints2"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>"10.130.2.43"
@@ -469,7 +464,6 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods -o wide</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#pod-ips"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Remove <code>mypython</code> Pod from the Service:</p>
 </div>
@@ -478,13 +472,11 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label pod -l app=mypython inservice-</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#remove-label"><i class="fa fa-clipboard"></i></button><br/>
 <div id="get-endpoints3" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-endpoints3"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>"10.130.2.44"
@@ -501,7 +493,6 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete namespace funstuff</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#clean-up"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 </article>
@@ -514,6 +505,7 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
 <footer class="footer">
   <p class="rhd-logo">Test</p>
 </footer>
+<script src="../_/js/vendor/clipboard.js"></script>
 <script src="../_/js/site.js"></script>
 <script async src="../_/js/vendor/highlight.js"></script>
   </body>

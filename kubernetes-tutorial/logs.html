@@ -214,7 +214,6 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-deployment"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Make sure you are running 3 replicas (3 pods/instances of your application):</p>
 </div>
@@ -223,7 +222,6 @@ EOF</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployment my-deployment -o json | jq '.status.replicas'</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-get-replicas"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>If not, scale up to 3:</p>
 </div>
@@ -232,7 +230,6 @@ EOF</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale --replicas=3 deployment/my-deployment</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-scale-replicas"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                             READY   STATUS    RESTARTS   AGE
@@ -246,7 +243,6 @@ my-deployment-5dc67997c7-s4jc6   1/1     Running   0          34s</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs my-deployment-5dc67997c7-m7z9f</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-log-deployment"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>  .   ____          _            __ _ _
@@ -266,7 +262,6 @@ my-deployment-5dc67997c7-s4jc6   1/1     Running   0          34s</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs my-deployment-5dc67997c7-m7z9f -f</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-log-deployment-follow"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>And in another Terminal:</p>
 </div>
@@ -302,7 +297,6 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-service"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>In another Terminal, loop and curl that service</p>
 </div>
@@ -328,7 +322,9 @@ EOF</code></pre>
 PORT=$(kubectl get service the-service -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-ip-port-openshift"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::{section-k8s}-ip-port-openshift[]</p>
+</div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_minikube">
 <div id="logs-ip-port-minikube" class="listingblock">
@@ -337,7 +333,9 @@ PORT=$(kubectl get service the-service -o jsonpath="{.spec.ports[*].port}")</cod
 PORT=$(kubectl get service/the-service -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-ip-port-minikube"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::{section-k8s}-ip-port-minikube[]</p>
+</div>
 </div>
 </div>
 </div>
@@ -349,7 +347,9 @@ PORT=$(kubectl get service/the-service -o jsonpath="{.spec.ports[*].nodePort}")<
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-curl-the-service"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::{section-k8s}-curl-the-service[]</p>
+</div>
 <div class="paragraph">
 <p>Start sending request in a loop:</p>
 </div>
@@ -361,7 +361,9 @@ sleep .3
 done</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#logs-curl-loop"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::{section-k8s}-curl-loop[]</p>
+</div>
 <div class="paragraph">
 <p>Then use Stern to view the logs across all pods</p>
 </div>
@@ -370,7 +372,6 @@ done</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">stern my-deployment</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#stern-my-deployment"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>my-deployment-5dc67997c7-5bq4n myapp Aloha from my-deployment-5dc67997c7-5bq4n
@@ -388,13 +389,11 @@ my-deployment-5dc67997c7-s4jc6 myapp Aloha from my-deployment-5dc67997c7-s4jc6</
 brew install boz/repo/kail</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#install-kail"><i class="fa fa-clipboard"></i></button><br/>
 <div id="run-kail" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kail --deploy=my-deployment -c myapp --since=1h</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#run-kail"><i class="fa fa-clipboard"></i></button><br/>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -425,7 +424,6 @@ brew install boz/repo/kail</code></pre>
 kubectl delete deployment my-deployment</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#clean-up"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 </article>
@@ -438,6 +436,7 @@ kubectl delete deployment my-deployment</code></pre>
 <footer class="footer">
   <p class="rhd-logo">Test</p>
 </footer>
+<script src="../_/js/vendor/clipboard.js"></script>
 <script src="../_/js/site.js"></script>
 <script async src="../_/js/vendor/highlight.js"></script>
   </body>

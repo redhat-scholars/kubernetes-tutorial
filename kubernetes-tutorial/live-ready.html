@@ -186,7 +186,9 @@
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl config set-context --current --namespace=myspace</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#liveready-change-context-resource"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::liveready-change-context-resource[]</p>
+</div>
 <div class="paragraph">
 <p>Make sure nothing else is deployed:</p>
 </div>
@@ -195,7 +197,6 @@
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get all</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#no-resources-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>No resources found in myspace namespace.</pre>
@@ -251,7 +252,6 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-app-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Describe the deployment:</p>
 </div>
@@ -260,7 +260,9 @@ EOF</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe deployment myboot</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#live-ready-kubectl-describe-deployment"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::live-ready-kubectl-describe-deployment[]</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre>...
@@ -286,7 +288,6 @@ EOF</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-service.yml</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-service-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 <div class="tabset is-loading">
 <div class="ulist tabs">
 <ul>
@@ -309,7 +310,9 @@ EOF</code></pre>
 PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#liveready-ip-port-openshift"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::live-ready-ip-port-openshift[]</p>
+</div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_minikube">
 <div id="liveready-ip-port-minikube" class="listingblock">
@@ -318,7 +321,9 @@ PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></p
 PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#liveready-ip-port-minikube"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::live-ready-ip-port-minikube[]</p>
+</div>
 </div>
 </div>
 </div>
@@ -330,7 +335,9 @@ PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#liveready-curl-the-service"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::live-ready-curl-the-service[]</p>
+</div>
 <div class="paragraph">
 <p>And run loop script:</p>
 </div>
@@ -342,7 +349,9 @@ sleep .3
 done</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#liveready-curl-loop"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::live-ready-curl-loop[]</p>
+</div>
 <div class="paragraph">
 <p>Change the image:</p>
 </div>
@@ -351,7 +360,6 @@ done</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/myboot:v2</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#change-deployment-v2-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>And notice the error free rolling update:</p>
 </div>
@@ -376,7 +384,6 @@ Bonjour from Spring Boot! 3 on myboot-8449d5468d-m88z4</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints myboot -o json | jq '.subsets[].addresses[].ip'</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-endpoints-before"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>These are the Pod IPs that have passed their readiness probe:</p>
 </div>
@@ -402,7 +409,6 @@ curl localhost:8080/misbehave
 exit</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#misbehave-app-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>See that the pod is no longer Ready:</p>
 </div>
@@ -422,7 +428,6 @@ myboot-845968c6ff-zsgx2   1/1     Running   0          11m</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints myboot -o json | jq '.subsets[].addresses[].ip'</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-endpoints-after"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>And that pod is now missing from the Service&#8217;s loadbalancer:</p>
 </div>
@@ -452,7 +457,6 @@ Aloha from Spring Boot! 846 on myboot-845968c6ff-9wshg</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/myboot:v3</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#change-deployment-v3-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Let the rollout finish to completion across all 3 replicas:</p>
 </div>
@@ -485,7 +489,6 @@ Jambo from Spring Boot! 71 on myboot-56659c9d69-6sglj</pre>
 kubectl edit deployment myboot</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#change-liveness-v3-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>And chnage the liveness probe:</p>
 </div>
@@ -531,7 +534,6 @@ myboot-558b4f8678-z7f9n   1/1     Running       0          36s</pre>
 curl localhost:8080/shot</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#shot-v3-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>And you will see it get restarted:</p>
 </div>
@@ -578,7 +580,6 @@ Jambo from Spring Boot! 176 on myboot-558b4f8678-z7f9n</pre>
 kubectl delete service myboot</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#cleanup-live-ready"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 </article>
@@ -591,6 +592,7 @@ kubectl delete service myboot</code></pre>
 <footer class="footer">
   <p class="rhd-logo">Test</p>
 </footer>
+<script src="../_/js/vendor/clipboard.js"></script>
 <script src="../_/js/site.js"></script>
 <script async src="../_/js/vendor/highlight.js"></script>
   </body>

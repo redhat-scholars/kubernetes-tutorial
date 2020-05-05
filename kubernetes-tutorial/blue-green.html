@@ -189,7 +189,9 @@
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl config set-context --current --namespace=myspace</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#bluegreen-change-context-resource"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::bluegreen-change-context-resource[]</p>
+</div>
 <div class="paragraph">
 <p>Make sure nothing else is deployed:</p>
 </div>
@@ -198,7 +200,6 @@
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get all</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#no-resources-blue-green"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>No resources found in myspace namespace.</pre>
@@ -212,7 +213,6 @@
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-v1-blue-green"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Scale to 2 replicas:</p>
 </div>
@@ -221,7 +221,6 @@
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale deployment/myboot --replicas=2</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#scale-v1-blue-green"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Watch and <code>show-labels</code>:</p>
 </div>
@@ -230,7 +229,6 @@
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods --show-labels</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#labels-v1-blue-green"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Deploy the service:</p>
 </div>
@@ -239,7 +237,6 @@
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-service.yml</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-service-blue-green"><i class="fa fa-clipboard"></i></button><br/>
 <div class="tabset is-loading">
 <div class="ulist tabs">
 <ul>
@@ -262,7 +259,9 @@
 PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#bluegreen-ip-port-openshift"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::bluegreen-ip-port-openshift[]</p>
+</div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_minikube">
 <div id="bluegreen-ip-port-minikube" class="listingblock">
@@ -271,7 +270,9 @@ PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></p
 PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#bluegreen-ip-port-minikube"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::bluegreen-ip-port-minikube[]</p>
+</div>
 </div>
 </div>
 </div>
@@ -283,7 +284,9 @@ PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#bluegreen-curl-the-service"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::bluegreen-curl-the-service[]</p>
+</div>
 <div class="paragraph">
 <p>And run loop script:</p>
 </div>
@@ -295,7 +298,9 @@ sleep .3
 done</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#bluegreen-curl-loop"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::bluegreen-curl-loop[]</p>
+</div>
 <div class="paragraph">
 <p>Deploy V2 of <code>myboot</code>:</p>
 </div>
@@ -304,7 +309,6 @@ done</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits-v2.yml</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-v2-blue-green"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Verify that the new pod/deployment carries the new code:</p>
 </div>
@@ -314,7 +318,6 @@ done</code></pre>
 kubectl exec -it $PODNAME -- curl localhost:8080</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#exec-v2-blue-green"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Bonjour from Spring Boot! 1 on myboot-next-66b68c6659-ftcjr</pre>
@@ -328,7 +331,6 @@ kubectl exec -it $PODNAME -- curl localhost:8080</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl patch svc/myboot -p '{"spec":{"selector":{"app":"myboot-next"}}}'</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#patch-service-green"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Aloha from Spring Boot! 240 on myboot-d78fb6d58-929wn
@@ -348,7 +350,6 @@ Bonjour from Spring Boot! 4 on myboot-next-66b68c6659-ftcjr</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl patch svc/myboot -p '{"spec":{"selector":{"app":"myboot"}}}'</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#patch-service-blue"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Bonjour from Spring Boot! 17 on myboot-next-66b68c6659-ftcjr
@@ -368,7 +369,6 @@ kubectl delete deployment myboot
 kubectl delete deployment myboot-next</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#clean"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 </article>
@@ -381,6 +381,7 @@ kubectl delete deployment myboot-next</code></pre>
 <footer class="footer">
   <p class="rhd-logo">Test</p>
 </footer>
+<script src="../_/js/vendor/clipboard.js"></script>
 <script src="../_/js/site.js"></script>
 <script async src="../_/js/vendor/highlight.js"></script>
   </body>

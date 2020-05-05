@@ -204,7 +204,6 @@
 kubectl api-resources</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-crds"><i class="fa fa-clipboard"></i></button><br/>
 <div class="sect2">
 <h3 id="_example_crd"><a class="anchor" href="#_example_crd"></a>Example CRD</h3>
 <div class="listingblock">
@@ -239,7 +238,6 @@ spec:
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/pizzas/pizza-crd.yaml</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#add-pizzas"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 <div class="sect2">
 <h3 id="_now_part_of_the_api"><a class="anchor" href="#_now_part_of_the_api"></a>Now part of the API</h3>
@@ -248,7 +246,6 @@ spec:
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get crds | grep pizza</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-pizzas-crds"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Results:</p>
 </div>
@@ -262,7 +259,6 @@ spec:
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl api-resources | grep burr</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-api-pizzas-crds"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Results:</p>
 </div>
@@ -287,7 +283,6 @@ kubectl get pizzas
 kubectl describe pizza burrcheese</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-pizzas-crds"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 <div class="sect2">
 <h3 id="_make_more_pizzas"><a class="anchor" href="#_make_more_pizzas"></a>Make more Pizzas</h3>
@@ -300,7 +295,6 @@ kubectl apply -f apps/pizzas/veggie-lovers.yaml
 kubectl get pizzas --all-namespaces</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-more-pizzas-crds"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 <div class="sect2">
 <h3 id="_eat_all_pizzas"><a class="anchor" href="#_eat_all_pizzas"></a>Eat all Pizzas</h3>
@@ -309,7 +303,6 @@ kubectl get pizzas --all-namespaces</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pizzas --all</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#delete-pizzas-crds"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 </div>
@@ -330,7 +323,6 @@ kubectl get pizzas --all-namespaces</code></pre>
 kubectl config set-context --current --namespace=franz</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-namespace-franz"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>For minikube, the instructions for installation can be found here:</p>
 </div>
@@ -347,7 +339,6 @@ kubectl config set-context --current --namespace=franz</code></pre>
 kubectl create -f <a href="https://operatorhub.io/install/strimzi-kafka-operator.yaml" class="bare">https://operatorhub.io/install/strimzi-kafka-operator.yaml</a></code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#minikube-install"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 <div class="sect2">
 <h3 id="_kafka_for_openshift"><a class="anchor" href="#_kafka_for_openshift"></a>Kafka for OpenShift</h3>
@@ -363,7 +354,6 @@ kubectl create -f <a href="https://operatorhub.io/install/strimzi-kafka-operator
 kubectl get crds | grep kafka</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#verify-install"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Start a watch in another terminal:</p>
 </div>
@@ -372,7 +362,6 @@ kubectl get crds | grep kafka</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#watch-pods"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Then deploy the resource requesting a Kafka cluster:</p>
 </div>
@@ -381,7 +370,6 @@ kubectl get crds | grep kafka</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/mykafka.yml</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-cluster"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                                          READY   STATUS    RESTARTS   AGE
@@ -402,7 +390,6 @@ my-cluster-zookeeper-2                        2/2     Running   0          92s</
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get kafkas</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-kafkas-crd"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME         DESIRED KAFKA REPLICAS   DESIRED ZK REPLICAS
@@ -420,7 +407,6 @@ kubectl delete kafka my-cluster
 kubectl delete namespace franz</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#clean-up"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 </div>
@@ -434,6 +420,7 @@ kubectl delete namespace franz</code></pre>
 <footer class="footer">
   <p class="rhd-logo">Test</p>
 </footer>
+<script src="../_/js/vendor/clipboard.js"></script>
 <script src="../_/js/site.js"></script>
 <script async src="../_/js/vendor/highlight.js"></script>
   </body>

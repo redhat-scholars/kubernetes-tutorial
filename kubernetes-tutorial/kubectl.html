@@ -185,7 +185,6 @@
 kubectl config view</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-view-config"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 <div class="sect1">
@@ -198,7 +197,6 @@ kubectl get nodes --show-labels
 kubectl get namespaces</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-get-nodes"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 <div class="sect1">
@@ -214,7 +212,6 @@ kubectl get pods --all-namespaces --show-labels
 kubectl get pods --all-namespaces -o wide</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-get-pods"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 <div class="sect1">
@@ -231,7 +228,6 @@ kubectl config set-context --current --namespace=mystuff
 kubectl create deployment myapp --image=quay.io/rhdevelopers/quarkus-demo:v1</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-deploy-app"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 <div class="sect1">
@@ -242,7 +238,6 @@ kubectl create deployment myapp --image=quay.io/rhdevelopers/quarkus-demo:v1</co
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get events --sort-by=.metadata.creationTimestamp</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-get-events"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">LAST SEEN   TYPE     REASON              OBJECT                        MESSAGE
@@ -269,7 +264,6 @@ o:1.0.0"
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployments</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-get-deployments"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME    READY   UP-TO-DATE   AVAILABLE   AGE
@@ -284,7 +278,6 @@ myapp   1/1     1            1           95s</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get replicasets</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-get-replicasets"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME               DESIRED   CURRENT   READY   AGE
@@ -299,7 +292,6 @@ myapp-5dcbf46dfc   1         1         1       2m1s</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods --show-labels</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-get-podsx"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS    RESTARTS   AGE     LABELS
@@ -314,7 +306,6 @@ myapp-5dcbf46dfc-ghrk4   1/1     Running   0          2m18s   app=myapp,pod-temp
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs -l app=myapp</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-logs"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">2020-03-22 14:41:30,497 INFO  [io.quarkus] (main) Quarkus 0.22.0 started in 0.021s. Listening on: <a href="http://0.0.0.0:8080" class="bare">http://0.0.0.0:8080</a>
@@ -332,7 +323,6 @@ myapp-5dcbf46dfc-ghrk4   1/1     Running   0          2m18s   app=myapp,pod-temp
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl expose deployment myapp --port=8080 --type=LoadBalancer</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-expose"><i class="fa fa-clipboard"></i></button><br/>
 <div class="sect2">
 <h3 id="_while_watching_services"><a class="anchor" href="#_while_watching_services"></a>while watching Services</h3>
 <div id="kubectl-kubectl-watch-services" class="listingblock">
@@ -340,7 +330,9 @@ myapp-5dcbf46dfc-ghrk4   1/1     Running   0          2m18s   app=myapp,pod-temp
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get services</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-kubectl-watch-services"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::kubectl-kubectl-watch-services[]</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre>NAME    TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
@@ -396,7 +388,9 @@ myapp   LoadBalancer   172.30.103.41   34.71.122.153   8080:31974/TCP   44s</pre
 PORT=$(kubectl get service myapp -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-ip-port-openshift"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::kubectl-ip-port-openshift[]</p>
+</div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_minikube">
 <div id="kubectl-ip-port-minikube" class="listingblock">
@@ -405,7 +399,9 @@ PORT=$(kubectl get service myapp -o jsonpath="{.spec.ports[*].port}")</code></pr
 PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-ip-port-minikube"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::kubectl-ip-port-minikube[]</p>
+</div>
 </div>
 </div>
 </div>
@@ -417,7 +413,9 @@ PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</code>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#kubectl-curl-the-service"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::kubectl-curl-the-service[]</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -433,7 +431,6 @@ PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</code>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#watch-pods"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 <div class="sect2">
 <h3 id="_terminal_2"><a class="anchor" href="#_terminal_2"></a>Terminal 2</h3>
@@ -452,20 +449,18 @@ PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</code>
 <div class="tab-pane" aria-labelledby="tabset2_hosted">
 <div id="env-vars-openshift" class="listingblock console-input">
 <div class="content">
-<pre>IP=$(kubectl get service myapp -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-PORT=$(kubectl get service myapp -o jsonpath="{.spec.ports[*].port}")</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myapp -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+PORT=$(kubectl get service myapp -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#env-vars-openshift"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 <div class="tab-pane" aria-labelledby="tabset2_minikube">
 <div id="env-vars-minikube" class="listingblock console-input">
 <div class="content">
-<pre>IP=$(minikube ip)
-PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
+PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#env-vars-minikube"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 </div>
@@ -480,7 +475,6 @@ sleep .3
 done</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#poll-endpoint"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Results of the polling:</p>
 </div>
@@ -504,7 +498,6 @@ Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-ghrk4:293</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale deployment myapp --replicas=3</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#change-replicas"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS              RESTARTS   AGE
@@ -521,7 +514,6 @@ myapp-5dcbf46dfc-z6hqw   0/1     ContainerCreating   0          4s</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/myboot:v1</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#set-image-myboot-v1"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-6sn2s:188
@@ -538,7 +530,6 @@ Aloha from Spring Boot! 2 on myapp-58b97dbd95-vxd87</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/myboot:v2</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#set-image-myboot-v2"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Bonjour from Spring Boot! 2 on myapp-7d58855c6b-6c8gd
@@ -554,7 +545,6 @@ Bonjour from Spring Boot! 5 on myapp-7d58855c6b-6c8gd</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/quarkus-demo:v1</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#set-image-quarkus-demo"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Bonjour from Spring Boot! 14 on myapp-7d58855c6b-dw67s
@@ -581,7 +571,6 @@ Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-tcfwp:6</code></pre>
 kubectl config set-context --current --namespace=default</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#delete-namespace"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 </div>
@@ -595,6 +584,7 @@ kubectl config set-context --current --namespace=default</code></pre>
 <footer class="footer">
   <p class="rhd-logo">Test</p>
 </footer>
+<script src="../_/js/vendor/clipboard.js"></script>
 <script src="../_/js/site.js"></script>
 <script async src="../_/js/vendor/highlight.js"></script>
   </body>

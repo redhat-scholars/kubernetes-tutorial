@@ -189,7 +189,6 @@ java -jar target/boot-demo-1.0.0.jar
 curl localhost:8080</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#build-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Aloha from Spring Boot! 1 on unknown</pre>
@@ -220,7 +219,6 @@ change "quay.io" for your registry (e.g. <code>docker.io</code>) and "rhdevelope
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker build -t quay.io/rhdevelopers/myboot:v1 .</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#build-container--building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Results:</p>
 </div>
@@ -262,13 +260,11 @@ Successfully tagged quay.io/rhdevelopers/myboot:v1</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -p 8080:8080 --name myboot quay.io/rhdevelopers/myboot:v1</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#run-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div id="curl-container-building-images" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Aloha from Spring Boot! 1 on 76851270a3e7</pre>
@@ -279,7 +275,6 @@ Successfully tagged quay.io/rhdevelopers/myboot:v1</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/sysresources</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-sys-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Memory: 1268 Cores: 3</pre>
@@ -298,7 +293,6 @@ Successfully tagged quay.io/rhdevelopers/myboot:v1</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/consume</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-consume-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Allocated about 80% (1.2 GiB) of the max allowed JVM memory size (1.2 GiB)</pre>
@@ -320,7 +314,6 @@ Successfully tagged quay.io/rhdevelopers/myboot:v1</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdevelopers/myboot:v1</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#run-container-constrained-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Ask for the container&#8217;s resources:</p>
 </div>
@@ -329,7 +322,6 @@ Successfully tagged quay.io/rhdevelopers/myboot:v1</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/sysresources</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-sys-constrained-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Memory: 1268 Cores: 3</pre>
@@ -343,7 +335,6 @@ Successfully tagged quay.io/rhdevelopers/myboot:v1</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/consume</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-consume-crash-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 <div class="sect1">
@@ -357,7 +348,6 @@ Successfully tagged quay.io/rhdevelopers/myboot:v1</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker build -t quay.io/rhdevelopers/myboot:v1 -f Dockerfile_Memory .</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#build-mem-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Now docker run it:</p>
 </div>
@@ -366,7 +356,6 @@ Successfully tagged quay.io/rhdevelopers/myboot:v1</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdevelopers/myboot:v1</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#run-sys-constrained-fix-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>And <code>curl</code> it:</p>
 </div>
@@ -375,7 +364,6 @@ Successfully tagged quay.io/rhdevelopers/myboot:v1</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/sysresources</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-sys-constrained-fix-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Memory: 112 Cores: 3</pre>
@@ -389,7 +377,6 @@ Successfully tagged quay.io/rhdevelopers/myboot:v1</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/consume</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-consume-fix-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Allocated about 80% (98.0 MiB) of the max allowed JVM memory size (112.0 MiB)</pre>
@@ -405,7 +392,6 @@ Successfully tagged quay.io/rhdevelopers/myboot:v1</pre>
 docker push quay.io/rhdevelopers/myboot:v1</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#push-container-building-images"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>.
@@ -430,6 +416,7 @@ v1: digest: sha256:d22d4af6e297a024b061dbaae05be76c771fdb1db51643dc2dd8b8e047f79
 <footer class="footer">
   <p class="rhd-logo">Test</p>
 </footer>
+<script src="../_/js/vendor/clipboard.js"></script>
 <script src="../_/js/site.js"></script>
 <script async src="../_/js/vendor/highlight.js"></script>
   </body>

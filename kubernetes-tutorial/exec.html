@@ -199,7 +199,6 @@ kubectl exec {podname} /somecommand</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-pods-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                     READY   STATUS    RESTARTS   AGE
@@ -215,7 +214,6 @@ myboot-d78fb6d58-69kl7   1/1     Running   2          32m</pre>
 kubectl exec -it $PODNAME /bin/bash</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#exec-pod-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Run <code>ps</code> command to see the current running processes:</p>
 </div>
@@ -224,7 +222,6 @@ kubectl exec -it $PODNAME /bin/bash</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ps -ef</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#exec-ps-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>UID          PID    PPID  C STIME TTY          TIME CMD
@@ -242,7 +239,6 @@ kubectl exec -it $PODNAME /bin/bash</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">top</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#exec-top-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>top - 19:29:34 up 2 days,  7:02,  0 users,  load average: 0.16, 0.13, 0.14
@@ -266,7 +262,6 @@ KiB Swap:        0 total,        0 free,        0 used. 13142476 avail Mem
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat /etc/os-release</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#exec-cat-release-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
@@ -287,7 +282,6 @@ BUG_REPORT_URL="https://bugs.debian.org/"</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">free -h</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#exec-free-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>              total        used        free      shared  buff/cache   available
@@ -306,7 +300,6 @@ Swap:            0B          0B          0B</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/sysresources</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-sysresources-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Memory: 1324 Cores: 4</pre>
@@ -346,7 +339,6 @@ OpenJDK Runtime Environment (build 1.8.0_181-8u181-b13-2~deb9u1-b13)
 OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#java-version-181-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Ask the JVM about its resource availability:</p>
 </div>
@@ -355,7 +347,6 @@ OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">java -XshowSettings:vm -version</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#java-version-181-settings-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>VM settings:
@@ -377,7 +368,6 @@ OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)</pre>
 cat memory.limit_in_bytes</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#cat-cgroup-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>419430400</pre>
@@ -394,7 +384,6 @@ cat memory.limit_in_bytes</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XshowSettings:vm -version</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#java-version-131-settings-exec"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>VM settings:
@@ -438,6 +427,7 @@ kubectl delete service myboot</pre>
 <footer class="footer">
   <p class="rhd-logo">Test</p>
 </footer>
+<script src="../_/js/vendor/clipboard.js"></script>
 <script src="../_/js/site.js"></script>
 <script async src="../_/js/vendor/highlight.js"></script>
   </body>

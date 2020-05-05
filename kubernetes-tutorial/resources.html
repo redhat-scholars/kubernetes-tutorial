@@ -184,7 +184,9 @@
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl config set-context --current --namespace=myspace</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#resource-change-context-resource"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::resource-change-context-resource[]</p>
+</div>
 <div class="paragraph">
 <p>Make sure nothing is running in your namespace:</p>
 </div>
@@ -193,7 +195,6 @@
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get all</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#no-resources-resource"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>No resources found in myspace namespace.</pre>
@@ -207,7 +208,6 @@
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment.yml</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#no-limits-resource"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Describe the pod:</p>
 </div>
@@ -217,7 +217,9 @@
 kubectl describe $PODNAME</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#resource-kubectl-describe-services"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::resource-kubectl-describe-services[]</p>
+</div>
 <div class="paragraph">
 <p>There are not resource limits configured for the pod.</p>
 </div>
@@ -294,7 +296,6 @@ Events:
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete deployment myboot</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#delete-deployment-resource"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Create a new deployment with resource requests:</p>
 </div>
@@ -303,7 +304,6 @@ Events:
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment-resources.yml</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#limits-resource"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>And check the status of the Pod:</p>
 </div>
@@ -312,7 +312,6 @@ Events:
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#limits-get-pod-resource"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                      READY   STATUS    RESTARTS   AGE
@@ -327,7 +326,6 @@ myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get events --sort-by=.metadata.creationTimestamp</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#get-events-resource"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>&lt;unknown&gt;   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.
@@ -346,7 +344,9 @@ myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s</pre>
 kubectl describe $PODNAME</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#resource-limit-kubectl-describe-services"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::resource-limit-kubectl-describe-services[]</p>
+</div>
 <div class="paragraph">
 <p>Delete the deployment:</p>
 </div>
@@ -355,7 +355,6 @@ kubectl describe $PODNAME</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-deployment-resources.yml</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#delete-deployment-limit-resource"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Create a new deployment with a more sane resource request and a hard limit:</p>
 </div>
@@ -364,7 +363,6 @@ kubectl describe $PODNAME</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#apply-deployment-sane-limit-resource"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Describe the Pod:</p>
 </div>
@@ -374,7 +372,9 @@ kubectl describe $PODNAME</code></pre>
 kubectl describe $PODNAME</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#resource-soft-limit-kubectl-describe-services"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::resource-soft-limit-kubectl-describe-services[]</p>
+</div>
 <div class="paragraph">
 <p>Deploy the service:</p>
 </div>
@@ -383,7 +383,6 @@ kubectl describe $PODNAME</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-service.yml</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#apply-service-sane-limit-resource"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>And watch your Pods:</p>
 </div>
@@ -392,7 +391,9 @@ kubectl describe $PODNAME</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#resource-soft-limit-kubectl-watch-pods"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::resource-soft-limit-kubectl-watch-pods[]</p>
+</div>
 <div class="paragraph">
 <p>In another Terminal, loop and curl that service</p>
 </div>
@@ -418,7 +419,9 @@ kubectl describe $PODNAME</code></pre>
 PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#resource-soft-limit-ip-port-openshift"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::resource-soft-limit-ip-port-openshift[]</p>
+</div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_minikube">
 <div id="resource-soft-limit-ip-port-minikube" class="listingblock">
@@ -427,7 +430,9 @@ PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></p
 PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#resource-soft-limit-ip-port-minikube"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::resource-soft-limit-ip-port-minikube[]</p>
+</div>
 </div>
 </div>
 </div>
@@ -439,7 +444,9 @@ PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#resource-soft-limit-curl-the-service"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::resource-soft-limit-curl-the-service[]</p>
+</div>
 <div class="paragraph">
 <p>Execute in loop:</p>
 </div>
@@ -451,7 +458,9 @@ sleep .3
 done</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#resource-soft-limit-curl-loop"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::resource-soft-limit-curl-loop[]</p>
+</div>
 <div class="paragraph">
 <p>In yet another terminal window, curl the /sysresources endpoint</p>
 </div>
@@ -460,7 +469,6 @@ done</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT/sysresources</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#sysresources-sane-limit-resource"><i class="fa fa-clipboard"></i></button><br/>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -479,7 +487,6 @@ The reported memory vs what was set in the resource limits
 kubectl get $PODNAME -o json | jq ".spec.containers[0].resources"</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#podresources-sane-limit-resource"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>{
@@ -502,7 +509,6 @@ kubectl get $PODNAME -o json | jq ".spec.containers[0].resources"</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT/consume</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#consume-sane-limit-resource"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>curl: (52) Empty reply from server</pre>
@@ -526,7 +532,9 @@ curl: (56) Recv failure: Connection reset by peer</pre>
 kubectl describe $PODNAME</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#resource-soft-limit-fail-kubectl-describe-services"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::resource-soft-limit-fail-kubectl-describe-services[]</p>
+</div>
 <div class="paragraph">
 <p>And look for the following part:</p>
 </div>
@@ -542,7 +550,6 @@ kubectl describe $PODNAME</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get $PODNAME -o json | jq ".status.containerStatuses[0].lastState.terminated"</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#terminated-pod-resource"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>{
@@ -576,6 +583,7 @@ myboot-d78fb6d58-69kl7   0/1     OOMKilled   1          30m</pre>
 <footer class="footer">
   <p class="rhd-logo">Test</p>
 </footer>
+<script src="../_/js/vendor/clipboard.js"></script>
 <script src="../_/js/site.js"></script>
 <script async src="../_/js/vendor/highlight.js"></script>
   </body>

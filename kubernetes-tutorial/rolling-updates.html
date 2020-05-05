@@ -184,7 +184,9 @@
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl config set-context --current --namespace=myspace</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-change-context-resource"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::rolling-change-context-resource[]</p>
+</div>
 <div class="paragraph">
 <p>Deploy the Spring Boot app if needed:</p>
 </div>
@@ -194,7 +196,6 @@
 kubectl apply -f apps/kubefiles/myboot-service.yml</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#deploy-myboot-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Terminal 1: watch the Pods.</p>
 </div>
@@ -203,7 +204,9 @@ kubectl apply -f apps/kubefiles/myboot-service.yml</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-kubectl-watch-pods"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::rolling-kubectl-watch-pods[]</p>
+</div>
 <div class="paragraph">
 <p>Terminal 2: curl loop the service.</p>
 </div>
@@ -229,7 +232,9 @@ kubectl apply -f apps/kubefiles/myboot-service.yml</code></pre>
 PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-ip-port-openshift"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::rolling-ip-port-openshift[]</p>
+</div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_minikube">
 <div id="rolling-ip-port-minikube" class="listingblock">
@@ -238,7 +243,9 @@ PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></p
 PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-ip-port-minikube"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::rolling-ip-port-minikube[]</p>
+</div>
 </div>
 </div>
 </div>
@@ -250,7 +257,9 @@ PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-curl-the-service"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::rolling-curl-the-service[]</p>
+</div>
 <div class="paragraph">
 <p>And run loop script:</p>
 </div>
@@ -262,7 +271,9 @@ sleep .3
 done</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-curl-loop"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::rolling-curl-loop[]</p>
+</div>
 <div class="paragraph">
 <p>Terminal 3: Run commands.</p>
 </div>
@@ -274,7 +285,9 @@ done</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe deployment myboot</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-init-kubectl-describe-deployment"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::rolling-init-kubectl-describe-deployment[]</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre>.
@@ -301,7 +314,6 @@ RollingUpdateStrategy:  25% max unavailable, 25% max surge
 kubectl edit deployment myboot</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#edit-deployment-replicas-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Look for "replicas":</p>
 </div>
@@ -338,7 +350,6 @@ kubectl edit deployment myboot</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#edit-deployment-replicas-get-pod-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                     READY   STATUS    RESTARTS   AGE
@@ -354,7 +365,6 @@ myboot-d78fb6d58-ljkjp   1/1     Running   0          3m</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl edit deployment myboot</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#edit-deployment-v2-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>Find the image attribute:</p>
 </div>
@@ -384,7 +394,6 @@ myboot-d78fb6d58-ljkjp   1/1     Running   0          3m</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#edit-deployment-v2-get-pod-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                      READY   STATUS              RESTARTS   AGE
@@ -413,7 +422,6 @@ Bonjour from Spring Boot! 1 on myboot-7fbc4b97df-4ntmk</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl rollout status deployment myboot</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rollout-v2-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>deployment "myboot" successfully rolled out</pre>
@@ -427,7 +435,6 @@ Bonjour from Spring Boot! 1 on myboot-7fbc4b97df-4ntmk</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get rs</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rs-v2-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                DESIRED   CURRENT   READY   AGE
@@ -443,7 +450,9 @@ myboot-d78fb6d58    0         0         0       10m</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe deployment myboot</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#rolling-kubectl-describe-deployment"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::rolling-kubectl-describe-deployment[]</p>
+</div>
 <div class="paragraph">
 <p>And check out the Events section:</p>
 </div>
@@ -469,7 +478,6 @@ Events:
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment myboot myboot=quay.io/rhdevelopers/myboot:v1</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#describe-rollback-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>And it rolls back to Aloha:</p>
 </div>
@@ -507,7 +515,6 @@ curl: (7) Failed to connect to 192.168.99.100 port 31528: Connection refused</pr
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/quarkus-demo:1.0.0</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#describe-rollback-quarkus-rolling"><i class="fa fa-clipboard"></i></button><br/>
 <div class="paragraph">
 <p>And there should be no errors, Quarkus simply boots up crazy fast</p>
 </div>
@@ -533,6 +540,7 @@ Supersonic Subatomic Java with Quarkus myboot-5cf696848b-tlt6l:2</pre>
 <footer class="footer">
   <p class="rhd-logo">Test</p>
 </footer>
+<script src="../_/js/vendor/clipboard.js"></script>
 <script src="../_/js/site.js"></script>
 <script async src="../_/js/vendor/highlight.js"></script>
   </body>

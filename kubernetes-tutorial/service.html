@@ -198,7 +198,9 @@ This follows the creation of the Deployment in the previous chapter
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl config set-context --current --namespace=myspace</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#services-change-context-resource"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::services-change-context-resource[]</p>
+</div>
 <div class="paragraph">
 <p>Make sure you have Deployment:</p>
 </div>
@@ -207,7 +209,6 @@ This follows the creation of the Deployment in the previous chapter
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployments</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#have-deployment-service"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
@@ -222,7 +223,6 @@ quarkus-demo-deployment   3/3     3            3           8m33s</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get rs</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#have-rs-service"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                                 DESIRED   CURRENT   READY   AGE
@@ -237,7 +237,6 @@ quarkus-demo-deployment-5979886fb7   3         3         3       8m56s</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#have-pods-service"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME                                       READY   STATUS    RESTARTS   AGE
@@ -267,13 +266,14 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-service"><i class="fa fa-clipboard"></i></button><br/>
 <div id="services-kubectl-watch-services" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get services</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#services-kubectl-watch-services"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::services-kubectl-watch-services[]</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre>NAME    TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
@@ -323,7 +323,9 @@ myapp   LoadBalancer   172.30.103.41   34.71.122.153   8080:31974/TCP   44s</pre
 PORT=$(kubectl get service the-service -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#services-ip-port-openshift"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::services-ip-port-openshift[]</p>
+</div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_minikube">
 <div id="services-ip-port-minikube" class="listingblock">
@@ -332,7 +334,9 @@ PORT=$(kubectl get service the-service -o jsonpath="{.spec.ports[*].port}")</cod
 PORT=$(kubectl get service/the-service -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#services-ip-port-minikube"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::services-ip-port-minikube[]</p>
+</div>
 </div>
 </div>
 </div>
@@ -344,7 +348,9 @@ PORT=$(kubectl get service/the-service -o jsonpath="{.spec.ports[*].nodePort}")<
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#services-curl-the-service"><i class="fa fa-clipboard"></i></button><br/>
+<div class="paragraph">
+<p>copyToClipboard::services-curl-the-service[]</p>
+</div>
 <div class="paragraph">
 <p>Results:</p>
 </div>
@@ -389,13 +395,11 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#create-ingress"><i class="fa fa-clipboard"></i></button><br/>
 <div id="curl-services-ingress" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl stuff-myspace.apps.gcp.burrsutter.dev</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-services-ingress"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:2</pre>
@@ -417,14 +421,12 @@ EOF</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete ingress myingress</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#delete-ingress"><i class="fa fa-clipboard"></i></button><br/>
 <div id="expose-service" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc expose service the-service
 kubectl get routes</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#expose-service"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>NAME          HOST/PORT                                     PATH   SERVICES      PORT   TERMINATION   WILDCARD
@@ -439,7 +441,6 @@ the-service   the-service-myspace.apps.gcp.burrsutter.dev          the-service  
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl the-service-myspace.apps.gcp.burrsutter.dev</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#curl-services-route"><i class="fa fa-clipboard"></i></button><br/>
 <div class="listingblock">
 <div class="content">
 <pre>Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:3</pre>
@@ -463,14 +464,12 @@ the-service   the-service-myspace.apps.gcp.burrsutter.dev          the-service  
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">brew install jq</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#install-jq"><i class="fa fa-clipboard"></i></button><br/>
 <div id="route-jq" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get route the-service -o json | jq '.spec.host'
 "the-service-myspace.apps.gcp.burrsutter.dev"</code></pre>
 </div>
 </div>
-<button class="copybtn float-right" title="Copy to clipboard" data-clipboard-target="#route-jq"><i class="fa fa-clipboard"></i></button><br/>
 </div>
 </div>
 </div>
@@ -484,6 +483,7 @@ the-service   the-service-myspace.apps.gcp.burrsutter.dev          the-service  
 <footer class="footer">
   <p class="rhd-logo">Test</p>
 </footer>
+<script src="../_/js/vendor/clipboard.js"></script>
 <script src="../_/js/site.js"></script>
 <script async src="../_/js/vendor/highlight.js"></script>
   </body>
