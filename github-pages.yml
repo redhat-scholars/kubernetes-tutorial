@@ -15,13 +15,12 @@ asciidoc:
   attributes:
     release-version: master
   extensions:
-    - ./lib/copy-to-clipboard.js
     - ./lib/tab-block.js
     - ./lib/remote-include-processor.js
     
 ui:
   bundle:
-    url: https://github.com/redhat-developer-demos/rhd-tutorial-ui/releases/download/v0.1.5/ui-bundle.zip
+    url: https://github.com/redhat-developer-demos/rhd-tutorial-ui/releases/download/v0.1.7/ui-bundle.zip
   supplemental_files:
     - path: ./supplemental-ui
     - path: .nojekyll
