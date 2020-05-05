@@ -13,7 +13,7 @@
   <nav class="navbar">
     <div class="navbar-brand">
       <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/NewRHDFullLogo_4-color_white-wordmark.png" height="40px" alt="Red Hat Developer Program"></a>
-      <a class="navbar-item" style="color: white" href="https://redhat-developer-demos.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-developer-demos.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
         <span></span>
@@ -40,12 +40,12 @@
   </nav>
 </header>
 <div class="body">
-<div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
+<div class="nav-container" data-component=" Test kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="index.html">kubernetes-tutorial</a></h3>
+    <h3 class="title"><a href="index.html"></a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -141,6 +141,7 @@
 </ul>
   </nav>
 </div>
+<!--
 <div class="nav-panel-explore" data-panel="explore">
   <div class="context">
     <span class="title">kubernetes-tutorial</span>
@@ -157,6 +158,7 @@
     </li>
   </ul>
 </div>
+-->
     </div>
   </aside>
 </div>
@@ -312,7 +314,7 @@ Although they are used in the tutorial, you could use others without any problem
 <div class="paragraph">
 <p>Before we start setting up the environment, let’s clone the tutorial sources and set the <code>TUTORIAL_HOME</code> environment variable to point to the root directory of the tutorial:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone <a href="https://github.com/redhat-developer-demos/kubernetes-tutorial" class="bare">https://github.com/redhat-developer-demos/kubernetes-tutorial</a> kubernetes-tutorial &amp;&amp; \
 export TUTORIAL_HOME="$(pwd)/kubernetes-tutorial" &amp;&amp; \
@@ -361,7 +363,7 @@ cd $TUTORIAL_HOME</code></pre>
 </div>
 <div class="content">
 <div class="tab-pane" aria-labelledby="tabset1_macos">
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir bin &amp;&amp; \
 cd bin &amp;&amp; \
@@ -369,7 +371,7 @@ curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.9
 chmod +x minikube</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl</a> &amp;&amp; \
 chmod +x kubectl &amp;&amp; \
@@ -378,7 +380,7 @@ cd ..</code></pre>
 </div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_linux">
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir bin &amp;&amp; \
 cd bin &amp;&amp; \
@@ -386,7 +388,7 @@ curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.9
 chmod +x minikube</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/linux/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/linux/amd64/kubectl</a> &amp;&amp; \
 chmod +x kubectl &amp;&amp; \
@@ -395,14 +397,14 @@ cd ..</code></pre>
 </div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_windows">
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir bin &amp;&amp; \
 cd bin &amp;&amp; \
 curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-windows-amd64.exe" class="bare">https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-windows-amd64.exe</a></code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/windows/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/windows/amd64/kubectl</a> &amp;&amp; \
 cd ..</code></pre>
@@ -427,7 +429,7 @@ cd ..</code></pre>
 </div>
 <div class="content">
 <div class="tab-pane" aria-labelledby="tabset2_macos-and-linux">
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash-session hljs" data-lang="bash-session">export MINIKUBE_HOME=$TUTORIAL_HOME;
 export PATH=$MINIKUBE_HOME/bin:$PATH
@@ -437,7 +439,7 @@ export KUBE_EDITOR="code -w"</code></pre>
 </div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset2_windows">
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash-session hljs" data-lang="bash-session">set MINIKUBE_HOME=%TUTORIAL_HOME%
 set PATH=%MINIKUBE_HOME%/bin:%PATH%
@@ -473,7 +475,7 @@ set KUBE_EDITOR="code -w"</code></pre>
 <div class="paragraph">
 <p>Having <code>minikube</code> installed and in your <code>PATH</code>, then run:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube start --memory=8192 --cpus=3 --kubernetes-version=v1.17.4 --vm-driver=virtualbox -p devnation</code></pre>
 </div>
@@ -481,7 +483,7 @@ set KUBE_EDITOR="code -w"</code></pre>
 <div class="paragraph">
 <p>And the output must be something similar like:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">❌  profile "devnation" not found
 ✅  Created a new profile : devnation
@@ -500,7 +502,7 @@ set KUBE_EDITOR="code -w"</code></pre>
 <div class="paragraph">
 <p>Finally configure to use minikube internal docker as docker host:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">eval $(minikube docker-env -p devnation)</code></pre>
 </div>
@@ -517,19 +519,26 @@ Once you have your cluster, you can download the latest OpenShift client(oc) fro
 </div>
 </div>
 <div class="paragraph">
-<p>The output should show oc version &gt;=4.2</p>
+<p>You can check the OpenShift version using:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc version
-Client Version: openshift-clients-4.3.0-201910250623-88-g6a937dfe
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc version</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output should show oc version &gt;=4.2:</p>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Client Version: openshift-clients-4.3.0-201910250623-88-g6a937dfe
 Kubernetes Version: v1.17.4</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Then login into the cluster and run:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc new-project devnation</code></pre>
 </div>
@@ -548,7 +557,7 @@ Kubernetes Version: v1.17.4</code></pre>
 </main>
 </div>
 <footer class="footer">
-  <p class="rhd-logo">Test</p>
+  <a class="rhd-logo" href="https://developers.redhat.com" target="_blank"></div>
 </footer>
 <script src="../_/js/vendor/clipboard.js"></script>
 <script src="../_/js/site.js"></script>
