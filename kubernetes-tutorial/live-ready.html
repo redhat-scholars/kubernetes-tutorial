@@ -181,13 +181,10 @@
 <div class="paragraph">
 <p>Make sure you are in the correct namespace</p>
 </div>
-<div id="liveready-change-context-resource" class="listingblock">
+<div id="liveready-change-context-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl config set-context --current --namespace=myspace</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::liveready-change-context-resource[]</p>
 </div>
 <div class="paragraph">
 <p>Make sure nothing else is deployed:</p>
@@ -255,13 +252,10 @@ EOF</code></pre>
 <div class="paragraph">
 <p>Describe the deployment:</p>
 </div>
-<div id="live-ready-kubectl-describe-deployment" class="listingblock">
+<div id="live-ready-kubectl-describe-deployment" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe deployment myboot</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::live-ready-kubectl-describe-deployment[]</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -304,25 +298,19 @@ EOF</code></pre>
 <div class="paragraph">
 <p>If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port <code>8080</code> or get it using <code>kubectl</code>:</p>
 </div>
-<div id="liveready-ip-port-openshift" class="listingblock">
+<div id="liveready-ip-port-openshift" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>copyToClipboard::live-ready-ip-port-openshift[]</p>
-</div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_minikube">
-<div id="liveready-ip-port-minikube" class="listingblock">
+<div id="liveready-ip-port-minikube" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
 PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::live-ready-ip-port-minikube[]</p>
 </div>
 </div>
 </div>
@@ -330,27 +318,21 @@ PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code
 <div class="paragraph">
 <p>Curl the Service:</p>
 </div>
-<div id="liveready-curl-the-service" class="listingblock">
+<div id="liveready-curl-the-service" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>copyToClipboard::live-ready-curl-the-service[]</p>
-</div>
-<div class="paragraph">
 <p>And run loop script:</p>
 </div>
-<div id="liveready-curl-loop" class="listingblock">
+<div id="liveready-curl-loop" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true
 do curl $IP:$PORT
 sleep .3
 done</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::live-ready-curl-loop[]</p>
 </div>
 <div class="paragraph">
 <p>Change the image:</p>

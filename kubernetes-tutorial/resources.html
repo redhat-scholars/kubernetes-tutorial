@@ -179,13 +179,10 @@
 <div class="paragraph">
 <p>Make sure you are in the correct namespace:</p>
 </div>
-<div id="resource-change-context-resource" class="listingblock">
+<div id="resource-change-context-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl config set-context --current --namespace=myspace</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::resource-change-context-resource[]</p>
 </div>
 <div class="paragraph">
 <p>Make sure nothing is running in your namespace:</p>
@@ -211,14 +208,11 @@
 <div class="paragraph">
 <p>Describe the pod:</p>
 </div>
-<div id="resource-kubectl-describe-services" class="listingblock">
+<div id="resource-kubectl-describe-services" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot -o name)
 kubectl describe $PODNAME</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::resource-kubectl-describe-services[]</p>
 </div>
 <div class="paragraph">
 <p>There are not resource limits configured for the pod.</p>
@@ -338,14 +332,11 @@ myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s</pre>
 <div class="paragraph">
 <p>You can also use <code>kubectl describe</code> on the pod to find more informatoin about the failure.</p>
 </div>
-<div id="resource-limit-kubectl-describe-services" class="listingblock">
+<div id="resource-limit-kubectl-describe-services" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot -o name)
 kubectl describe $PODNAME</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::resource-limit-kubectl-describe-services[]</p>
 </div>
 <div class="paragraph">
 <p>Delete the deployment:</p>
@@ -366,14 +357,11 @@ kubectl describe $PODNAME</code></pre>
 <div class="paragraph">
 <p>Describe the Pod:</p>
 </div>
-<div id="resource-soft-limit-kubectl-describe-services" class="listingblock">
+<div id="resource-soft-limit-kubectl-describe-services" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot -o name)
 kubectl describe $PODNAME</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::resource-soft-limit-kubectl-describe-services[]</p>
 </div>
 <div class="paragraph">
 <p>Deploy the service:</p>
@@ -386,13 +374,10 @@ kubectl describe $PODNAME</code></pre>
 <div class="paragraph">
 <p>And watch your Pods:</p>
 </div>
-<div id="resource-soft-limit-kubectl-watch-pods" class="listingblock">
+<div id="resource-soft-limit-kubectl-watch-pods" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::resource-soft-limit-kubectl-watch-pods[]</p>
 </div>
 <div class="paragraph">
 <p>In another Terminal, loop and curl that service</p>
@@ -413,25 +398,19 @@ kubectl describe $PODNAME</code></pre>
 <div class="paragraph">
 <p>If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port <code>8080</code> or get it using <code>kubectl</code>:</p>
 </div>
-<div id="resource-soft-limit-ip-port-openshift" class="listingblock">
+<div id="resource-soft-limit-ip-port-openshift" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>copyToClipboard::resource-soft-limit-ip-port-openshift[]</p>
-</div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_minikube">
-<div id="resource-soft-limit-ip-port-minikube" class="listingblock">
+<div id="resource-soft-limit-ip-port-minikube" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
 PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::resource-soft-limit-ip-port-minikube[]</p>
 </div>
 </div>
 </div>
@@ -439,27 +418,21 @@ PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code
 <div class="paragraph">
 <p>Curl the Service:</p>
 </div>
-<div id="resource-soft-limit-curl-the-service" class="listingblock">
+<div id="resource-soft-limit-curl-the-service" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>copyToClipboard::resource-soft-limit-curl-the-service[]</p>
-</div>
-<div class="paragraph">
 <p>Execute in loop:</p>
 </div>
-<div id="resource-soft-limit-curl-loop" class="listingblock">
+<div id="resource-soft-limit-curl-loop" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true
 do curl $IP:$PORT
 sleep .3
 done</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::resource-soft-limit-curl-loop[]</p>
 </div>
 <div class="paragraph">
 <p>In yet another terminal window, curl the /sysresources endpoint</p>
@@ -526,14 +499,11 @@ curl: (56) Recv failure: Connection reset by peer</pre>
 <div class="paragraph">
 <p>Describe the Pod to see the error:</p>
 </div>
-<div id="resource-soft-limit-fail-kubectl-describe-services" class="listingblock">
+<div id="resource-soft-limit-fail-kubectl-describe-services" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot -o name)
 kubectl describe $PODNAME</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::resource-soft-limit-fail-kubectl-describe-services[]</p>
 </div>
 <div class="paragraph">
 <p>And look for the following part:</p>

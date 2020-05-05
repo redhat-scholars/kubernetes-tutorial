@@ -347,25 +347,19 @@ jq: error (at &lt;stdin&gt;:18): Cannot iterate over null (null)</code></pre>
 <div class="paragraph">
 <p>If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port <code>8080</code> or get it using <code>kubectl</code>:</p>
 </div>
-<div id="servicemagic-ip-port-openshift" class="listingblock">
+<div id="servicemagic-ip-port-openshift" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service my-service -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service my-service -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>copyToClipboard::{section-k8s}-ip-port-openshift[]</p>
-</div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_minikube">
-<div id="servicemagic-ip-port-minikube" class="listingblock">
+<div id="servicemagic-ip-port-minikube" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
 PORT=$(kubectl get service/my-service -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::{section-k8s}-ip-port-minikube[]</p>
 </div>
 </div>
 </div>
@@ -373,27 +367,21 @@ PORT=$(kubectl get service/my-service -o jsonpath="{.spec.ports[*].nodePort}")</
 <div class="paragraph">
 <p>Curl the Service:</p>
 </div>
-<div id="servicemagic-curl-the-service" class="listingblock">
+<div id="servicemagic-curl-the-service" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>copyToClipboard::{section-k8s}-curl-the-service[]</p>
-</div>
-<div class="paragraph">
 <p>And run loop script:</p>
 </div>
-<div id="servicemagic-curl-loop" class="listingblock">
+<div id="servicemagic-curl-loop" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true
 do curl $IP:$PORT
 sleep .3
 done</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::{section-k8s}-curl-loop[]</p>
 </div>
 <div class="listingblock">
 <div class="content">

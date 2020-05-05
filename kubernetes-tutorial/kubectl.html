@@ -325,18 +325,15 @@ myapp-5dcbf46dfc-ghrk4   1/1     Running   0          2m18s   app=myapp,pod-temp
 </div>
 <div class="sect2">
 <h3 id="_while_watching_services"><a class="anchor" href="#_while_watching_services"></a>while watching Services</h3>
-<div id="kubectl-kubectl-watch-services" class="listingblock">
+<div id="kubectl-kubectl-watch-services" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get services</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>copyToClipboard::kubectl-kubectl-watch-services[]</p>
-</div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME    TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-myapp   LoadBalancer   172.30.103.41   &lt;pending&gt;     8080:31974/TCP   4s</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME    TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+myapp   LoadBalancer   172.30.103.41   &lt;pending&gt;     8080:31974/TCP   4s</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -354,10 +351,10 @@ On Minikube without an Ingress controller, &lt;pending&gt; will not become a rea
 </tr>
 </table>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME    TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)          AGE
-myapp   LoadBalancer   172.30.103.41   34.71.122.153   8080:31974/TCP   44s</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME    TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)          AGE
+myapp   LoadBalancer   172.30.103.41   34.71.122.153   8080:31974/TCP   44s</code></pre>
 </div>
 </div>
 </div>
@@ -382,25 +379,19 @@ myapp   LoadBalancer   172.30.103.41   34.71.122.153   8080:31974/TCP   44s</pre
 <div class="paragraph">
 <p>If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port <code>8080</code> or get it using <code>kubectl</code>:</p>
 </div>
-<div id="kubectl-ip-port-openshift" class="listingblock">
+<div id="kubectl-ip-port-openshift" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myapp -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service myapp -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>copyToClipboard::kubectl-ip-port-openshift[]</p>
-</div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_minikube">
-<div id="kubectl-ip-port-minikube" class="listingblock">
+<div id="kubectl-ip-port-minikube" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
 PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::kubectl-ip-port-minikube[]</p>
 </div>
 </div>
 </div>
@@ -408,13 +399,10 @@ PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</code>
 <div class="paragraph">
 <p>Curl the Service:</p>
 </div>
-<div id="kubectl-curl-the-service" class="listingblock">
+<div id="kubectl-curl-the-service" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::kubectl-curl-the-service[]</p>
 </div>
 </div>
 </div>

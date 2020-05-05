@@ -231,13 +231,10 @@ Changes cause Pod redeployment.</p>
 <div class="paragraph">
 <p>And watch the Pos status:</p>
 </div>
-<div id="configmap-kubectl-watch-pods" class="listingblock">
+<div id="configmap-kubectl-watch-pods" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::configmap-kubectl-watch-pods[]</p>
 </div>
 <div class="paragraph">
 <p>Ask the application for its configuration:</p>
@@ -258,25 +255,19 @@ Changes cause Pod redeployment.</p>
 <div class="paragraph">
 <p>If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port <code>8080</code> or get it using <code>kubectl</code>:</p>
 </div>
-<div id="configmaps-ip-port-openshift" class="listingblock">
+<div id="configmaps-ip-port-openshift" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>copyToClipboard::configmap-ip-port-openshift[]</p>
-</div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_minikube">
-<div id="configmaps-ip-port-minikube" class="listingblock">
+<div id="configmaps-ip-port-minikube" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
 PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::configmap-ip-port-minikube[]</p>
 </div>
 </div>
 </div>
@@ -284,13 +275,10 @@ PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code
 <div class="paragraph">
 <p>Curl the Service:</p>
 </div>
-<div id="configmaps-curl-the-service" class="listingblock">
+<div id="configmaps-curl-the-service" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::configmap-curl-the-service[]</p>
 </div>
 <div id="get-config-configmaps" class="listingblock">
 <div class="content">
@@ -345,13 +333,10 @@ love=Aloha</pre>
 <div class="paragraph">
 <p>Describe the deployment:</p>
 </div>
-<div id="configmaps-kubectl-describe-deployment" class="listingblock">
+<div id="configmaps-kubectl-describe-deployment" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe deployment myboot</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>copyToClipboard::configmaps-kubectl-describe-deployment[]</p>
 </div>
 <div class="listingblock">
 <div class="content">
