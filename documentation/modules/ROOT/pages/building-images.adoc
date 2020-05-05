@@ -10,7 +10,6 @@ mvn clean package
 java -jar target/boot-demo-1.0.0.jar
 curl localhost:8080
 ----
-copyToClipboard::build-building-images[]
 
 ----
 Aloha from Spring Boot! 1 on unknown
@@ -27,7 +26,6 @@ NOTE: change "quay.io" for your registry (e.g. `docker.io`) and "rhdevelopers" t
 ----
 docker build -t quay.io/rhdevelopers/myboot:v1 .
 ----
-copyToClipboard::build-container--building-images[]
 
 Results:
 
@@ -64,14 +62,12 @@ Run and Test your newly created Docker container:
 ----
 docker run --rm -it -p 8080:8080 --name myboot quay.io/rhdevelopers/myboot:v1
 ----
-copyToClipboard::run-container-building-images[]
 
 [#curl-container-building-images]
 [source, bash]
 ----
 curl localhost:8080
 ----
-copyToClipboard::curl-container-building-images[]
 
 ----
 Aloha from Spring Boot! 1 on 76851270a3e7
@@ -82,7 +78,6 @@ Aloha from Spring Boot! 1 on 76851270a3e7
 ----
 curl localhost:8080/sysresources
 ----
-copyToClipboard::curl-sys-container-building-images[]
 
 ----
 Memory: 1268 Cores: 3
@@ -97,7 +92,6 @@ image::docker-settings.png[Docker Settings]
 ----
 curl localhost:8080/consume
 ----
-copyToClipboard::curl-consume-container-building-images[]
 
 ----
 Allocated about 80% (1.2 GiB) of the max allowed JVM memory size (1.2 GiB)
@@ -116,7 +110,6 @@ Now, constrain the resources associated with this Linux container
 ----
 docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdevelopers/myboot:v1
 ----
-copyToClipboard::run-container-constrained-building-images[]
 
 Ask for the container's resources:
 
@@ -125,7 +118,6 @@ Ask for the container's resources:
 ----
 curl localhost:8080/sysresources
 ----
-copyToClipboard::curl-sys-constrained-container-building-images[]
 
 ----
 Memory: 1268 Cores: 3
@@ -138,7 +130,6 @@ Crash it:
 ----
 curl localhost:8080/consume
 ----
-copyToClipboard::curl-consume-crash-container-building-images[]
 
 == Fix Memory Problems
 
@@ -149,7 +140,6 @@ To correct this behavior use a different Dockerfile:
 ----
 docker build -t quay.io/rhdevelopers/myboot:v1 -f Dockerfile_Memory .
 ----
-copyToClipboard::build-mem-container-building-images[]
 
 Now docker run it:
 
@@ -158,7 +148,6 @@ Now docker run it:
 ----
 docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdevelopers/myboot:v1
 ----
-copyToClipboard::run-sys-constrained-fix-container-building-images[]
 
 And `curl` it:
 
@@ -167,7 +156,6 @@ And `curl` it:
 ----
 curl localhost:8080/sysresources
 ----
-copyToClipboard::curl-sys-constrained-fix-container-building-images[]
 
 ----
 Memory: 112 Cores: 3
@@ -180,7 +168,6 @@ And try to crash it:
 ----
 curl localhost:8080/consume
 ----
-copyToClipboard::curl-consume-fix-container-building-images[]
 
 ----
 Allocated about 80% (98.0 MiB) of the max allowed JVM memory size (112.0 MiB)
@@ -195,7 +182,6 @@ docker login quay.io
 
 docker push quay.io/rhdevelopers/myboot:v1
 ----
-copyToClipboard::push-container-building-images[]
 
 ----
 .

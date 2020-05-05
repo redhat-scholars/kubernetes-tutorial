@@ -16,7 +16,6 @@ Make sure you have Deployment:
 ----
 kubectl get deployments
 ----
-copyToClipboard::have-deployment-service[]
 
 ----
 NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
@@ -30,7 +29,6 @@ Make sure you have RS:
 ----
 kubectl get rs
 ----
-copyToClipboard::have-rs-service[]
 
 ----
 NAME                                 DESIRED   CURRENT   READY   AGE
@@ -44,7 +42,6 @@ Make sure you have Pods:
 ----
 kubectl get pods
 ----
-copyToClipboard::have-pods-service[]
 
 ----
 NAME                                       READY   STATUS    RESTARTS   AGE
@@ -72,7 +69,6 @@ spec:
   type: LoadBalancer
 EOF
 ----
-copyToClipboard::create-service[]
 
 :section-k8s: services
 include::partial$watching-services.adoc[]
@@ -109,14 +105,12 @@ spec:
           servicePort: 80
 EOF          
 ----
-copyToClipboard::create-ingress[]
 
 [#curl-services-ingress]
 [source, bash]
 ----
 curl stuff-myspace.apps.gcp.burrsutter.dev
 ----
-copyToClipboard::curl-services-ingress[]
 
 ----
 Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:2
@@ -133,7 +127,6 @@ Delete the any manually created Ingress to avoid any naming collisions.  An Open
 ----
 kubectl delete ingress myingress
 ----
-copyToClipboard::delete-ingress[]
 
 [#expose-service]
 [source,bash,subs="+macros,+attributes"]
@@ -141,7 +134,6 @@ copyToClipboard::delete-ingress[]
 oc expose service the-service
 kubectl get routes
 ----
-copyToClipboard::expose-service[]
 
 ----
 NAME          HOST/PORT                                     PATH   SERVICES      PORT   TERMINATION   WILDCARD
@@ -155,7 +147,6 @@ Then make a request to the service:
 ----
 curl the-service-myspace.apps.gcp.burrsutter.dev
 ----
-copyToClipboard::curl-services-route[]
 
 ----
 Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:3
@@ -176,7 +167,6 @@ https://www.screencast.com/t/09biZYHNo62
 ----
 brew install jq
 ----
-copyToClipboard::install-jq[]
 
 [#route-jq]
 [source, bash]
@@ -184,4 +174,3 @@ copyToClipboard::install-jq[]
 kubectl get route the-service -o json | jq '.spec.host'
 "the-service-myspace.apps.gcp.burrsutter.dev"
 ----
-copyToClipboard::route-jq[]

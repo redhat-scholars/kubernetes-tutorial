@@ -34,7 +34,6 @@ Deploy `myboot`:
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment.yml
 ----
-copyToClipboard::deploy-myboot-configmaps[]
 
 Deploy `myboot` Service:
 
@@ -43,7 +42,6 @@ Deploy `myboot` Service:
 ----
 kubectl apply -f apps/kubefiles/myboot-service.yml
 ----
-copyToClipboard::deploy-myboot-service-configmaps[]
 
 And watch the Pos status:
 
@@ -61,7 +59,6 @@ include::partial$env-curl.adoc[]
 ----
 curl $IP:$PORT/configure
 ----
-copyToClipboard::get-config-configmaps[]
 
 ----
 Configuration for : myboot-66d7d57687-jsbz7
@@ -80,7 +77,6 @@ kubectl set env deployment/myboot GREETING="namaste"
 kubectl set env deployment/myboot LOVE="Aloha"
 kubectl set env deployment/myboot DBCONN="jdbc:sqlserver://45.91.12.123:1443;user=MyUserName;password=*****;"
 ----
-copyToClipboard::set-env-vars[]
 
 Watch the pods being reborn:
 
@@ -95,7 +91,6 @@ myboot-785ff6bddc-ghwpc   1/1     Running       0          13s
 ----
 curl $IP:$PORT/configure
 ----
-copyToClipboard::get-config2-configmaps[]
 
 ----
 Configuration for : myboot-5fd9dd9c59-58xbh
@@ -137,7 +132,6 @@ kubectl set env deployment/myboot GREETING-
 kubectl set env deployment/myboot LOVE-
 kubectl set env deployment/myboot DBCONN-
 ----
-copyToClipboard::remove-env-vars-configmaps[]
 
 And verify that they have been removed:
 
@@ -146,7 +140,6 @@ And verify that they have been removed:
 ----
 curl $IP:$PORT/configure
 ----
-copyToClipboard::get-config3-configmaps[]
 
 ----
 Configuration for : myboot-66d7d57687-xkgw6
@@ -163,7 +156,6 @@ love=Default
 ----
 kubectl create cm my-config --from-env-file=apps/config/some.properties
 ----
-copyToClipboard::create-configmap-configmaps[]
 
 [#get-configmap-configmaps]
 [source,bash,subs="+macros,+attributes"]
@@ -172,7 +164,6 @@ kubectl get cm
 kubectl get cm my-config
 kubectl get cm my-config -o json
 ----
-copyToClipboard::get-configmap-configmaps[]
 
 ----
 ...
@@ -191,7 +182,6 @@ Or you can describe the `ConfigMap` object:
 ----
 kubectl describe cm my-config
 ----
-copyToClipboard::describe-configmap-configmaps[]
 
 ----
 Name:         my-config
@@ -217,7 +207,6 @@ Now deploy the app with its request for the `ConfigMap`:
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment-configuration.yml
 ----
-copyToClipboard::deploy-myboot-configmap-configmaps[]
 
 And get its configure endpoint:
 
@@ -226,7 +215,6 @@ And get its configure endpoint:
 ----
 curl $IP:$PORT/configure
 ----
-copyToClipboard::get-config4-configmaps[]
 
 ----
 Configuration for : myboot-84bfcff474-x6xnt
@@ -245,14 +233,12 @@ kubectl delete cm my-config
 kubectl create cm my-config --from-env-file=apps/config/other.properties
 kubectl delete pod -l app=myboot
 ----
-copyToClipboard::delete-pod-configmap-configmaps[]
 
 [#get-config5-configmaps]
 [source,bash,subs="+macros,+attributes"]
 ----
 curl $IP:$PORT/configure
 ----
-copyToClipboard::get-config5-configmaps[]
 
 ----
 Configuration for : myboot-694954fc6d-nzdvx
@@ -275,4 +261,3 @@ kubectl delete deployment myboot
 kubectl delete cm my-config
 kubectl delete service myboot
 ----
-copyToClipboard::clean-configmaps[]

@@ -18,7 +18,6 @@ Custom Resource Definitions (CRDs) in version 1.7
 kubectl get crds --all-namespaces
 kubectl api-resources
 ----
-copyToClipboard::get-crds[]
 
 === Example CRD
 
@@ -53,7 +52,6 @@ spec:
 ----
 kubectl apply -f apps/pizzas/pizza-crd.yaml
 ----
-copyToClipboard::add-pizzas[]
 
 === Now part of the API
 
@@ -62,7 +60,6 @@ copyToClipboard::add-pizzas[]
 ----
 kubectl get crds | grep pizza
 ----
-copyToClipboard::get-pizzas-crds[]
 
 Results:
 
@@ -75,7 +72,6 @@ pizzas.mykubernetes.burrsutter.com                          2020-03-31T20:36:10Z
 ----
 kubectl api-resources | grep burr
 ----
-copyToClipboard::get-api-pizzas-crds[]
 
 Results:
 
@@ -98,7 +94,6 @@ kubectl get pizzas
 
 kubectl describe pizza burrcheese
 ----
-copyToClipboard::create-pizzas-crds[]
 
 === Make more Pizzas
 
@@ -111,7 +106,6 @@ kubectl apply -f apps/pizzas/veggie-lovers.yaml
 
 kubectl get pizzas --all-namespaces
 ----
-copyToClipboard::create-more-pizzas-crds[]
 
 === Eat all Pizzas
 
@@ -120,7 +114,6 @@ copyToClipboard::create-more-pizzas-crds[]
 ----
 kubectl delete pizzas --all
 ----
-copyToClipboard::delete-pizzas-crds[]
 
 == Create some Kafka
 
@@ -136,7 +129,6 @@ Create a new namespace for this experiment:
 kubectl create namespace franz
 kubectl config set-context --current --namespace=franz
 ----
-copyToClipboard::create-namespace-franz[]
 
 
 For minikube, the instructions for installation can be found here:
@@ -152,7 +144,6 @@ curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releas
 
 kubectl create -f https://operatorhub.io/install/strimzi-kafka-operator.yaml
 ----
-copyToClipboard::minikube-install[]
 
 === Kafka for OpenShift
 
@@ -166,7 +157,6 @@ image:operator-hub-openshift.png[OperatorHub in OpenShift]
 kubectl get csv -n operators
 kubectl get crds | grep kafka
 ----
-copyToClipboard::verify-install[]
 
 Start a watch in another terminal:
 
@@ -175,7 +165,6 @@ Start a watch in another terminal:
 ----
 watch kubectl get pods
 ----
-copyToClipboard::watch-pods[]
 
 Then deploy the resource requesting a Kafka cluster:
 
@@ -184,7 +173,6 @@ Then deploy the resource requesting a Kafka cluster:
 ----
 kubectl apply -f apps/kubefiles/mykafka.yml
 ----
-copyToClipboard::deploy-cluster[]
 
 ----
 NAME                                          READY   STATUS    RESTARTS   AGE
@@ -204,7 +192,6 @@ And you can get all information from Kafka:
 ----
 kubectl get kafkas
 ----
-copyToClipboard::get-kafkas-crd[]
 
 ----
 NAME         DESIRED KAFKA REPLICAS   DESIRED ZK REPLICAS
@@ -221,4 +208,3 @@ kubectl delete -f apps/pizzas/pizza-crd.yaml
 kubectl delete kafka my-cluster
 kubectl delete namespace franz
 ----
-copyToClipboard::clean-up[]

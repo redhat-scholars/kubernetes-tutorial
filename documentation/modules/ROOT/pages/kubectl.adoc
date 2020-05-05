@@ -9,7 +9,6 @@
 echo $KUBECONFIG
 kubectl config view
 ----
-copyToClipboard::kubectl-view-config[]
 
 
 [[view-nodes]]
@@ -23,7 +22,6 @@ kubectl get nodes
 kubectl get nodes --show-labels
 kubectl get namespaces
 ----
-copyToClipboard::kubectl-get-nodes[]
 
 [[view-pods]]
 == View out-of-the-box Pods
@@ -38,7 +36,6 @@ kubectl get pods --all-namespaces
 kubectl get pods --all-namespaces --show-labels
 kubectl get pods --all-namespaces -o wide
 ----
-copyToClipboard::kubectl-get-pods[]
 
 [[deploy-app]]
 == Deploy Something
@@ -54,7 +51,6 @@ kubectl config set-context --current --namespace=mystuff
 
 kubectl create deployment myapp --image=quay.io/rhdevelopers/quarkus-demo:v1
 ----
-copyToClipboard::kubectl-deploy-app[]
 
 [[monitor-events]]
 == while monitoring Events
@@ -65,7 +61,6 @@ copyToClipboard::kubectl-deploy-app[]
 ----
 watch kubectl get events --sort-by=.metadata.creationTimestamp
 ----
-copyToClipboard::kubectl-get-events[]
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
@@ -92,7 +87,6 @@ o:1.0.0"
 ----
 kubectl get deployments
 ----
-copyToClipboard::kubectl-get-deployments[]
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
@@ -108,7 +102,6 @@ myapp   1/1     1            1           95s
 ----
 kubectl get replicasets
 ----
-copyToClipboard::kubectl-get-replicasets[]
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
@@ -125,7 +118,6 @@ myapp-5dcbf46dfc   1         1         1       2m1s
 ----
 kubectl get pods --show-labels
 ----
-copyToClipboard::kubectl-get-podsx[]
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
@@ -141,7 +133,6 @@ myapp-5dcbf46dfc-ghrk4   1/1     Running   0          2m18s   app=myapp,pod-temp
 ----
 kubectl logs -l app=myapp
 ----
-copyToClipboard::kubectl-logs[]
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
@@ -157,7 +148,6 @@ copyToClipboard::kubectl-logs[]
 ----
 kubectl expose deployment myapp --port=8080 --type=LoadBalancer
 ----
-copyToClipboard::kubectl-expose[]
 
 === while watching Services
 
@@ -181,7 +171,6 @@ Open three Terminal Windows.
 ----
 watch kubectl get pods
 ----
-copyToClipboard::watch-pods[]
 
 === Terminal 2
 
@@ -192,22 +181,22 @@ Hosted::
 --
 [#env-vars-openshift]
 [.console-input]
+[source,bash]
 ----
 IP=$(kubectl get service myapp -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service myapp -o jsonpath="{.spec.ports[*].port}")
 ----
-copyToClipboard::env-vars-openshift[]
 --
 Minikube::
 +
 --
 [#env-vars-minikube]
 [.console-input]
+[source,bash]
 ----
 IP=$(minikube ip)
 PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")
 ----
-copyToClipboard::env-vars-minikube[]
 --
 ====
 
@@ -222,7 +211,6 @@ do curl $IP:$PORT
 sleep .3
 done
 ----
-copyToClipboard::poll-endpoint[]
 
 Results of the polling:
 [.console-output]
@@ -245,7 +233,6 @@ Change replicas:
 ----
 kubectl scale deployment myapp --replicas=3
 ----
-copyToClipboard::change-replicas[]
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
@@ -264,7 +251,6 @@ Start a rolling update by changing the image:
 ----
 kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/myboot:v1
 ----
-copyToClipboard::set-image-myboot-v1[]
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
@@ -284,7 +270,6 @@ Aloha from Spring Boot! 2 on myapp-58b97dbd95-vxd87
 ----
 kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/myboot:v2
 ----
-copyToClipboard::set-image-myboot-v2[]
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
@@ -303,7 +288,6 @@ Bonjour from Spring Boot! 5 on myapp-7d58855c6b-6c8gd
 ----
 kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/quarkus-demo:v1
 ----
-copyToClipboard::set-image-quarkus-demo[]
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
@@ -331,4 +315,3 @@ Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-tcfwp:6
 kubectl delete namespace mystuff
 kubectl config set-context --current --namespace=default
 ----
-copyToClipboard::delete-namespace[]

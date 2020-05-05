@@ -14,7 +14,6 @@ Make sure nothing is running in your namespace:
 ----
 kubectl get all
 ----
-copyToClipboard::no-resources-resource[]
 
 ----
 No resources found in myspace namespace.
@@ -27,7 +26,6 @@ First deploy an application without any Requests nor Limits:
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment.yml
 ----
-copyToClipboard::no-limits-resource[]
 
 Describe the pod:
 
@@ -108,7 +106,6 @@ Delete that deployment:
 ----
 kubectl delete deployment myboot
 ----
-copyToClipboard::delete-deployment-resource[]
 
 Create a new deployment with resource requests:
 
@@ -117,7 +114,6 @@ Create a new deployment with resource requests:
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment-resources.yml
 ----
-copyToClipboard::limits-resource[]
 
 And check the status of the Pod:
 
@@ -126,7 +122,6 @@ And check the status of the Pod:
 ----
 kubectl get pods
 ----
-copyToClipboard::limits-get-pod-resource[]
 
 ----
 NAME                      READY   STATUS    RESTARTS   AGE
@@ -140,7 +135,6 @@ If you want to get more information of the error:
 ----
 kubectl get events --sort-by=.metadata.creationTimestamp
 ----
-copyToClipboard::get-events-resource[]
 
 ----
 <unknown>   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.
@@ -162,7 +156,6 @@ Delete the deployment:
 ----
 kubectl delete -f apps/kubefiles/myboot-deployment-resources.yml
 ----
-copyToClipboard::delete-deployment-limit-resource[]
 
 Create a new deployment with a more sane resource request and a hard limit:
 
@@ -171,7 +164,6 @@ Create a new deployment with a more sane resource request and a hard limit:
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
 ----
-copyToClipboard::apply-deployment-sane-limit-resource[]
 
 Describe the Pod:
 
@@ -186,7 +178,6 @@ Deploy the service:
 ----
 kubectl apply -f apps/kubefiles/myboot-service.yml
 ----
-copyToClipboard::apply-service-sane-limit-resource[]
 
 And watch your Pods:
 
@@ -209,7 +200,6 @@ In yet another terminal window, curl the /sysresources endpoint
 ----
 curl $IP:$PORT/sysresources
 ----
-copyToClipboard::sysresources-sane-limit-resource[]
 
 NOTE: The reported memory vs what was set in the resource limits
 
@@ -219,7 +209,6 @@ NOTE: The reported memory vs what was set in the resource limits
 PODNAME=$(kubectl get pod -l app=myboot -o name)
 kubectl get $PODNAME -o json | jq ".spec.containers[0].resources"
 ----
-copyToClipboard::podresources-sane-limit-resource[]
 
 ----
 {
@@ -241,7 +230,6 @@ Then `curl` the `/consume` endpoint:
 ----
 curl $IP:$PORT/consume
 ----
-copyToClipboard::consume-sane-limit-resource[]
 
 ----
 curl: (52) Empty reply from server
@@ -273,7 +261,6 @@ And look for the following part:
 ----
 kubectl get $PODNAME -o json | jq ".status.containerStatuses[0].lastState.terminated"
 ----
-copyToClipboard::terminated-pod-resource[]
 
 ----
 {

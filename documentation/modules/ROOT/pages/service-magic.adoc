@@ -8,7 +8,6 @@ Create a Namespace:
 kubectl create namespace funstuff
 kubectl config set-context --current --namespace=funstuff
 ----
-copyToClipboard::create-namespace[]
 
 == Deploy mypython
 
@@ -37,7 +36,6 @@ spec:
         - containerPort: 8000
 EOF
 ----
-copyToClipboard::deploy-mypython[]
 
 == Deploy mygo
 
@@ -66,7 +64,6 @@ spec:
         - containerPort: 8000
 EOF
 ----
-copyToClipboard::deploy-mygo[]
 
 == Deploy mynode
 
@@ -95,14 +92,12 @@ spec:
         - containerPort: 8000
 EOF
 ----
-copyToClipboard::deploy-mynode[]
 
 [#labels-service-magic]
 [source, bash]
 ----
 watch kubectl get pods --show-labels
 ----
-copyToClipboard::labels-service-magic[]
 
 ----
 NAME                                   READY   STATUS    RESTARTS   AGE     LABELS
@@ -130,21 +125,18 @@ spec:
   type: LoadBalancer
 EOF
 ----
-copyToClipboard::deploy-myservice[]
 
 [#describe-myservice-service-magic]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl describe service my-service
 ----
-copyToClipboard::describe-myservice-service-magic[]
 
 [#get-endpoints-myservice]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get endpoints
 ----
-copyToClipboard::get-endpoints-myservice[]
 
 ----
 NAME         ENDPOINTS   AGE
@@ -157,7 +149,6 @@ my-service   <none>      2m6s
 kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'
 jq: error (at <stdin>:18): Cannot iterate over null (null)
 ----
-copyToClipboard::get-endpoints1[]
 
 :section-k8s: servicemagic
 :service-exposed: my-service
@@ -177,7 +168,6 @@ curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
 ----
 kubectl label pod -l app=mypython inservice=mypods
 ----
-copyToClipboard::label-mypython[]
 
 ----
 curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
@@ -191,7 +181,6 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl
 ----
 kubectl label pod -l app=mynode inservice=mypods
 ----
-copyToClipboard::label-mynode[]
 
 ----
 Python Hello on mypython-deployment-6874f84d85-2kpjl
@@ -208,7 +197,6 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl
 ----
 kubectl label pod -l app=mygo inservice=mypods
 ----
-copyToClipboard::label-mygo[]
 
 ----
 Node Hello on mynode-deployment-fb5457c5-hhz7h 59
@@ -223,7 +211,6 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl
 ----
 kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'
 ----
-copyToClipboard::get-endpoints2[]
 
 ----
 "10.130.2.43"
@@ -238,7 +225,6 @@ See the Pod IPs:
 ----
 kubectl get pods -o wide
 ----
-copyToClipboard::pod-ips[]
 
 Remove `mypython` Pod from the Service:
 
@@ -247,14 +233,12 @@ Remove `mypython` Pod from the Service:
 ----
 kubectl label pod -l app=mypython inservice-
 ----
-copyToClipboard::remove-label[]
 
 [#get-endpoints3]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'
 ----
-copyToClipboard::get-endpoints3[]
 
 ----
 "10.130.2.44"
@@ -268,4 +252,3 @@ copyToClipboard::get-endpoints3[]
 ----
 kubectl delete namespace funstuff
 ----
-copyToClipboard::clean-up[]

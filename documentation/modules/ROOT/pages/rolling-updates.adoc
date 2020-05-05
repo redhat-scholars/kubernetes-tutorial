@@ -14,7 +14,6 @@ Deploy the Spring Boot app if needed:
 kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
 kubectl apply -f apps/kubefiles/myboot-service.yml
 ----
-copyToClipboard::deploy-myboot-rolling[]
 
 Terminal 1: watch the Pods.
 
@@ -61,7 +60,6 @@ Change the replicas:
 export KUBE_EDITOR="code -w"
 kubectl edit deployment myboot
 ----
-copyToClipboard::edit-deployment-replicas-rolling[]
 
 Look for "replicas":
 
@@ -96,7 +94,6 @@ Save and close the VS Code window and a new pod will come to life:
 ----
 kubectl get pods
 ----
-copyToClipboard::edit-deployment-replicas-get-pod-rolling[]
 
 ----
 NAME                     READY   STATUS    RESTARTS   AGE
@@ -111,7 +108,6 @@ Change the image associated with the deployment:
 ----
 kubectl edit deployment myboot
 ----
-copyToClipboard::edit-deployment-v2-rolling[]
 
 Find the image attribute:
 
@@ -140,7 +136,6 @@ and change the image `myboot:v2`:
 ----
 kubectl get pods
 ----
-copyToClipboard::edit-deployment-v2-get-pod-rolling[]
 
 ----
 NAME                      READY   STATUS              RESTARTS   AGE
@@ -166,7 +161,6 @@ Check the status of the deployment:
 ----
 kubectl rollout status deployment myboot
 ----
-copyToClipboard::rollout-v2-rolling[]
 
 ----
 deployment "myboot" successfully rolled out
@@ -179,7 +173,6 @@ Notice that there is a new RS:
 ----
 kubectl get rs
 ----
-copyToClipboard::rs-v2-rolling[]
 
 ----
 NAME                DESIRED   CURRENT   READY   AGE
@@ -217,7 +210,6 @@ Rollback to v1:
 ----
 kubectl set image deployment myboot myboot=quay.io/rhdevelopers/myboot:v1
 ----
-copyToClipboard::describe-rollback-rolling[]
 
 And it rolls back to Aloha:
 
@@ -245,7 +237,6 @@ Try using the Quarkus image instead of the Spring Boot one
 ----
 kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/quarkus-demo:1.0.0
 ----
-copyToClipboard::describe-rollback-quarkus-rolling[]
 
 And there should be no errors, Quarkus simply boots up crazy fast
 

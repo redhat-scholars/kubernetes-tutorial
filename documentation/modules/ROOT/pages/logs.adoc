@@ -33,7 +33,6 @@ spec:
         - containerPort: 8080
 EOF
 ----
-copyToClipboard::create-deployment[]
 
 Make sure you are running 3 replicas (3 pods/instances of your application):
 
@@ -42,7 +41,6 @@ Make sure you are running 3 replicas (3 pods/instances of your application):
 ----
 kubectl get deployment my-deployment -o json | jq '.status.replicas'
 ----
-copyToClipboard::logs-get-replicas[]
 
 If not, scale up to 3:
 
@@ -51,7 +49,6 @@ If not, scale up to 3:
 ----
 kubectl scale --replicas=3 deployment/my-deployment
 ----
-copyToClipboard::logs-scale-replicas[]
 
 ----
 NAME                             READY   STATUS    RESTARTS   AGE
@@ -65,7 +62,6 @@ my-deployment-5dc67997c7-s4jc6   1/1     Running   0          34s
 ----
 kubectl logs my-deployment-5dc67997c7-m7z9f
 ----
-copyToClipboard::logs-log-deployment[]
 
 ----
   .   ____          _            __ _ _
@@ -85,7 +81,6 @@ You can follow logs with `-f` parameter:
 ----
 kubectl logs my-deployment-5dc67997c7-m7z9f -f
 ----
-copyToClipboard::logs-log-deployment-follow[]
 
 And in another Terminal:
 
@@ -118,7 +113,6 @@ spec:
   type: LoadBalancer
 EOF
 ----
-copyToClipboard::create-service[]
 
 In another Terminal, loop and curl that service
 
@@ -137,7 +131,6 @@ Then use Stern to view the logs across all pods
 ----
 stern my-deployment
 ----
-copyToClipboard::stern-my-deployment[]
 
 ----
 my-deployment-5dc67997c7-5bq4n myapp Aloha from my-deployment-5dc67997c7-5bq4n
@@ -154,14 +147,12 @@ Another option is https://github.com/boz/kail[kail]:
 brew tap boz/repo
 brew install boz/repo/kail
 ----
-copyToClipboard::install-kail[]
 
 [#run-kail]
 [source, bash]
 ----
 kail --deploy=my-deployment -c myapp --since=1h
 ----
-copyToClipboard::run-kail[]
 
 [TIP]
 ====
@@ -180,4 +171,3 @@ kubectl logs my-deployment-5dc67997c7-s4jc6 -p
 kubectl delete service the-service
 kubectl delete deployment my-deployment
 ----
-copyToClipboard::clean-up[]

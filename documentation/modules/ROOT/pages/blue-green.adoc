@@ -17,7 +17,6 @@ Make sure nothing else is deployed:
 ----
 kubectl get all
 ----
-copyToClipboard::no-resources-blue-green[]
 
 ----
 No resources found in myspace namespace.
@@ -30,7 +29,6 @@ Deploy V1 of `myboot`:
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
 ----
-copyToClipboard::deploy-v1-blue-green[]
 
 Scale to 2 replicas:
 
@@ -39,7 +37,6 @@ Scale to 2 replicas:
 ----
 kubectl scale deployment/myboot --replicas=2
 ----
-copyToClipboard::scale-v1-blue-green[]
 
 Watch and `show-labels`:
 
@@ -48,7 +45,6 @@ Watch and `show-labels`:
 ----
 watch kubectl get pods --show-labels
 ----
-copyToClipboard::labels-v1-blue-green[]
 
 Deploy the service:
 
@@ -57,7 +53,6 @@ Deploy the service:
 ----
 kubectl apply -f apps/kubefiles/myboot-service.yml
 ----
-copyToClipboard::deploy-service-blue-green[]
 
 :section-k8s: bluegreen
 :service-exposed: myboot
@@ -74,7 +69,6 @@ Deploy V2 of `myboot`:
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits-v2.yml
 ----
-copyToClipboard::deploy-v2-blue-green[]
 
 Verify that the new pod/deployment carries the new code:
 
@@ -84,7 +78,6 @@ Verify that the new pod/deployment carries the new code:
 PODNAME=$(kubectl get pod -l app=myboot-next -o name)
 kubectl exec -it $PODNAME -- curl localhost:8080
 ----
-copyToClipboard::exec-v2-blue-green[]
 
 ----
 Bonjour from Spring Boot! 1 on myboot-next-66b68c6659-ftcjr
@@ -97,7 +90,6 @@ Now update the single Service to point to the new pod and go GREEN:
 ----
 kubectl patch svc/myboot -p '{"spec":{"selector":{"app":"myboot-next"}}}'
 ----
-copyToClipboard::patch-service-green[]
 
 ----
 Aloha from Spring Boot! 240 on myboot-d78fb6d58-929wn
@@ -115,7 +107,6 @@ Now update the single Service to point to the new pod and go BLUE:
 ----
 kubectl patch svc/myboot -p '{"spec":{"selector":{"app":"myboot"}}}'
 ----
-copyToClipboard::patch-service-blue[]
 
 ----
 Bonjour from Spring Boot! 17 on myboot-next-66b68c6659-ftcjr
@@ -132,4 +123,3 @@ kubectl delete service myboot
 kubectl delete deployment myboot
 kubectl delete deployment myboot-next
 ----
-copyToClipboard::clean[]

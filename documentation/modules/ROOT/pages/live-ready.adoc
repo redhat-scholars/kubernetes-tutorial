@@ -14,7 +14,6 @@ Make sure nothing else is deployed:
 ----
 kubectl get all
 ----
-copyToClipboard::no-resources-live-ready[]
 
 ----
 No resources found in myspace namespace.
@@ -69,7 +68,6 @@ spec:
           periodSeconds: 3        
 EOF
 ----
-copyToClipboard::create-app-live-ready[]
 
 
 Describe the deployment:
@@ -102,7 +100,6 @@ Deploy a Service:
 ----
 kubectl apply -f apps/kubefiles/myboot-service.yml
 ----
-copyToClipboard::deploy-service-live-ready[]
 
 :section-k8s: liveready
 :service-exposed: myboot
@@ -119,7 +116,6 @@ Change the image:
 ----
 kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/myboot:v2
 ----
-copyToClipboard::change-deployment-v2-live-ready[]
 
 And notice the error free rolling update:
 
@@ -142,7 +138,6 @@ Look at the Endpoints to see which pods are part of the Service:
 ----
 kubectl get endpoints myboot -o json | jq '.subsets[].addresses[].ip'
 ----
-copyToClipboard::get-endpoints-before[]
 
 These are the Pod IPs that have passed their readiness probe:
 
@@ -163,7 +158,6 @@ kubectl exec -it myboot-845968c6ff-k5lcb /bin/bash
 curl localhost:8080/misbehave
 exit
 ----
-copyToClipboard::misbehave-app-live-ready[]
 
 See that the pod is no longer Ready:
 
@@ -181,7 +175,6 @@ Now check the Endpoints:
 ----
 kubectl get endpoints myboot -o json | jq '.subsets[].addresses[].ip'
 ----
-copyToClipboard::get-endpoints-after[]
 
 And that pod is now missing from the Service's loadbalancer:
 
@@ -205,7 +198,6 @@ Aloha from Spring Boot! 846 on myboot-845968c6ff-9wshg
 ----
 kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/myboot:v3
 ----
-copyToClipboard::change-deployment-v3-live-ready[]
 
 Let the rollout finish to completion across all 3 replicas:
 
@@ -234,7 +226,6 @@ export KUBE_EDITOR="code -w"
 
 kubectl edit deployment myboot
 ----
-copyToClipboard::change-liveness-v3-live-ready[]
 
 And chnage the liveness probe:
 
@@ -276,7 +267,6 @@ Now pick one of the pods, `exec` into it and shoot it:
 kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
 curl localhost:8080/shot
 ----
-copyToClipboard::shot-v3-live-ready[]
 
 And you will see it get restarted:
 
@@ -315,4 +305,3 @@ Jambo from Spring Boot! 176 on myboot-558b4f8678-z7f9n
 kubectl delete deployment myboot
 kubectl delete service myboot
 ----
-copyToClipboard::cleanup-live-ready[]
