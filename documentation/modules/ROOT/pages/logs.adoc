@@ -7,6 +7,7 @@ The focus here is on things a developer needs to get access to do help understan
 Make sure you have an application (Deployment) running:
 
 [#create-deployment]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 cat <<EOF | kubectl apply -f -
@@ -37,6 +38,7 @@ EOF
 Make sure you are running 3 replicas (3 pods/instances of your application):
 
 [#logs-get-replicas]
+[.console-input]
 [source, bash]
 ----
 kubectl get deployment my-deployment -o json | jq '.status.replicas'
@@ -45,11 +47,14 @@ kubectl get deployment my-deployment -o json | jq '.status.replicas'
 If not, scale up to 3:
 
 [#logs-scale-replicas]
+[.console-input]
 [source, bash]
 ----
 kubectl scale --replicas=3 deployment/my-deployment
 ----
 
+[.console-output]
+[source,bash]
 ----
 NAME                             READY   STATUS    RESTARTS   AGE
 my-deployment-5dc67997c7-5bq4n   1/1     Running   0          34s
@@ -58,11 +63,14 @@ my-deployment-5dc67997c7-s4jc6   1/1     Running   0          34s
 ----
 
 [#logs-log-deployment]
+[.console-input]
 [source, bash]
 ----
 kubectl logs my-deployment-5dc67997c7-m7z9f
 ----
 
+[.console-output]
+[source]
 ----
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -77,6 +85,7 @@ kubectl logs my-deployment-5dc67997c7-m7z9f
 You can follow logs with `-f` parameter:
 
 [#logs-log-deployment-follow]
+[.console-input]
 [source, bash]
 ----
 kubectl logs my-deployment-5dc67997c7-m7z9f -f
@@ -84,11 +93,15 @@ kubectl logs my-deployment-5dc67997c7-m7z9f -f
 
 And in another Terminal:
 
+[.console-input]
+[source,bash]
 ----
 kubectl exec -it my-deployment-5dc67997c7-m7z9f /bin/bash
 curl localhost:8080
 ----
 
+[.console-output]
+[source,bash]
 ----
 Aloha from my-deployment-5dc67997c7-m7z9f
 ----
@@ -96,6 +109,7 @@ Aloha from my-deployment-5dc67997c7-m7z9f
 Deploy a Service for `my-deployment`:
 
 [#create-service]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 cat <<EOF | kubectl apply -f -
@@ -127,11 +141,14 @@ include::partial$loop.adoc[]
 Then use Stern to view the logs across all pods
 
 [#stern-my-deployment]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 stern my-deployment
 ----
 
+[.console-output]
+[source,bash]
 ----
 my-deployment-5dc67997c7-5bq4n myapp Aloha from my-deployment-5dc67997c7-5bq4n
 my-deployment-5dc67997c7-m7z9f myapp Aloha from my-deployment-5dc67997c7-m7z9f
@@ -142,6 +159,7 @@ my-deployment-5dc67997c7-s4jc6 myapp Aloha from my-deployment-5dc67997c7-s4jc6
 Another option is https://github.com/boz/kail[kail]:
 
 [#install-kail]
+[.console-input]
 [source, bash]
 ----
 brew tap boz/repo
@@ -149,6 +167,7 @@ brew install boz/repo/kail
 ----
 
 [#run-kail]
+[.console-input]
 [source, bash]
 ----
 kail --deploy=my-deployment -c myapp --since=1h
@@ -158,6 +177,8 @@ kail --deploy=my-deployment -c myapp --since=1h
 ====
 To potentially pull the logs from a failing pod use `-p`
 
+[.console-input]
+[source,bash]
 ----
 kubectl logs my-deployment-5dc67997c7-s4jc6 -p 
 ----
@@ -166,6 +187,7 @@ kubectl logs my-deployment-5dc67997c7-s4jc6 -p
 == Clean Up
 
 [#clean-up]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete service the-service

@@ -3,12 +3,11 @@
 First create a namespace to work in:
 
 [#create-namespace]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl create namespace myspace
 kubectl config set-context --current --namespace=myspace
-# OR
-kubens myspace
 ----
 
 == Pod
@@ -16,6 +15,7 @@ kubens myspace
 Create a https://kubernetes.io/docs/concepts/configuration/overview/#naked-pods-vs-replicasets-deployments-and-jobs[naked pod]:
 
 [#create-pod]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 cat <<EOF | kubectl apply -f -
@@ -33,11 +33,14 @@ EOF
 Watch the pod lifecycle:
 
 [#watch-pod]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 watch kubectl get pods
 ----
 
+[.console-output]
+[source,bash]
 ----
 NAME           READY   STATUS              RESTARTS   AGE
 quarkus-demo   0/1     ContainerCreating   0          10s
@@ -45,6 +48,8 @@ quarkus-demo   0/1     ContainerCreating   0          10s
 
 From ContainerCreating to Running with Ready 1/1:
 
+[.console-output]
+[source,bash]
 ----
 NAME           READY   STATUS    RESTARTS   AGE
 quarkus-demo   1/1     Running   0          18s
@@ -53,6 +58,7 @@ quarkus-demo   1/1     Running   0          18s
 Verify the application in the Pod:
 
 [#verify-pod]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl exec -it quarkus-demo /bin/sh
@@ -62,11 +68,14 @@ Run the next command.
 Notice that as you are inside the container instance, the hostname is `localhost`.
 
 [#curl-inside-pod]
+[.console-input]
 [source,bash]
 ----
 curl localhost:8080
 ----
 
+[.console-output]
+[source,bash]
 ----
 Supersonic Subatomic Java with Quarkus quarkus-demo:1
 exit
@@ -75,17 +84,21 @@ exit
 Let's delete the previous Pod:
 
 [#delete-naked-pod]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete pod quarkus-demo
 ----
 
 [#watch-all-naked-pod]
+[.console-input]
 [source,bash]
 ----
 watch kubectl get pods
 ----
 
+[.console-output]
+[source,bash]
 ----
 NAME           READY   STATUS        RESTARTS   AGE
 quarkus-demo   0/1     Terminating   0          9m35s
@@ -100,6 +113,7 @@ A Naked Pod disappears forever.
 Create a ReplicaSet:
 
 [#create-replicaset]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 cat <<EOF | kubectl apply -f -
@@ -127,11 +141,14 @@ EOF
 Get the pods with labels:
 
 [#replicaset-show-labels]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 watch kubectl get pods --show-labels
 ----
 
+[.console-output]
+[source,bash]
 ----
 NAME                    READY   STATUS    RESTARTS   AGE   LABELS
 rs-quarkus-demo-jd6jk   1/1     Running   0          58s   app=quarkus-demo,env=dev
@@ -140,11 +157,14 @@ rs-quarkus-demo-t26gt   1/1     Running   0          58s   app=quarkus-demo,env=
 ----
 
 [#get-rs]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get rs
 ----
 
+[.console-output]
+[source,bash]
 ----
 NAME              DESIRED   CURRENT   READY   AGE
 rs-quarkus-demo   3         3         3       79s
@@ -153,11 +173,14 @@ rs-quarkus-demo   3         3         3       79s
 Describe the RS:
 
 [#describe-rs-quarkus-demo]
+[.console-input]
 [source,bash]
 ----
 kubectl describe rs rs-quarkus-demo
 ----
 
+[.console-output]
+[source,bash]
 ----
 Name:         rs-quarkus-demo
 Namespace:    myspace
@@ -189,11 +212,14 @@ Events:
 Pods are "owned" by the ReplicaSet:
 
 [#rs-owned-ref]
+[.console-input]
 [source,bash]
 ----
 kubectl get pod rs-quarkus-demo-mlnng -o json | jq ".metadata.ownerReferences[]"
 ----
 
+[.console-output]
+[source,bash]
 ----
 {
   "apiVersion": "apps/v1",
@@ -208,6 +234,7 @@ kubectl get pod rs-quarkus-demo-mlnng -o json | jq ".metadata.ownerReferences[]"
 Now delete a pod, while watching pods:
 
 [#delete-pod-rs]
+[.console-input]
 [source,bash]
 ----
 kubectl delete pod rs-quarkus-demo-mlnng
@@ -215,6 +242,8 @@ kubectl delete pod rs-quarkus-demo-mlnng
 
 And a new pod will spring to life to replace it:
 
+[.console-output]
+[source,bash]
 ----
 NAME                    READY   STATUS              RESTARTS   AGE    LABELS
 rs-quarkus-demo-2txwk   0/1     ContainerCreating   0          2s     app=quarkus-demo,env=dev
@@ -225,6 +254,7 @@ rs-quarkus-demo-t26gt   1/1     Running             0          109s   app=quarku
 Delete the ReplicaSet to remove all the associated pods:
 
 [#delete-rs]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete rs rs-quarkus-demo
@@ -233,6 +263,7 @@ kubectl delete rs rs-quarkus-demo
 == Deployment
 
 [#create-deployment]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 cat <<EOF | kubectl apply -f -
@@ -261,11 +292,14 @@ EOF
 ----
 
 [#pod-show-labels-dep]
+[.console-input]
 [source,bash]
 ----
 kubectl get pods --show-labels
 ----
 
+[.console-output]
+[source,bash]
 ----
 NAME                                       READY   STATUS    RESTARTS   AGE   LABELS
 quarkus-demo-deployment-5979886fb7-c888m   1/1     Running   0          17s   app=quarkus-demo,env=dev,pod-template-hash=5979886fb7
@@ -274,11 +308,14 @@ quarkus-demo-deployment-5979886fb7-grf59   1/1     Running   0          17s   ap
 ----
 
 [#exec-inside-pod-labels]
+[.console-input]
 [source,bash]
 ----
 kubectl exec -it quarkus-demo-deployment-5979886fb7-c888m -- curl localhost:8080
 ----
 
+[.console-output]
+[source,bash]
 ----
 Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-c888m:1
 ----

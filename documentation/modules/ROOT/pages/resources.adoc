@@ -10,11 +10,14 @@ include::partial$set-context.adoc[]
 Make sure nothing is running in your namespace:
 
 [#no-resources-resource]
+[.console-input]
 [source, bash]
 ----
 kubectl get all
 ----
 
+[.console-output]
+[source,bash]
 ----
 No resources found in myspace namespace.
 ----
@@ -22,6 +25,7 @@ No resources found in myspace namespace.
 First deploy an application without any Requests nor Limits:
 
 [#no-limits-resource]
+[.console-input]
 [source, bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment.yml
@@ -35,6 +39,8 @@ include::partial$describe.adoc[]
 
 There are not resource limits configured for the pod.
 
+[.console-output]
+[source,bash]
 ----
 Name:         myboot-66d7d57687-jzbzj
 Namespace:    myspace
@@ -102,6 +108,7 @@ Events:
 Delete that deployment:
 
 [#delete-deployment-resource]
+[.console-input]
 [source, bash]
 ----
 kubectl delete deployment myboot
@@ -110,6 +117,7 @@ kubectl delete deployment myboot
 Create a new deployment with resource requests:
 
 [#limits-resource]
+[.console-input]
 [source, bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment-resources.yml
@@ -118,11 +126,14 @@ kubectl apply -f apps/kubefiles/myboot-deployment-resources.yml
 And check the status of the Pod:
 
 [#limits-get-pod-resource]
+[.console-input]
 [source, bash]
 ----
 kubectl get pods
 ----
 
+[.console-output]
+[source,bash]
 ----
 NAME                      READY   STATUS    RESTARTS   AGE
 myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s
@@ -131,11 +142,14 @@ myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s
 If you want to get more information of the error:
 
 [#get-events-resource]
+[.console-input]
 [source, bash]
 ----
 kubectl get events --sort-by=.metadata.creationTimestamp
 ----
 
+[.console-output]
+[source,bash]
 ----
 <unknown>   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.
 <unknown>   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.
@@ -152,6 +166,7 @@ include::partial$describe.adoc[]
 Delete the deployment:
 
 [#delete-deployment-limit-resource]
+[.console-input]
 [source, bash]
 ----
 kubectl delete -f apps/kubefiles/myboot-deployment-resources.yml
@@ -160,6 +175,7 @@ kubectl delete -f apps/kubefiles/myboot-deployment-resources.yml
 Create a new deployment with a more sane resource request and a hard limit:
 
 [#apply-deployment-sane-limit-resource]
+[.console-input]
 [source, bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
@@ -174,6 +190,7 @@ include::partial$describe.adoc[]
 Deploy the service:
 
 [#apply-service-sane-limit-resource]
+[.console-input]
 [source, bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-service.yml
@@ -196,6 +213,7 @@ include::partial$loop.adoc[]
 In yet another terminal window, curl the /sysresources endpoint
 
 [#sysresources-sane-limit-resource]
+[.console-input]
 [source, bash]
 ----
 curl $IP:$PORT/sysresources
@@ -204,12 +222,15 @@ curl $IP:$PORT/sysresources
 NOTE: The reported memory vs what was set in the resource limits
 
 [#podresources-sane-limit-resource]
+[.console-input]
 [source, bash]
 ----
 PODNAME=$(kubectl get pod -l app=myboot -o name)
 kubectl get $PODNAME -o json | jq ".spec.containers[0].resources"
 ----
 
+[.console-output]
+[source,bash]
 ----
 {
   "limits": {
@@ -226,17 +247,22 @@ kubectl get $PODNAME -o json | jq ".spec.containers[0].resources"
 Then `curl` the `/consume` endpoint:
 
 [#consume-sane-limit-resource]
+[.console-input]
 [source, bash]
 ----
 curl $IP:$PORT/consume
 ----
 
+[.console-output]
+[source,bash]
 ----
 curl: (52) Empty reply from server
 ----
 
 And you should notice that your loop also fails:
 
+[.console-output]
+[source,bash]
 ----
 Aloha from Spring Boot! 1120 on myboot-d78fb6d58-69kl7
 curl: (56) Recv failure: Connection reset by peer
@@ -250,6 +276,8 @@ include::partial$describe.adoc[]
 
 And look for the following part:
 
+[.console-output]
+[source,bash]
 ----
    Last State:     Terminated
       Reason:       OOMKilled
@@ -257,11 +285,14 @@ And look for the following part:
 ----
 
 [#terminated-pod-resource]
+[.console-input]
 [source, bash]
 ----
 kubectl get $PODNAME -o json | jq ".status.containerStatuses[0].lastState.terminated"
 ----
 
+[.console-output]
+[source,bash]
 ----
 {
   "containerID": "cri-o://7b9be70ce4b616d6083d528dee708cea879da967373dad0d396fb999bd3898d3",
@@ -274,6 +305,8 @@ kubectl get $PODNAME -o json | jq ".status.containerStatuses[0].lastState.termin
 
 You might even see the STATUS column of the `watch kubectl get pods` reflect the OOMKilled:
 
+[.console-output]
+[source,bash]
 ----
 NAME                     READY   STATUS      RESTARTS   AGE
 myboot-d78fb6d58-69kl7   0/1     OOMKilled   1          30m

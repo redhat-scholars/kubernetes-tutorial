@@ -9,15 +9,17 @@ Make sure you are in the correct namespace
 
 include::partial$set-context.adoc[]
 
-
 Make sure nothing else is deployed:
 
 [#no-resources-blue-green]
+[.console-input]
 [source, bash]
 ----
 kubectl get all
 ----
 
+[.console-output]
+[source,bash]
 ----
 No resources found in myspace namespace.
 ----
@@ -25,6 +27,7 @@ No resources found in myspace namespace.
 Deploy V1 of `myboot`:
 
 [#deploy-v1-blue-green]
+[.console-input]
 [source, bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
@@ -33,6 +36,7 @@ kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
 Scale to 2 replicas:
 
 [#scale-v1-blue-green]
+[.console-input]
 [source, bash]
 ----
 kubectl scale deployment/myboot --replicas=2
@@ -41,6 +45,7 @@ kubectl scale deployment/myboot --replicas=2
 Watch and `show-labels`:
 
 [#labels-v1-blue-green]
+[.console-input]
 [source, bash]
 ----
 watch kubectl get pods --show-labels
@@ -49,6 +54,7 @@ watch kubectl get pods --show-labels
 Deploy the service:
 
 [#deploy-service-blue-green]
+[.console-input]
 [source, bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-service.yml
@@ -65,6 +71,7 @@ include::partial$loop.adoc[]
 Deploy V2 of `myboot`:
 
 [#deploy-v2-blue-green]
+[.console-input]
 [source, bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits-v2.yml
@@ -73,12 +80,15 @@ kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits-v2.yml
 Verify that the new pod/deployment carries the new code:
 
 [#exec-v2-blue-green]
+[.console-input]
 [source, bash]
 ----
 PODNAME=$(kubectl get pod -l app=myboot-next -o name)
 kubectl exec -it $PODNAME -- curl localhost:8080
 ----
 
+[.console-output]
+[source,bash]
 ----
 Bonjour from Spring Boot! 1 on myboot-next-66b68c6659-ftcjr
 ----
@@ -86,11 +96,14 @@ Bonjour from Spring Boot! 1 on myboot-next-66b68c6659-ftcjr
 Now update the single Service to point to the new pod and go GREEN:
 
 [#patch-service-green]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl patch svc/myboot -p '{"spec":{"selector":{"app":"myboot-next"}}}'
 ----
 
+[.console-output]
+[source,bash]
 ----
 Aloha from Spring Boot! 240 on myboot-d78fb6d58-929wn
 Bonjour from Spring Boot! 2 on myboot-next-66b68c6659-ftcjr
@@ -103,11 +116,14 @@ Determine that you prefer Hawaiian (blue) to French (green) and fallback:
 Now update the single Service to point to the new pod and go BLUE:
 
 [#patch-service-blue]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl patch svc/myboot -p '{"spec":{"selector":{"app":"myboot"}}}'
 ----
 
+[.console-output]
+[source,bash]
 ----
 Bonjour from Spring Boot! 17 on myboot-next-66b68c6659-ftcjr
 Aloha from Spring Boot! 257 on myboot-d78fb6d58-vqvlb
@@ -117,6 +133,7 @@ Aloha from Spring Boot! 258 on myboot-d78fb6d58-vqvlb
 == Clean Up
 
 [#clean]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete service myboot

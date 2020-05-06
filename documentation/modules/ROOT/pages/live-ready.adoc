@@ -10,11 +10,14 @@ include::partial$set-context.adoc[]
 Make sure nothing else is deployed:
 
 [#no-resources-live-ready]
+[.console-input]
 [source, bash]
 ----
 kubectl get all
 ----
 
+[.console-output]
+[source.bash]
 ----
 No resources found in myspace namespace.
 ----
@@ -22,6 +25,7 @@ No resources found in myspace namespace.
 Deploy an application with the Live and Ready probe set:
 
 [#create-app-live-ready]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 cat <<EOF | kubectl apply -f -
@@ -77,6 +81,8 @@ Describe the deployment:
 
 include::partial$describe-deployment.adoc[]
 
+[.console-output]
+[source.bash]
 ----
 ...
     Image:      quay.io/rhdevelopers/myboot:v1
@@ -96,6 +102,7 @@ include::partial$describe-deployment.adoc[]
 Deploy a Service:
 
 [#deploy-service-live-ready]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-service.yml
@@ -112,6 +119,7 @@ include::partial$loop.adoc[]
 Change the image:
 
 [#change-deployment-v2-live-ready]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/myboot:v2
@@ -119,6 +127,8 @@ kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/myboot:v2
 
 And notice the error free rolling update:
 
+[.console-output]
+[source.bash]
 ----
 Aloha from Spring Boot! 131 on myboot-845968c6ff-k4rvb
 Aloha from Spring Boot! 134 on myboot-845968c6ff-9wvt9
@@ -134,6 +144,7 @@ Bonjour from Spring Boot! 3 on myboot-8449d5468d-m88z4
 Look at the Endpoints to see which pods are part of the Service:
 
 [#get-endpoints-before]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get endpoints myboot -o json | jq '.subsets[].addresses[].ip'
@@ -141,6 +152,8 @@ kubectl get endpoints myboot -o json | jq '.subsets[].addresses[].ip'
 
 These are the Pod IPs that have passed their readiness probe:
 
+[.console-output]
+[source.bash]
 ----
 "10.129.2.40"
 "10.130.2.37"
@@ -152,15 +165,23 @@ These are the Pod IPs that have passed their readiness probe:
 Exec into a single Pod and change its readiness flag:
 
 [#misbehave-app-live-ready]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl exec -it myboot-845968c6ff-k5lcb /bin/bash
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
 curl localhost:8080/misbehave
 exit
 ----
 
 See that the pod is no longer Ready:
 
+[.console-output]
+[source.bash]
 ----
 NAME                      READY   STATUS    RESTARTS   AGE
 myboot-845968c6ff-9wshg   1/1     Running   0          11m
@@ -171,6 +192,7 @@ myboot-845968c6ff-zsgx2   1/1     Running   0          11m
 Now check the Endpoints:
 
 [#get-endpoints-after]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get endpoints myboot -o json | jq '.subsets[].addresses[].ip'
@@ -178,6 +200,8 @@ kubectl get endpoints myboot -o json | jq '.subsets[].addresses[].ip'
 
 And that pod is now missing from the Service's loadbalancer:
 
+[.console-output]
+[source.bash]
 ----
 "10.130.2.37"
 "10.130.2.38"
@@ -185,6 +209,8 @@ And that pod is now missing from the Service's loadbalancer:
 
 Which is also self-evident in the curl loop:
 
+[.console-output]
+[source.bash]
 ----
 Aloha from Spring Boot! 845 on myboot-845968c6ff-9wshg
 Aloha from Spring Boot! 604 on myboot-845968c6ff-zsgx2
@@ -194,6 +220,7 @@ Aloha from Spring Boot! 846 on myboot-845968c6ff-9wshg
 == Liveness Probe
 
 [#change-deployment-v3-live-ready]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/myboot:v3
@@ -201,6 +228,8 @@ kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/myboot:v3
 
 Let the rollout finish to completion across all 3 replicas:
 
+[.console-output]
+[source.bash]
 ----
 watch kubectl get pods
 NAME                      READY   STATUS    RESTARTS   AGE
@@ -211,6 +240,8 @@ myboot-56659c9d69-zjt6q   1/1     Running   0          72s
 
 And as seen in the curl loop/poller:
 
+[.console-output]
+[source.bash]
 ----
 Jambo from Spring Boot! 40 on myboot-56659c9d69-mdllq
 Jambo from Spring Boot! 26 on myboot-56659c9d69-zjt6q
@@ -220,6 +251,7 @@ Jambo from Spring Boot! 71 on myboot-56659c9d69-6sglj
 Edit the Deployment to point to the /alive URL:
 
 [#change-liveness-v3-live-ready]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 export KUBE_EDITOR="code -w"
@@ -227,8 +259,10 @@ export KUBE_EDITOR="code -w"
 kubectl edit deployment myboot
 ----
 
-And chnage the liveness probe:
+And change the liveness probe:
 
+[.console-output]
+[source.bash]
 ----
 ...
     spec:
@@ -251,8 +285,15 @@ And chnage the liveness probe:
 
 Save and close the editor, allowing that change to rollout 
 
+[.console-input]
+[source,bash]
 ----
 watch kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
 NAME                      READY   STATUS        RESTARTS   AGE
 myboot-558b4f8678-nw762   1/1     Running       0          59s
 myboot-558b4f8678-qbrgc   1/1     Running       0          81s
@@ -262,14 +303,22 @@ myboot-558b4f8678-z7f9n   1/1     Running       0          36s
 Now pick one of the pods, `exec` into it and shoot it:
 
 [#shot-v3-live-ready]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
 curl localhost:8080/shot
 ----
 
 And you will see it get restarted:
 
+[.console-output]
+[source.bash]
 ----
 NAME                      READY   STATUS    RESTARTS   AGE
 myboot-558b4f8678-nw762   1/1     Running   0          4m7s
@@ -279,14 +328,28 @@ myboot-558b4f8678-z7f9n   1/1     Running   0          3m44s
 
 Plus, your exec will be terminated:
 
+[.console-input]
+[source,bash]
 ----
 kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
-1000610000@myboot-558b4f8678-qbrgc:/app$ curl localhost:8080/shot
+----
+
+[.console-output]
+[source.bash]
+----
+curl localhost:8080/shot
+----
+
+[.console-output]
+[source.bash]
+----
 I have been shot in the head1000610000@myboot-558b4f8678-qbrgc:/app$ command terminated with exit code 137
 ----
 
 And your end-users will not see any errors:
 
+[.console-output]
+[source.bash]
 ----
 Jambo from Spring Boot! 174 on myboot-558b4f8678-z7f9n
 Jambo from Spring Boot! 11 on myboot-558b4f8678-qbrgc
@@ -300,6 +363,7 @@ Jambo from Spring Boot! 176 on myboot-558b4f8678-z7f9n
 == Clean up
 
 [#cleanup-live-ready]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete deployment myboot

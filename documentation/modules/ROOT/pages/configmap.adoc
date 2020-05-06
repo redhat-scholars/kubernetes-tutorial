@@ -1,4 +1,6 @@
-= Externalize Configuration
+= ConfigMap
+
+ConfigMap is the Kubernetes resource that allows you to externalize your application's configuration.
 
 *_An app’s config is everything that is likely to vary between deploys (staging, production, developer environments, etc)._*
 
@@ -30,6 +32,7 @@ Changes cause Pod redeployment.
 Deploy `myboot`:
 
 [#deploy-myboot-configmaps]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment.yml
@@ -38,12 +41,13 @@ kubectl apply -f apps/kubefiles/myboot-deployment.yml
 Deploy `myboot` Service:
 
 [#deploy-myboot-service-configmaps]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-service.yml
 ----
 
-And watch the Pos status:
+And watch the pods status:
 
 :section-k8s: configmap
 include::partial$watching-pods.adoc[]
@@ -55,11 +59,14 @@ Ask the application for its configuration:
 include::partial$env-curl.adoc[]
 
 [#get-config-configmaps]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 curl $IP:$PORT/configure
 ----
 
+[.console-output]
+[source,bash]
 ----
 Configuration for : myboot-66d7d57687-jsbz7
 databaseConn=Default
@@ -71,6 +78,7 @@ love=Default
 == Set Environment Variables
 
 [#set-env-vars]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl set env deployment/myboot GREETING="namaste"
@@ -80,6 +88,8 @@ kubectl set env deployment/myboot DBCONN="jdbc:sqlserver://45.91.12.123:1443;use
 
 Watch the pods being reborn:
 
+[.console-output]
+[source,bash]
 ----
 NAME                      READY   STATUS        RESTARTS   AGE
 myboot-66d7d57687-jsbz7   1/1     Terminating   0          5m
@@ -87,11 +97,14 @@ myboot-785ff6bddc-ghwpc   1/1     Running       0          13s
 ----
 
 [#get-config2-configmaps]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 curl $IP:$PORT/configure
 ----
 
+[.console-output]
+[source,bash]
 ----
 Configuration for : myboot-5fd9dd9c59-58xbh
 databaseConn=jdbc:sqlserver://45.91.12.123:1443;user=MyUserName;password=*****;
@@ -107,6 +120,8 @@ Describe the deployment:
 
 include::partial$describe-deployment.adoc[]
 
+[.console-output]
+[source,bash]
 ----
 ...
   Containers:
@@ -126,6 +141,7 @@ include::partial$describe-deployment.adoc[]
 Remove environment variables:
 
 [#remove-env-vars-configmaps]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl set env deployment/myboot GREETING-
@@ -136,11 +152,14 @@ kubectl set env deployment/myboot DBCONN-
 And verify that they have been removed:
 
 [#get-config3-configmaps]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 curl $IP:$PORT/configure
 ----
 
+[.console-output]
+[source,bash]
 ----
 Configuration for : myboot-66d7d57687-xkgw6
 databaseConn=Default
@@ -152,12 +171,14 @@ love=Default
 ==  Create a ConfigMap
 
 [#create-configmap-configmaps]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl create cm my-config --from-env-file=apps/config/some.properties
 ----
 
 [#get-configmap-configmaps]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get cm
@@ -165,6 +186,8 @@ kubectl get cm my-config
 kubectl get cm my-config -o json
 ----
 
+[.console-output]
+[source,bash]
 ----
 ...
     "data": {
@@ -178,11 +201,14 @@ kubectl get cm my-config -o json
 Or you can describe the `ConfigMap` object:
 
 [#describe-configmap-configmaps]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl describe cm my-config
 ----
 
+[.console-output]
+[source,bash]
 ----
 Name:         my-config
 Namespace:    myspace
@@ -203,6 +229,7 @@ Events:  <none>
 Now deploy the app with its request for the `ConfigMap`:
 
 [#deploy-myboot-configmap-configmaps]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment-configuration.yml
@@ -211,11 +238,14 @@ kubectl apply -f apps/kubefiles/myboot-deployment-configuration.yml
 And get its configure endpoint:
 
 [#get-config4-configmaps]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 curl $IP:$PORT/configure
 ----
 
+[.console-output]
+[source,bash]
 ----
 Configuration for : myboot-84bfcff474-x6xnt
 databaseConn=Default
@@ -227,6 +257,7 @@ love=Amour
 And switch to the other properties file by recreating the `ConfigMap`:
 
 [#delete-pod-configmap-configmaps]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete cm my-config
@@ -235,11 +266,14 @@ kubectl delete pod -l app=myboot
 ----
 
 [#get-config5-configmaps]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 curl $IP:$PORT/configure
 ----
 
+[.console-output]
+[source,bash]
 ----
 Configuration for : myboot-694954fc6d-nzdvx
 databaseConn=jdbc:sqlserver://123.123.123.123:1443;user=MyUserName;password=*****;
@@ -255,6 +289,7 @@ https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap
 == Clean Up
 
 [#clean-configmaps]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete deployment myboot

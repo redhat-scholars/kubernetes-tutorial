@@ -3,6 +3,7 @@
 Compile, build and test the Spring Boot Java project:
 
 [#build-building-images]
+[.console-input]
 [source, bash]
 ----
 cd apps/helloworld/springboot
@@ -11,6 +12,8 @@ java -jar target/boot-demo-1.0.0.jar
 curl localhost:8080
 ----
 
+[.console-output]
+[source,bash]
 ----
 Aloha from Spring Boot! 1 on unknown
 ----
@@ -19,9 +22,10 @@ Aloha from Spring Boot! 1 on unknown
 
 == Build Docker Image
 
-NOTE: change "quay.io" for your registry (e.g. `docker.io`) and "rhdevelopers" to your organization.  This next step does assume you have a working installation of Docker for Mac/Windows/Linux.
+NOTE: Change `quay.io` for your registry (e.g. `docker.io`) and `rhdevelopers` to your organization.  This next step does assume you have a working installation of Docker for Mac/Windows/Linux.
 
 [#build-container--building-images]
+[.console-input]
 [source, bash]
 ----
 docker build -t quay.io/rhdevelopers/myboot:v1 .
@@ -29,6 +33,8 @@ docker build -t quay.io/rhdevelopers/myboot:v1 .
 
 Results:
 
+[.console-output]
+[source,bash]
 ----
 Sending build context to Docker daemon  14.47MB
 Step 1/6 : FROM openjdk:8u151
@@ -58,27 +64,34 @@ Successfully tagged quay.io/rhdevelopers/myboot:v1
 Run and Test your newly created Docker container:
 
 [#run-container-building-images]
+[.console-input]
 [source, bash]
 ----
 docker run --rm -it -p 8080:8080 --name myboot quay.io/rhdevelopers/myboot:v1
 ----
 
 [#curl-container-building-images]
+[.console-input]
 [source, bash]
 ----
 curl localhost:8080
 ----
 
+[.console-output]
+[source,bash]
 ----
 Aloha from Spring Boot! 1 on 76851270a3e7
 ----
 
 [#curl-sys-container-building-images]
+[.console-input]
 [source, bash]
 ----
 curl localhost:8080/sysresources
 ----
 
+[.console-output]
+[source,bash]
 ----
 Memory: 1268 Cores: 3
 ----
@@ -88,11 +101,14 @@ These numbers are based on the memory and CPUs allocated to the Docker daemon as
 image::docker-settings.png[Docker Settings]
 
 [#curl-consume-container-building-images]
+[.console-input]
 [source, bash]
 ----
 curl localhost:8080/consume
 ----
 
+[.console-output]
+[source,bash]
 ----
 Allocated about 80% (1.2 GiB) of the max allowed JVM memory size (1.2 GiB)
 ----
@@ -106,6 +122,7 @@ control-c
 Now, constrain the resources associated with this Linux container
 
 [#run-container-constrained-building-images]
+[.console-input]
 [source, bash]
 ----
 docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdevelopers/myboot:v1
@@ -114,11 +131,14 @@ docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdeve
 Ask for the container's resources:
 
 [#curl-sys-constrained-container-building-images]
+[.console-input]
 [source, bash]
 ----
 curl localhost:8080/sysresources
 ----
 
+[.console-output]
+[source,bash]
 ----
 Memory: 1268 Cores: 3
 ----
@@ -126,6 +146,7 @@ Memory: 1268 Cores: 3
 Crash it:
 
 [#curl-consume-crash-container-building-images]
+[.console-input]
 [source, bash]
 ----
 curl localhost:8080/consume
@@ -136,6 +157,7 @@ curl localhost:8080/consume
 To correct this behavior use a different Dockerfile:
 
 [#build-mem-container-building-images]
+[.console-input]
 [source, bash]
 ----
 docker build -t quay.io/rhdevelopers/myboot:v1 -f Dockerfile_Memory .
@@ -144,6 +166,7 @@ docker build -t quay.io/rhdevelopers/myboot:v1 -f Dockerfile_Memory .
 Now docker run it:
 
 [#run-sys-constrained-fix-container-building-images]
+[.console-input]
 [source, bash]
 ----
 docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdevelopers/myboot:v1
@@ -152,11 +175,14 @@ docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdeve
 And `curl` it:
 
 [#curl-sys-constrained-fix-container-building-images]
+[.console-input]
 [source, bash]
 ----
 curl localhost:8080/sysresources
 ----
 
+[.console-output]
+[source,bash]
 ----
 Memory: 112 Cores: 3
 ----
@@ -164,11 +190,14 @@ Memory: 112 Cores: 3
 And try to crash it:
 
 [#curl-consume-fix-container-building-images]
+[.console-input]
 [source, bash]
 ----
 curl localhost:8080/consume
 ----
 
+[.console-output]
+[source,bash]
 ----
 Allocated about 80% (98.0 MiB) of the max allowed JVM memory size (112.0 MiB)
 ----
@@ -176,13 +205,15 @@ Allocated about 80% (98.0 MiB) of the max allowed JVM memory size (112.0 MiB)
 Once you are happy with your container image, push it up to your favorite registry:
 
 [#push-container-building-images]
+[.console-input]
 [source, bash]
 ----
 docker login quay.io
-
 docker push quay.io/rhdevelopers/myboot:v1
 ----
 
+[.console-output]
+[source,bash]
 ----
 .
 .

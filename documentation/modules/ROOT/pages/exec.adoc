@@ -2,9 +2,19 @@
 
 The exec command allows you to "shell into" your pod and execute commands inside of that tiny linux machine that is running your application. 
 
+You can execute it this way:
+
+[.console-input]
+[source,bash]
 ----
 kubectl exec -it {podname} /bin/bash
-# OR
+----
+
+Or this way:
+
+[.console-input]
+[source,bash]
+----
 kubectl exec {podname} /somecommand
 ----
 
@@ -13,11 +23,14 @@ In this section, we will be debugging an OOMKilled that is often seen when runni
 Make sure the Spring Boot pod from the Resources chapter is still running:
 
 [#get-pods-exec]
+[.console-input]
 [source, bash]
 ----
 kubectl get pods
 ----
 
+[.console-output]
+[source,bash]
 ----
 NAME                     READY   STATUS    RESTARTS   AGE
 myboot-d78fb6d58-69kl7   1/1     Running   2          32m
@@ -26,6 +39,7 @@ myboot-d78fb6d58-69kl7   1/1     Running   2          32m
 Then let's move inside the container by running `exec` into that running Pod:
 
 [#exec-pod-exec]
+[.console-input]
 [source, bash]
 ----
 PODNAME=$(kubectl get pod  -l app=myboot -o name)
@@ -35,11 +49,14 @@ kubectl exec -it $PODNAME /bin/bash
 Run `ps` command to see the current running processes:
 
 [#exec-ps-exec]
+[.console-input]
 [source, bash]
 ----
 ps -ef
 ----
 
+[.console-output]
+[source,bash]
 ----
 UID          PID    PPID  C STIME TTY          TIME CMD
 1000610+       1       0  0 19:20 ?        00:00:00 /bin/sh -c java -XX:+PrintFlagsFinal -XX:+PrintGCDetails $JAVA
@@ -51,11 +68,14 @@ UID          PID    PPID  C STIME TTY          TIME CMD
 Execute a `top` to get an overview of the memory:
 
 [#exec-top-exec]
+[.console-input]
 [source, bash]
 ----
 top
 ----
 
+[.console-output]
+[source,bash]
 ----
 top - 19:29:34 up 2 days,  7:02,  0 users,  load average: 0.16, 0.13, 0.14
 Tasks:   4 total,   1 running,   3 sleeping,   0 stopped,   0 zombie
@@ -73,11 +93,14 @@ KiB Swap:        0 total,        0 free,        0 used. 13142476 avail Mem
 Get the distro:
 
 [#exec-cat-release-exec]
+[.console-input]
 [source, bash]
 ----
 cat /etc/os-release
 ----
 
+[.console-output]
+[source,bash]
 ----
 PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
 NAME="Debian GNU/Linux"
@@ -92,11 +115,14 @@ BUG_REPORT_URL="https://bugs.debian.org/"
 Check the free memory:
 
 [#exec-free-exec]
+[.console-input]
 [source, bash]
 ----
 free -h
 ----
 
+[.console-output]
+[source,bash]
 ----
               total        used        free      shared  buff/cache   available
 Mem:            14G        2.2G        6.1G         17M        6.4G         12G
@@ -108,11 +134,14 @@ And now you might see part of the problem. "free" is not `cgroups` aware, it thi
 No wonder the JVM reports a larger than accurate Max memory:
 
 [#curl-sysresources-exec]
+[.console-input]
 [source, bash]
 ----
 curl localhost:8080/sysresources
 ----
 
+[.console-output]
+[source,bash]
 ----
 Memory: 1324 Cores: 4
 ----
@@ -131,9 +160,15 @@ and the memory is a subset of the memory provided by
 Check your Java version:
 
 [#java-version-181-exec]
+[.console-input]
 [source, bash]
 ----
 java -version
+----
+
+[.console-output]
+[source,bash]
+----
 openjdk version "1.8.0_181"
 OpenJDK Runtime Environment (build 1.8.0_181-8u181-b13-2~deb9u1-b13)
 OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)
@@ -142,11 +177,14 @@ OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)
 Ask the JVM about its resource availability:
 
 [#java-version-181-settings-exec]
+[.console-input]
 [source, bash]
 ----
 java -XshowSettings:vm -version
 ----
 
+[.console-output]
+[source,bash]
 ----
 VM settings:
     Max. Heap Size (Estimated): 3.26G
@@ -161,12 +199,15 @@ OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)
 Now check the actual `cgroups` settings:
 
 [#cat-cgroup-exec]
+[.console-input]
 [source, bash]
 ----
 cd /sys/fs/cgroup/memory/
 cat memory.limit_in_bytes
 ----
 
+[.console-output]
+[source,bash]
 ----
 419430400
 ----
@@ -176,11 +217,14 @@ And if you divide that 419430400 by 1024 and 1024, you end up with the 400 that 
 If you have a JVM of 1.8.0_131 or higher then you can try the experimental options
 
 [#java-version-131-settings-exec]
+[.console-input]
 [source, bash]
 ----
 java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XshowSettings:vm -version
 ----
 
+[.console-output]
+[source,bash]
 ----
 VM settings:
     Max. Heap Size (Estimated): 112.00M
@@ -194,12 +238,16 @@ OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)
 
 To leave this pod, simply type `exit` and hit enter:
 
+[.console-input]
+[source, bash]
 ----
 exit
 ----
 
 == Clean Up
 
+[.console-input]
+[source,bash]
 ----
 kubectl delete deployment myboot
 kubectl delete service myboot

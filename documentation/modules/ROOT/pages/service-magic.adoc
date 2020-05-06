@@ -3,6 +3,7 @@
 Create a Namespace:
 
 [#create-namespace]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl create namespace funstuff
@@ -12,6 +13,7 @@ kubectl config set-context --current --namespace=funstuff
 == Deploy mypython
 
 [#deploy-mypython]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 cat <<EOF | kubectl apply -f -
@@ -40,6 +42,7 @@ EOF
 == Deploy mygo
 
 [#deploy-mygo]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 cat <<EOF | kubectl apply -f -
@@ -68,6 +71,7 @@ EOF
 == Deploy mynode
 
 [#deploy-mynode]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 cat <<EOF | kubectl apply -f -
@@ -94,11 +98,14 @@ EOF
 ----
 
 [#labels-service-magic]
+[.console-input]
 [source, bash]
 ----
 watch kubectl get pods --show-labels
 ----
 
+[.console-output]
+[source,bash]
 ----
 NAME                                   READY   STATUS    RESTARTS   AGE     LABELS
 mygo-deployment-6d944c5c69-kcvmk       1/1     Running   0          2m11s   app=mygo,pod-template-hash=6d944c5c69
@@ -107,6 +114,7 @@ mypython-deployment-6874f84d85-2kpjl   1/1     Running   0          3m53s   app=
 ----
 
 [#deploy-myservice]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 cat <<EOF | kubectl apply -f -
@@ -127,26 +135,36 @@ EOF
 ----
 
 [#describe-myservice-service-magic]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl describe service my-service
 ----
 
 [#get-endpoints-myservice]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get endpoints
 ----
 
+[.console-output]
+[source,bash]
 ----
 NAME         ENDPOINTS   AGE
 my-service   <none>      2m6s
 ----
 
 [#get-endpoints1]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'
+----
+
+[.console-output]
+[source,bash]
+----
 jq: error (at <stdin>:18): Cannot iterate over null (null)
 ----
 
@@ -158,17 +176,22 @@ And run loop script:
 
 include::partial$loop.adoc[]
 
+[.console-output]
+[source,bash]
 ----
 curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
 curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
 ----
 
 [#label-mypython]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl label pod -l app=mypython inservice=mypods
 ----
 
+[.console-output]
+[source,bash]
 ----
 curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
 Python Hello on mypython-deployment-6874f84d85-2kpjl
@@ -177,11 +200,14 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl
 ----
 
 [#label-mynode]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl label pod -l app=mynode inservice=mypods
 ----
 
+[.console-output]
+[source,bash]
 ----
 Python Hello on mypython-deployment-6874f84d85-2kpjl
 Python Hello on mypython-deployment-6874f84d85-2kpjl
@@ -193,11 +219,14 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl
 ----
 
 [#label-mygo]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl label pod -l app=mygo inservice=mypods
 ----
 
+[.console-output]
+[source,bash]
 ----
 Node Hello on mynode-deployment-fb5457c5-hhz7h 59
 Node Hello on mynode-deployment-fb5457c5-hhz7h 60
@@ -207,11 +236,14 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl
 ----
 
 [#get-endpoints2]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'
 ----
 
+[.console-output]
+[source,bash]
 ----
 "10.130.2.43"
 "10.130.2.44"
@@ -221,6 +253,7 @@ kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'
 See the Pod IPs:
 
 [#pod-ips]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get pods -o wide
@@ -229,17 +262,21 @@ kubectl get pods -o wide
 Remove `mypython` Pod from the Service:
 
 [#remove-label]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl label pod -l app=mypython inservice-
 ----
 
 [#get-endpoints3]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'
 ----
 
+[.console-output]
+[source,bash]
 ----
 "10.130.2.44"
 "10.130.2.45"
@@ -248,6 +285,7 @@ kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'
 == Clean Up
 
 [#clean-up]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete namespace funstuff

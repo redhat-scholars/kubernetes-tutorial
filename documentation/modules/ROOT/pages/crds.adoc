@@ -13,6 +13,7 @@ Custom Resource Definitions (CRDs) in version 1.7
 == CRDs
 
 [#get-crds]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get crds --all-namespaces
@@ -48,6 +49,7 @@ spec:
 === Add Pizzas
 
 [#add-pizzas]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/pizzas/pizza-crd.yaml
@@ -56,6 +58,7 @@ kubectl apply -f apps/pizzas/pizza-crd.yaml
 === Now part of the API
 
 [#get-pizzas-crds]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get crds | grep pizza
@@ -63,11 +66,14 @@ kubectl get crds | grep pizza
 
 Results:
 
+[.console-output]
+[source,bash]
 ----
 pizzas.mykubernetes.burrsutter.com                          2020-03-31T20:36:10Z
 ----
 
 [#get-api-pizzas-crds]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl api-resources | grep burr
@@ -75,6 +81,8 @@ kubectl api-resources | grep burr
 
 Results:
 
+[.console-output]
+[source,bash]
 ----
 pizzas                                pz               mykubernetes.burrsutter.com           true         Pizza
 ----
@@ -82,34 +90,31 @@ pizzas                                pz               mykubernetes.burrsutter.c
 === Make some Pizzas
 
 [#create-pizzas-crds]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl create namespace pizzahat
-
 kubectl config set-context --current --namespace=pizzahat
-
 kubectl apply -f apps/pizzas/cheese-pizza.yaml
-
 kubectl get pizzas
-
 kubectl describe pizza burrcheese
 ----
 
 === Make more Pizzas
 
 [#create-more-pizzas-crds]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/pizzas/meat-lovers.yaml
-
 kubectl apply -f apps/pizzas/veggie-lovers.yaml
-
 kubectl get pizzas --all-namespaces
 ----
 
 === Eat all Pizzas
 
 [#delete-pizzas-crds]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete pizzas --all
@@ -124,6 +129,7 @@ https://github.com/strimzi/strimzi-kafka-operator/blob/master/install/cluster-op
 Create a new namespace for this experiment:
 
 [#create-namespace-franz]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl create namespace franz
@@ -138,10 +144,10 @@ https://operatorhub.io/operator/strimzi-kafka-operator[Click Install]
 What follows were the instructions from a moment in time:
 
 [#minikube-install]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/0.14.1/install.sh | bash -s 0.14.1
-
 kubectl create -f https://operatorhub.io/install/strimzi-kafka-operator.yaml
 ----
 
@@ -152,6 +158,7 @@ image:operator-hub-openshift.png[OperatorHub in OpenShift]
 === Verify Install
 
 [#verify-install]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get csv -n operators
@@ -161,6 +168,7 @@ kubectl get crds | grep kafka
 Start a watch in another terminal:
 
 [#watch-pods]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 watch kubectl get pods
@@ -169,11 +177,14 @@ watch kubectl get pods
 Then deploy the resource requesting a Kafka cluster:
 
 [#deploy-cluster]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/mykafka.yml
 ----
 
+[.console-output]
+[source,bash]
 ----
 NAME                                          READY   STATUS    RESTARTS   AGE
 my-cluster-entity-operator-66676cb9fb-fzckz   2/2     Running   0          29s
@@ -188,11 +199,14 @@ my-cluster-zookeeper-2                        2/2     Running   0          92s
 And you can get all information from Kafka:
 
 [#get-kafkas-crd]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get kafkas
 ----
 
+[.console-output]
+[source,bash]
 ----
 NAME         DESIRED KAFKA REPLICAS   DESIRED ZK REPLICAS
 my-cluster   3                        3
@@ -201,6 +215,7 @@ my-cluster   3                        3
 === Clean up
 
 [#clean-up]
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete namespace pizzahat
