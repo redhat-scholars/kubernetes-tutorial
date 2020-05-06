@@ -40,7 +40,7 @@
   </nav>
 </header>
 <div class="body">
-<div class="nav-container" data-component=" Test kubernetes-tutorial" data-version="master">
+<div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
@@ -141,24 +141,6 @@
 </ul>
   </nav>
 </div>
-<!--
-<div class="nav-panel-explore" data-panel="explore">
-  <div class="context">
-    <span class="title">kubernetes-tutorial</span>
-    <span class="version">master</span>
-  </div>
-  <ul class="components">
-    <li class="component is-current">
-      <span class="title">kubernetes-tutorial</span>
-      <ul class="versions">
-        <li class="version is-current is-latest">
-          <a href="index.html">master</a>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</div>
--->
     </div>
   </aside>
 </div>
@@ -194,20 +176,20 @@
 <div class="paragraph">
 <p>Make sure nothing else is deployed:</p>
 </div>
-<div id="no-resources-blue-green" class="listingblock">
+<div id="no-resources-blue-green" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get all</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>No resources found in myspace namespace.</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">No resources found in myspace namespace.</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Deploy V1 of <code>myboot</code>:</p>
 </div>
-<div id="deploy-v1-blue-green" class="listingblock">
+<div id="deploy-v1-blue-green" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml</code></pre>
 </div>
@@ -215,7 +197,7 @@
 <div class="paragraph">
 <p>Scale to 2 replicas:</p>
 </div>
-<div id="scale-v1-blue-green" class="listingblock">
+<div id="scale-v1-blue-green" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale deployment/myboot --replicas=2</code></pre>
 </div>
@@ -223,7 +205,7 @@
 <div class="paragraph">
 <p>Watch and <code>show-labels</code>:</p>
 </div>
-<div id="labels-v1-blue-green" class="listingblock">
+<div id="labels-v1-blue-green" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods --show-labels</code></pre>
 </div>
@@ -231,7 +213,7 @@
 <div class="paragraph">
 <p>Deploy the service:</p>
 </div>
-<div id="deploy-service-blue-green" class="listingblock">
+<div id="deploy-service-blue-green" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-service.yml</code></pre>
 </div>
@@ -291,7 +273,7 @@ done</code></pre>
 <div class="paragraph">
 <p>Deploy V2 of <code>myboot</code>:</p>
 </div>
-<div id="deploy-v2-blue-green" class="listingblock">
+<div id="deploy-v2-blue-green" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits-v2.yml</code></pre>
 </div>
@@ -299,31 +281,31 @@ done</code></pre>
 <div class="paragraph">
 <p>Verify that the new pod/deployment carries the new code:</p>
 </div>
-<div id="exec-v2-blue-green" class="listingblock">
+<div id="exec-v2-blue-green" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot-next -o name)
 kubectl exec -it $PODNAME -- curl localhost:8080</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Bonjour from Spring Boot! 1 on myboot-next-66b68c6659-ftcjr</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Bonjour from Spring Boot! 1 on myboot-next-66b68c6659-ftcjr</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Now update the single Service to point to the new pod and go GREEN:</p>
 </div>
-<div id="patch-service-green" class="listingblock">
+<div id="patch-service-green" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl patch svc/myboot -p '{"spec":{"selector":{"app":"myboot-next"}}}'</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Aloha from Spring Boot! 240 on myboot-d78fb6d58-929wn
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Aloha from Spring Boot! 240 on myboot-d78fb6d58-929wn
 Bonjour from Spring Boot! 2 on myboot-next-66b68c6659-ftcjr
 Bonjour from Spring Boot! 3 on myboot-next-66b68c6659-ftcjr
-Bonjour from Spring Boot! 4 on myboot-next-66b68c6659-ftcjr</pre>
+Bonjour from Spring Boot! 4 on myboot-next-66b68c6659-ftcjr</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -332,16 +314,16 @@ Bonjour from Spring Boot! 4 on myboot-next-66b68c6659-ftcjr</pre>
 <div class="paragraph">
 <p>Now update the single Service to point to the new pod and go BLUE:</p>
 </div>
-<div id="patch-service-blue" class="listingblock">
+<div id="patch-service-blue" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl patch svc/myboot -p '{"spec":{"selector":{"app":"myboot"}}}'</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Bonjour from Spring Boot! 17 on myboot-next-66b68c6659-ftcjr
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Bonjour from Spring Boot! 17 on myboot-next-66b68c6659-ftcjr
 Aloha from Spring Boot! 257 on myboot-d78fb6d58-vqvlb
-Aloha from Spring Boot! 258 on myboot-d78fb6d58-vqvlb</pre>
+Aloha from Spring Boot! 258 on myboot-d78fb6d58-vqvlb</code></pre>
 </div>
 </div>
 </div>
@@ -349,7 +331,7 @@ Aloha from Spring Boot! 258 on myboot-d78fb6d58-vqvlb</pre>
 <div class="sect1">
 <h2 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h2>
 <div class="sectionbody">
-<div id="clean" class="listingblock">
+<div id="clean" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete service myboot
 kubectl delete deployment myboot

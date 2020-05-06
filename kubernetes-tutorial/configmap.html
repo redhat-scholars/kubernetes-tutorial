@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Externalize Configuration :: Kubernetes Tutorial</title>
+    <title>ConfigMap :: Kubernetes Tutorial</title>
     <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/configmap.html">
     <meta name="generator" content="Antora 2.3.1">
     <link rel="stylesheet" href="../_/css/site.css">
@@ -40,7 +40,7 @@
   </nav>
 </header>
 <div class="body">
-<div class="nav-container" data-component=" Test kubernetes-tutorial" data-version="master">
+<div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
@@ -141,24 +141,6 @@
 </ul>
   </nav>
 </div>
-<!--
-<div class="nav-panel-explore" data-panel="explore">
-  <div class="context">
-    <span class="title">kubernetes-tutorial</span>
-    <span class="version">master</span>
-  </div>
-  <ul class="components">
-    <li class="component is-current">
-      <span class="title">kubernetes-tutorial</span>
-      <ul class="versions">
-        <li class="version is-current is-latest">
-          <a href="index.html">master</a>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</div>
--->
     </div>
   </aside>
 </div>
@@ -177,9 +159,12 @@
   </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">Externalize Configuration</h1>
+<h1 class="page">ConfigMap</h1>
 <div id="preamble">
 <div class="sectionbody">
+<div class="paragraph">
+<p>ConfigMap is the Kubernetes resource that allows you to externalize your application&#8217;s configuration.</p>
+</div>
 <div class="paragraph">
 <p><strong><em>An app’s config is everything that is likely to vary between deploys (staging, production, developer environments, etc).</em></strong></p>
 </div>
@@ -217,7 +202,7 @@ Changes cause Pod redeployment.</p>
 <div class="paragraph">
 <p>Deploy <code>myboot</code>:</p>
 </div>
-<div id="deploy-myboot-configmaps" class="listingblock">
+<div id="deploy-myboot-configmaps" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment.yml</code></pre>
 </div>
@@ -225,13 +210,13 @@ Changes cause Pod redeployment.</p>
 <div class="paragraph">
 <p>Deploy <code>myboot</code> Service:</p>
 </div>
-<div id="deploy-myboot-service-configmaps" class="listingblock">
+<div id="deploy-myboot-service-configmaps" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-service.yml</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And watch the Pos status:</p>
+<p>And watch the pods status:</p>
 </div>
 <div id="configmap-kubectl-watch-pods" class="listingblock console-input">
 <div class="content">
@@ -282,18 +267,18 @@ PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
 </div>
-<div id="get-config-configmaps" class="listingblock">
+<div id="get-config-configmaps" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT/configure</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Configuration for : myboot-66d7d57687-jsbz7
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Configuration for : myboot-66d7d57687-jsbz7
 databaseConn=Default
 msgBroker=Default
 greeting=Default
-love=Default</pre>
+love=Default</code></pre>
 </div>
 </div>
 </div>
@@ -301,7 +286,7 @@ love=Default</pre>
 <div class="sect1">
 <h2 id="_set_environment_variables"><a class="anchor" href="#_set_environment_variables"></a>Set Environment Variables</h2>
 <div class="sectionbody">
-<div id="set-env-vars" class="listingblock">
+<div id="set-env-vars" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set env deployment/myboot GREETING="namaste"
 kubectl set env deployment/myboot LOVE="Aloha"
@@ -311,25 +296,25 @@ kubectl set env deployment/myboot DBCONN="jdbc:sqlserver://45.91.12.123:1443;use
 <div class="paragraph">
 <p>Watch the pods being reborn:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME                      READY   STATUS        RESTARTS   AGE
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   STATUS        RESTARTS   AGE
 myboot-66d7d57687-jsbz7   1/1     Terminating   0          5m
-myboot-785ff6bddc-ghwpc   1/1     Running       0          13s</pre>
+myboot-785ff6bddc-ghwpc   1/1     Running       0          13s</code></pre>
 </div>
 </div>
-<div id="get-config2-configmaps" class="listingblock">
+<div id="get-config2-configmaps" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT/configure</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Configuration for : myboot-5fd9dd9c59-58xbh
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Configuration for : myboot-5fd9dd9c59-58xbh
 databaseConn=jdbc:sqlserver://45.91.12.123:1443;user=MyUserName;password=*****;
 msgBroker=Default
 greeting=namaste
-love=Aloha</pre>
+love=Aloha</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -340,9 +325,9 @@ love=Aloha</pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe deployment myboot</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>...
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">...
   Containers:
    myboot:
     Image:      quay.io/burrsutter/myboot:v1
@@ -354,13 +339,13 @@ love=Aloha</pre>
       DBCONN:    jdbc:sqlserver://45.91.12.123:1443;user=MyUserName;password=*****;
     Mounts:      &lt;none&gt;
   Volumes:       &lt;none&gt;
-...</pre>
+...</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Remove environment variables:</p>
 </div>
-<div id="remove-env-vars-configmaps" class="listingblock">
+<div id="remove-env-vars-configmaps" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl set env deployment/myboot GREETING-
 kubectl set env deployment/myboot LOVE-
@@ -370,18 +355,18 @@ kubectl set env deployment/myboot DBCONN-</code></pre>
 <div class="paragraph">
 <p>And verify that they have been removed:</p>
 </div>
-<div id="get-config3-configmaps" class="listingblock">
+<div id="get-config3-configmaps" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT/configure</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Configuration for : myboot-66d7d57687-xkgw6
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Configuration for : myboot-66d7d57687-xkgw6
 databaseConn=Default
 msgBroker=Default
 greeting=Default
-love=Default</pre>
+love=Default</code></pre>
 </div>
 </div>
 </div>
@@ -389,40 +374,40 @@ love=Default</pre>
 <div class="sect1">
 <h2 id="_create_a_configmap"><a class="anchor" href="#_create_a_configmap"></a>Create a ConfigMap</h2>
 <div class="sectionbody">
-<div id="create-configmap-configmaps" class="listingblock">
+<div id="create-configmap-configmaps" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create cm my-config --from-env-file=apps/config/some.properties</code></pre>
 </div>
 </div>
-<div id="get-configmap-configmaps" class="listingblock">
+<div id="get-configmap-configmaps" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get cm
 kubectl get cm my-config
 kubectl get cm my-config -o json</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>...
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">...
     "data": {
         "GREETING": "jambo",
         "LOVE": "Amour"
     },
     "kind": "ConfigMap",
-...</pre>
+...</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Or you can describe the <code>ConfigMap</code> object:</p>
 </div>
-<div id="describe-configmap-configmaps" class="listingblock">
+<div id="describe-configmap-configmaps" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe cm my-config</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Name:         my-config
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Name:         my-config
 Namespace:    myspace
 Labels:       &lt;none&gt;
 Annotations:  &lt;none&gt;
@@ -435,13 +420,13 @@ jambo
 LOVE:
 ====
 Amour
-Events:  &lt;none&gt;</pre>
+Events:  &lt;none&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Now deploy the app with its request for the <code>ConfigMap</code>:</p>
 </div>
-<div id="deploy-myboot-configmap-configmaps" class="listingblock">
+<div id="deploy-myboot-configmap-configmaps" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment-configuration.yml</code></pre>
 </div>
@@ -449,42 +434,42 @@ Events:  &lt;none&gt;</pre>
 <div class="paragraph">
 <p>And get its configure endpoint:</p>
 </div>
-<div id="get-config4-configmaps" class="listingblock">
+<div id="get-config4-configmaps" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT/configure</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Configuration for : myboot-84bfcff474-x6xnt
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Configuration for : myboot-84bfcff474-x6xnt
 databaseConn=Default
 msgBroker=Default
 greeting=jambo
-love=Amour</pre>
+love=Amour</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>And switch to the other properties file by recreating the <code>ConfigMap</code>:</p>
 </div>
-<div id="delete-pod-configmap-configmaps" class="listingblock">
+<div id="delete-pod-configmap-configmaps" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete cm my-config
 kubectl create cm my-config --from-env-file=apps/config/other.properties
 kubectl delete pod -l app=myboot</code></pre>
 </div>
 </div>
-<div id="get-config5-configmaps" class="listingblock">
+<div id="get-config5-configmaps" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT/configure</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Configuration for : myboot-694954fc6d-nzdvx
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Configuration for : myboot-694954fc6d-nzdvx
 databaseConn=jdbc:sqlserver://123.123.123.123:1443;user=MyUserName;password=*****;
 msgBroker=tcp://localhost:61616?jms.useAsyncSend=true
 hello=Default
-love=Default</pre>
+love=Default</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -496,7 +481,7 @@ love=Default</pre>
 <div class="sect1">
 <h2 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h2>
 <div class="sectionbody">
-<div id="clean-configmaps" class="listingblock">
+<div id="clean-configmaps" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete deployment myboot
 kubectl delete cm my-config

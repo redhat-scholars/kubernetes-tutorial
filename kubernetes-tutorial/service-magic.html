@@ -40,7 +40,7 @@
   </nav>
 </header>
 <div class="body">
-<div class="nav-container" data-component=" Test kubernetes-tutorial" data-version="master">
+<div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
@@ -141,24 +141,6 @@
 </ul>
   </nav>
 </div>
-<!--
-<div class="nav-panel-explore" data-panel="explore">
-  <div class="context">
-    <span class="title">kubernetes-tutorial</span>
-    <span class="version">master</span>
-  </div>
-  <ul class="components">
-    <li class="component is-current">
-      <span class="title">kubernetes-tutorial</span>
-      <ul class="versions">
-        <li class="version is-current is-latest">
-          <a href="index.html">master</a>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</div>
--->
     </div>
   </aside>
 </div>
@@ -183,7 +165,7 @@
 <div class="paragraph">
 <p>Create a Namespace:</p>
 </div>
-<div id="create-namespace" class="listingblock">
+<div id="create-namespace" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create namespace funstuff
 kubectl config set-context --current --namespace=funstuff</code></pre>
@@ -194,7 +176,7 @@ kubectl config set-context --current --namespace=funstuff</code></pre>
 <div class="sect1">
 <h2 id="_deploy_mypython"><a class="anchor" href="#_deploy_mypython"></a>Deploy mypython</h2>
 <div class="sectionbody">
-<div id="deploy-mypython" class="listingblock">
+<div id="deploy-mypython" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
 apiVersion: apps/v1
@@ -224,7 +206,7 @@ EOF</code></pre>
 <div class="sect1">
 <h2 id="_deploy_mygo"><a class="anchor" href="#_deploy_mygo"></a>Deploy mygo</h2>
 <div class="sectionbody">
-<div id="deploy-mygo" class="listingblock">
+<div id="deploy-mygo" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
 apiVersion: apps/v1
@@ -254,7 +236,7 @@ EOF</code></pre>
 <div class="sect1">
 <h2 id="_deploy_mynode"><a class="anchor" href="#_deploy_mynode"></a>Deploy mynode</h2>
 <div class="sectionbody">
-<div id="deploy-mynode" class="listingblock">
+<div id="deploy-mynode" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
 apiVersion: apps/v1
@@ -279,20 +261,20 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<div id="labels-service-magic" class="listingblock">
+<div id="labels-service-magic" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods --show-labels</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME                                   READY   STATUS    RESTARTS   AGE     LABELS
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                   READY   STATUS    RESTARTS   AGE     LABELS
 mygo-deployment-6d944c5c69-kcvmk       1/1     Running   0          2m11s   app=mygo,pod-template-hash=6d944c5c69
 mynode-deployment-fb5457c5-hhz7h       1/1     Running   0          2m1s    app=mynode,pod-template-hash=fb5457c5
-mypython-deployment-6874f84d85-2kpjl   1/1     Running   0          3m53s   app=mypython,pod-template-hash=6874f84d85</pre>
+mypython-deployment-6874f84d85-2kpjl   1/1     Running   0          3m53s   app=mypython,pod-template-hash=6874f84d85</code></pre>
 </div>
 </div>
-<div id="deploy-myservice" class="listingblock">
+<div id="deploy-myservice" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
 apiVersion: v1
@@ -311,26 +293,30 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<div id="describe-myservice-service-magic" class="listingblock">
+<div id="describe-myservice-service-magic" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe service my-service</code></pre>
 </div>
 </div>
-<div id="get-endpoints-myservice" class="listingblock">
+<div id="get-endpoints-myservice" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME         ENDPOINTS   AGE
-my-service   &lt;none&gt;      2m6s</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME         ENDPOINTS   AGE
+my-service   &lt;none&gt;      2m6s</code></pre>
 </div>
 </div>
-<div id="get-endpoints1" class="listingblock">
+<div id="get-endpoints1" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'
-jq: error (at &lt;stdin&gt;:18): Cannot iterate over null (null)</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">jq: error (at &lt;stdin&gt;:18): Cannot iterate over null (null)</code></pre>
 </div>
 </div>
 <div class="tabset is-loading">
@@ -385,71 +371,71 @@ sleep .3
 done</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
-curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
+curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused</code></pre>
 </div>
 </div>
-<div id="label-mypython" class="listingblock">
+<div id="label-mypython" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label pod -l app=mypython inservice=mypods</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
 Python Hello on mypython-deployment-6874f84d85-2kpjl
 Python Hello on mypython-deployment-6874f84d85-2kpjl
-Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
+Python Hello on mypython-deployment-6874f84d85-2kpjl</code></pre>
 </div>
 </div>
-<div id="label-mynode" class="listingblock">
+<div id="label-mynode" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label pod -l app=mynode inservice=mypods</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Python Hello on mypython-deployment-6874f84d85-2kpjl
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Python Hello on mypython-deployment-6874f84d85-2kpjl
 Python Hello on mypython-deployment-6874f84d85-2kpjl
 Node Hello on mynode-deployment-fb5457c5-hhz7h 0
 Node Hello on mynode-deployment-fb5457c5-hhz7h 1
 Python Hello on mypython-deployment-6874f84d85-2kpjl
 Python Hello on mypython-deployment-6874f84d85-2kpjl
-Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
+Python Hello on mypython-deployment-6874f84d85-2kpjl</code></pre>
 </div>
 </div>
-<div id="label-mygo" class="listingblock">
+<div id="label-mygo" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label pod -l app=mygo inservice=mypods</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Node Hello on mynode-deployment-fb5457c5-hhz7h 59
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Node Hello on mynode-deployment-fb5457c5-hhz7h 59
 Node Hello on mynode-deployment-fb5457c5-hhz7h 60
 Go Hello on mygo-deployment-6d944c5c69-kcvmk
 Python Hello on mypython-deployment-6874f84d85-2kpjl
-Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
+Python Hello on mypython-deployment-6874f84d85-2kpjl</code></pre>
 </div>
 </div>
-<div id="get-endpoints2" class="listingblock">
+<div id="get-endpoints2" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>"10.130.2.43"
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"10.130.2.43"
 "10.130.2.44"
-"10.130.2.45"</pre>
+"10.130.2.45"</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>See the Pod IPs:</p>
 </div>
-<div id="pod-ips" class="listingblock">
+<div id="pod-ips" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods -o wide</code></pre>
 </div>
@@ -457,20 +443,20 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
 <div class="paragraph">
 <p>Remove <code>mypython</code> Pod from the Service:</p>
 </div>
-<div id="remove-label" class="listingblock">
+<div id="remove-label" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label pod -l app=mypython inservice-</code></pre>
 </div>
 </div>
-<div id="get-endpoints3" class="listingblock">
+<div id="get-endpoints3" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>"10.130.2.44"
-"10.130.2.45"</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"10.130.2.44"
+"10.130.2.45"</code></pre>
 </div>
 </div>
 </div>
@@ -478,7 +464,7 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl</pre>
 <div class="sect1">
 <h2 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h2>
 <div class="sectionbody">
-<div id="clean-up" class="listingblock">
+<div id="clean-up" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete namespace funstuff</code></pre>
 </div>

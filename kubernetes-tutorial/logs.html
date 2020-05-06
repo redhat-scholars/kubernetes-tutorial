@@ -40,7 +40,7 @@
   </nav>
 </header>
 <div class="body">
-<div class="nav-container" data-component=" Test kubernetes-tutorial" data-version="master">
+<div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
@@ -141,24 +141,6 @@
 </ul>
   </nav>
 </div>
-<!--
-<div class="nav-panel-explore" data-panel="explore">
-  <div class="context">
-    <span class="title">kubernetes-tutorial</span>
-    <span class="version">master</span>
-  </div>
-  <ul class="components">
-    <li class="component is-current">
-      <span class="title">kubernetes-tutorial</span>
-      <ul class="versions">
-        <li class="version is-current is-latest">
-          <a href="index.html">master</a>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</div>
--->
     </div>
   </aside>
 </div>
@@ -189,7 +171,7 @@
 <div class="paragraph">
 <p>Make sure you have an application (Deployment) running:</p>
 </div>
-<div id="create-deployment" class="listingblock">
+<div id="create-deployment" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
 apiVersion: apps/v1
@@ -219,7 +201,7 @@ EOF</code></pre>
 <div class="paragraph">
 <p>Make sure you are running 3 replicas (3 pods/instances of your application):</p>
 </div>
-<div id="logs-get-replicas" class="listingblock">
+<div id="logs-get-replicas" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployment my-deployment -o json | jq '.status.replicas'</code></pre>
 </div>
@@ -227,39 +209,39 @@ EOF</code></pre>
 <div class="paragraph">
 <p>If not, scale up to 3:</p>
 </div>
-<div id="logs-scale-replicas" class="listingblock">
+<div id="logs-scale-replicas" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale --replicas=3 deployment/my-deployment</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME                             READY   STATUS    RESTARTS   AGE
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                             READY   STATUS    RESTARTS   AGE
 my-deployment-5dc67997c7-5bq4n   1/1     Running   0          34s
 my-deployment-5dc67997c7-m7z9f   1/1     Running   0          34s
-my-deployment-5dc67997c7-s4jc6   1/1     Running   0          34s</pre>
+my-deployment-5dc67997c7-s4jc6   1/1     Running   0          34s</code></pre>
 </div>
 </div>
-<div id="logs-log-deployment" class="listingblock">
+<div id="logs-log-deployment" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs my-deployment-5dc67997c7-m7z9f</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>  .   ____          _            __ _ _
+<pre class="highlightjs highlight"><code>  .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
 ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
   '  |____| .__|_| |_|_| |_\__, | / / / /
  =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::        (v1.5.3.RELEASE)</pre>
+ :: Spring Boot ::        (v1.5.3.RELEASE)</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>You can follow logs with <code>-f</code> parameter:</p>
 </div>
-<div id="logs-log-deployment-follow" class="listingblock">
+<div id="logs-log-deployment-follow" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs my-deployment-5dc67997c7-m7z9f -f</code></pre>
 </div>
@@ -267,21 +249,21 @@ my-deployment-5dc67997c7-s4jc6   1/1     Running   0          34s</pre>
 <div class="paragraph">
 <p>And in another Terminal:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre>kubectl exec -it my-deployment-5dc67997c7-m7z9f /bin/bash
-curl localhost:8080</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it my-deployment-5dc67997c7-m7z9f /bin/bash
+curl localhost:8080</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Aloha from my-deployment-5dc67997c7-m7z9f</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Aloha from my-deployment-5dc67997c7-m7z9f</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Deploy a Service for <code>my-deployment</code>:</p>
 </div>
-<div id="create-service" class="listingblock">
+<div id="create-service" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
 apiVersion: v1
@@ -357,29 +339,29 @@ done</code></pre>
 <div class="paragraph">
 <p>Then use Stern to view the logs across all pods</p>
 </div>
-<div id="stern-my-deployment" class="listingblock">
+<div id="stern-my-deployment" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">stern my-deployment</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>my-deployment-5dc67997c7-5bq4n myapp Aloha from my-deployment-5dc67997c7-5bq4n
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">my-deployment-5dc67997c7-5bq4n myapp Aloha from my-deployment-5dc67997c7-5bq4n
 my-deployment-5dc67997c7-m7z9f myapp Aloha from my-deployment-5dc67997c7-m7z9f
 my-deployment-5dc67997c7-s4jc6 myapp Aloha from my-deployment-5dc67997c7-s4jc6
-my-deployment-5dc67997c7-s4jc6 myapp Aloha from my-deployment-5dc67997c7-s4jc6</pre>
+my-deployment-5dc67997c7-s4jc6 myapp Aloha from my-deployment-5dc67997c7-s4jc6</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Another option is <a href="https://github.com/boz/kail">kail</a>:</p>
 </div>
-<div id="install-kail" class="listingblock">
+<div id="install-kail" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">brew tap boz/repo
 brew install boz/repo/kail</code></pre>
 </div>
 </div>
-<div id="run-kail" class="listingblock">
+<div id="run-kail" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kail --deploy=my-deployment -c myapp --since=1h</code></pre>
 </div>
@@ -394,9 +376,9 @@ brew install boz/repo/kail</code></pre>
 <div class="paragraph">
 <p>To potentially pull the logs from a failing pod use <code>-p</code></p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre>kubectl logs my-deployment-5dc67997c7-s4jc6 -p</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs my-deployment-5dc67997c7-s4jc6 -p</code></pre>
 </div>
 </div>
 </td>
@@ -408,7 +390,7 @@ brew install boz/repo/kail</code></pre>
 <div class="sect1">
 <h2 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h2>
 <div class="sectionbody">
-<div id="clean-up" class="listingblock">
+<div id="clean-up" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete service the-service
 kubectl delete deployment my-deployment</code></pre>

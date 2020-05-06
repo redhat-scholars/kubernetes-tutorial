@@ -40,7 +40,7 @@
   </nav>
 </header>
 <div class="body">
-<div class="nav-container" data-component=" Test kubernetes-tutorial" data-version="master">
+<div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
@@ -141,24 +141,6 @@
 </ul>
   </nav>
 </div>
-<!--
-<div class="nav-panel-explore" data-panel="explore">
-  <div class="context">
-    <span class="title">kubernetes-tutorial</span>
-    <span class="version">master</span>
-  </div>
-  <ul class="components">
-    <li class="component is-current">
-      <span class="title">kubernetes-tutorial</span>
-      <ul class="versions">
-        <li class="version is-current is-latest">
-          <a href="index.html">master</a>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</div>
--->
     </div>
   </aside>
 </div>
@@ -183,11 +165,20 @@
 <div class="paragraph">
 <p>The exec command allows you to "shell into" your pod and execute commands inside of that tiny linux machine that is running your application.</p>
 </div>
-<div class="listingblock">
+<div class="paragraph">
+<p>You can execute it this way:</p>
+</div>
+<div class="listingblock console-input">
 <div class="content">
-<pre>kubectl exec -it {podname} /bin/bash
-# OR
-kubectl exec {podname} /somecommand</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it {podname} /bin/bash</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or this way:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec {podname} /somecommand</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -196,21 +187,21 @@ kubectl exec {podname} /somecommand</pre>
 <div class="paragraph">
 <p>Make sure the Spring Boot pod from the Resources chapter is still running:</p>
 </div>
-<div id="get-pods-exec" class="listingblock">
+<div id="get-pods-exec" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME                     READY   STATUS    RESTARTS   AGE
-myboot-d78fb6d58-69kl7   1/1     Running   2          32m</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS    RESTARTS   AGE
+myboot-d78fb6d58-69kl7   1/1     Running   2          32m</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Then let&#8217;s move inside the container by running <code>exec</code> into that running Pod:</p>
 </div>
-<div id="exec-pod-exec" class="listingblock">
+<div id="exec-pod-exec" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod  -l app=myboot -o name)
 kubectl exec -it $PODNAME /bin/bash</code></pre>
@@ -219,31 +210,31 @@ kubectl exec -it $PODNAME /bin/bash</code></pre>
 <div class="paragraph">
 <p>Run <code>ps</code> command to see the current running processes:</p>
 </div>
-<div id="exec-ps-exec" class="listingblock">
+<div id="exec-ps-exec" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ps -ef</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>UID          PID    PPID  C STIME TTY          TIME CMD
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">UID          PID    PPID  C STIME TTY          TIME CMD
 1000610+       1       0  0 19:20 ?        00:00:00 /bin/sh -c java -XX:+PrintFlagsFinal -XX:+PrintGCDetails $JAVA
 1000610+       7       1  2 19:20 ?        00:00:14 java -XX:+PrintFlagsFinal -XX:+PrintGCDetails -jar boot-demo-0
 1000610+      43       0  0 19:27 pts/0    00:00:00 /bin/bash
-1000610+      49      43  0 19:29 pts/0    00:00:00 ps -ef</pre>
+1000610+      49      43  0 19:29 pts/0    00:00:00 ps -ef</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Execute a <code>top</code> to get an overview of the memory:</p>
 </div>
-<div id="exec-top-exec" class="listingblock">
+<div id="exec-top-exec" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">top</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>top - 19:29:34 up 2 days,  7:02,  0 users,  load average: 0.16, 0.13, 0.14
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">top - 19:29:34 up 2 days,  7:02,  0 users,  load average: 0.16, 0.13, 0.14
 Tasks:   4 total,   1 running,   3 sleeping,   0 stopped,   0 zombie
 %Cpu(s):  2.8 us,  3.4 sy,  0.0 ni, 93.1 id,  0.1 wa,  0.3 hi,  0.3 si,  0.0 st
 KiB Mem : 15389256 total,  6438576 free,  2289352 used,  6661328 buff/cache
@@ -253,42 +244,42 @@ KiB Swap:        0 total,        0 free,        0 used. 13142476 avail Mem
       1 1000610+  20   0    4292    708    632 S   0.0  0.0   0:00.02 sh
       7 1000610+  20   0 7511676 328704  16988 S   0.0  2.1   0:14.02 java
      43 1000610+  20   0   19960   3644   3080 S   0.0  0.0   0:00.00 bash
-     50 1000610+  20   0   42672   3516   3080 R   0.0  0.0   0:00.00 top</pre>
+     50 1000610+  20   0   42672   3516   3080 R   0.0  0.0   0:00.00 top</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Get the distro:</p>
 </div>
-<div id="exec-cat-release-exec" class="listingblock">
+<div id="exec-cat-release-exec" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat /etc/os-release</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
 NAME="Debian GNU/Linux"
 VERSION_ID="9"
 VERSION="9 (stretch)"
 ID=debian
 HOME_URL="https://www.debian.org/"
 SUPPORT_URL="https://www.debian.org/support"
-BUG_REPORT_URL="https://bugs.debian.org/"</pre>
+BUG_REPORT_URL="https://bugs.debian.org/"</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Check the free memory:</p>
 </div>
-<div id="exec-free-exec" class="listingblock">
+<div id="exec-free-exec" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">free -h</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>              total        used        free      shared  buff/cache   available
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">              total        used        free      shared  buff/cache   available
 Mem:            14G        2.2G        6.1G         17M        6.4G         12G
-Swap:            0B          0B          0B</pre>
+Swap:            0B          0B          0B</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -297,14 +288,14 @@ Swap:            0B          0B          0B</pre>
 <div class="paragraph">
 <p>No wonder the JVM reports a larger than accurate Max memory:</p>
 </div>
-<div id="curl-sysresources-exec" class="listingblock">
+<div id="curl-sysresources-exec" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/sysresources</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Memory: 1324 Cores: 4</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Memory: 1324 Cores: 4</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -333,10 +324,14 @@ Swap:            0B          0B          0B</pre>
 <div class="paragraph">
 <p>Check your Java version:</p>
 </div>
-<div id="java-version-181-exec" class="listingblock">
+<div id="java-version-181-exec" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">java -version
-openjdk version "1.8.0_181"
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">java -version</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openjdk version "1.8.0_181"
 OpenJDK Runtime Environment (build 1.8.0_181-8u181-b13-2~deb9u1-b13)
 OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)</code></pre>
 </div>
@@ -344,35 +339,35 @@ OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)</code></pre>
 <div class="paragraph">
 <p>Ask the JVM about its resource availability:</p>
 </div>
-<div id="java-version-181-settings-exec" class="listingblock">
+<div id="java-version-181-settings-exec" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">java -XshowSettings:vm -version</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>VM settings:
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">VM settings:
     Max. Heap Size (Estimated): 3.26G
     Ergonomics Machine Class: server
     Using VM: OpenJDK 64-Bit Server VM
 
 openjdk version "1.8.0_181"
 OpenJDK Runtime Environment (build 1.8.0_181-8u181-b13-2~deb9u1-b13)
-OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)</pre>
+OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Now check the actual <code>cgroups</code> settings:</p>
 </div>
-<div id="cat-cgroup-exec" class="listingblock">
+<div id="cat-cgroup-exec" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd /sys/fs/cgroup/memory/
 cat memory.limit_in_bytes</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>419430400</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">419430400</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -381,29 +376,29 @@ cat memory.limit_in_bytes</code></pre>
 <div class="paragraph">
 <p>If you have a JVM of 1.8.0_131 or higher then you can try the experimental options</p>
 </div>
-<div id="java-version-131-settings-exec" class="listingblock">
+<div id="java-version-131-settings-exec" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XshowSettings:vm -version</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>VM settings:
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">VM settings:
     Max. Heap Size (Estimated): 112.00M
     Ergonomics Machine Class: server
     Using VM: OpenJDK 64-Bit Server VM
 
 openjdk version "1.8.0_181"
 OpenJDK Runtime Environment (build 1.8.0_181-8u181-b13-2~deb9u1-b13)
-OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)</pre>
+OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>To leave this pod, simply type <code>exit</code> and hit enter:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre>exit</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">exit</code></pre>
 </div>
 </div>
 </div>
@@ -411,10 +406,10 @@ OpenJDK 64-Bit Server VM (build 25.181-b13, mixed mode)</pre>
 <div class="sect1">
 <h2 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h2>
 <div class="sectionbody">
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre>kubectl delete deployment myboot
-kubectl delete service myboot</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete deployment myboot
+kubectl delete service myboot</code></pre>
 </div>
 </div>
 </div>

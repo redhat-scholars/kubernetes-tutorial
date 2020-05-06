@@ -40,7 +40,7 @@
   </nav>
 </header>
 <div class="body">
-<div class="nav-container" data-component=" Test kubernetes-tutorial" data-version="master">
+<div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
@@ -141,24 +141,6 @@
 </ul>
   </nav>
 </div>
-<!--
-<div class="nav-panel-explore" data-panel="explore">
-  <div class="context">
-    <span class="title">kubernetes-tutorial</span>
-    <span class="version">master</span>
-  </div>
-  <ul class="components">
-    <li class="component is-current">
-      <span class="title">kubernetes-tutorial</span>
-      <ul class="versions">
-        <li class="version is-current is-latest">
-          <a href="index.html">master</a>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</div>
--->
     </div>
   </aside>
 </div>
@@ -189,20 +171,20 @@
 <div class="paragraph">
 <p>Make sure nothing is running in your namespace:</p>
 </div>
-<div id="no-resources-resource" class="listingblock">
+<div id="no-resources-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get all</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>No resources found in myspace namespace.</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">No resources found in myspace namespace.</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>First deploy an application without any Requests nor Limits:</p>
 </div>
-<div id="no-limits-resource" class="listingblock">
+<div id="no-limits-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment.yml</code></pre>
 </div>
@@ -219,9 +201,9 @@ kubectl describe $PODNAME</code></pre>
 <div class="paragraph">
 <p>There are not resource limits configured for the pod.</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Name:         myboot-66d7d57687-jzbzj
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Name:         myboot-66d7d57687-jzbzj
 Namespace:    myspace
 Priority:     0
 Node:         gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal/10.0.32.5
@@ -281,13 +263,13 @@ Events:
   Normal  Scheduled  &lt;unknown&gt;  default-scheduler                                                   Successfully assigned myspace/myboot-66d7d57687-jzbzj to gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal
   Normal  Pulled     12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Container image "quay.io/burrsutter/myboot:v1" already present on machine
   Normal  Created    12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Created container myboot
-  Normal  Started    12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Started container myboot</pre>
+  Normal  Started    12m        kubelet, gcp-5xldg-w-b-rlp45.us-central1-b.c.ocp42project.internal  Started container myboot</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Delete that deployment:</p>
 </div>
-<div id="delete-deployment-resource" class="listingblock">
+<div id="delete-deployment-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete deployment myboot</code></pre>
 </div>
@@ -295,7 +277,7 @@ Events:
 <div class="paragraph">
 <p>Create a new deployment with resource requests:</p>
 </div>
-<div id="limits-resource" class="listingblock">
+<div id="limits-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment-resources.yml</code></pre>
 </div>
@@ -303,29 +285,29 @@ Events:
 <div class="paragraph">
 <p>And check the status of the Pod:</p>
 </div>
-<div id="limits-get-pod-resource" class="listingblock">
+<div id="limits-get-pod-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME                      READY   STATUS    RESTARTS   AGE
-myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   STATUS    RESTARTS   AGE
+myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>If you want to get more information of the error:</p>
 </div>
-<div id="get-events-resource" class="listingblock">
+<div id="get-events-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get events --sort-by=.metadata.creationTimestamp</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>&lt;unknown&gt;   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.
-&lt;unknown&gt;   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">&lt;unknown&gt;   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.
+&lt;unknown&gt;   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -343,7 +325,7 @@ kubectl describe $PODNAME</code></pre>
 <div class="paragraph">
 <p>Delete the deployment:</p>
 </div>
-<div id="delete-deployment-limit-resource" class="listingblock">
+<div id="delete-deployment-limit-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-deployment-resources.yml</code></pre>
 </div>
@@ -351,7 +333,7 @@ kubectl describe $PODNAME</code></pre>
 <div class="paragraph">
 <p>Create a new deployment with a more sane resource request and a hard limit:</p>
 </div>
-<div id="apply-deployment-sane-limit-resource" class="listingblock">
+<div id="apply-deployment-sane-limit-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml</code></pre>
 </div>
@@ -368,7 +350,7 @@ kubectl describe $PODNAME</code></pre>
 <div class="paragraph">
 <p>Deploy the service:</p>
 </div>
-<div id="apply-service-sane-limit-resource" class="listingblock">
+<div id="apply-service-sane-limit-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-service.yml</code></pre>
 </div>
@@ -439,7 +421,7 @@ done</code></pre>
 <div class="paragraph">
 <p>In yet another terminal window, curl the /sysresources endpoint</p>
 </div>
-<div id="sysresources-sane-limit-resource" class="listingblock">
+<div id="sysresources-sane-limit-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT/sysresources</code></pre>
 </div>
@@ -456,15 +438,15 @@ The reported memory vs what was set in the resource limits
 </tr>
 </table>
 </div>
-<div id="podresources-sane-limit-resource" class="listingblock">
+<div id="podresources-sane-limit-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot -o name)
 kubectl get $PODNAME -o json | jq ".spec.containers[0].resources"</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>{
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">{
   "limits": {
     "cpu": "1",
     "memory": "400Mi"
@@ -473,29 +455,29 @@ kubectl get $PODNAME -o json | jq ".spec.containers[0].resources"</code></pre>
     "cpu": "250m",
     "memory": "300Mi"
   }
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Then <code>curl</code> the <code>/consume</code> endpoint:</p>
 </div>
-<div id="consume-sane-limit-resource" class="listingblock">
+<div id="consume-sane-limit-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT/consume</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>curl: (52) Empty reply from server</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl: (52) Empty reply from server</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>And you should notice that your loop also fails:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Aloha from Spring Boot! 1120 on myboot-d78fb6d58-69kl7
-curl: (56) Recv failure: Connection reset by peer</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Aloha from Spring Boot! 1120 on myboot-d78fb6d58-69kl7
+curl: (56) Recv failure: Connection reset by peer</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -510,36 +492,36 @@ kubectl describe $PODNAME</code></pre>
 <div class="paragraph">
 <p>And look for the following part:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>   Last State:     Terminated
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">   Last State:     Terminated
       Reason:       OOMKilled
-      Exit Code:    137</pre>
+      Exit Code:    137</code></pre>
 </div>
 </div>
-<div id="terminated-pod-resource" class="listingblock">
+<div id="terminated-pod-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get $PODNAME -o json | jq ".status.containerStatuses[0].lastState.terminated"</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>{
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">{
   "containerID": "cri-o://7b9be70ce4b616d6083d528dee708cea879da967373dad0d396fb999bd3898d3",
   "exitCode": 137,
   "finishedAt": "2020-03-29T19:14:56Z",
   "reason": "OOMKilled",
   "startedAt": "2020-03-29T18:50:15Z"
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>You might even see the STATUS column of the <code>watch kubectl get pods</code> reflect the OOMKilled:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME                     READY   STATUS      RESTARTS   AGE
-myboot-d78fb6d58-69kl7   0/1     OOMKilled   1          30m</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS      RESTARTS   AGE
+myboot-d78fb6d58-69kl7   0/1     OOMKilled   1          30m</code></pre>
 </div>
 </div>
 <div class="paragraph">

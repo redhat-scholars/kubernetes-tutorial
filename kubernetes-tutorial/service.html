@@ -40,7 +40,7 @@
   </nav>
 </header>
 <div class="body">
-<div class="nav-container" data-component=" Test kubernetes-tutorial" data-version="master">
+<div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
@@ -141,24 +141,6 @@
 </ul>
   </nav>
 </div>
-<!--
-<div class="nav-panel-explore" data-panel="explore">
-  <div class="context">
-    <span class="title">kubernetes-tutorial</span>
-    <span class="version">master</span>
-  </div>
-  <ul class="components">
-    <li class="component is-current">
-      <span class="title">kubernetes-tutorial</span>
-      <ul class="versions">
-        <li class="version is-current is-latest">
-          <a href="index.html">master</a>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</div>
--->
     </div>
   </aside>
 </div>
@@ -203,51 +185,51 @@ This follows the creation of the Deployment in the previous chapter
 <div class="paragraph">
 <p>Make sure you have Deployment:</p>
 </div>
-<div id="have-deployment-service" class="listingblock">
+<div id="have-deployment-service" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployments</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
-quarkus-demo-deployment   3/3     3            3           8m33s</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+quarkus-demo-deployment   3/3     3            3           8m33s</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Make sure you have RS:</p>
 </div>
-<div id="have-rs-service" class="listingblock">
+<div id="have-rs-service" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get rs</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME                                 DESIRED   CURRENT   READY   AGE
-quarkus-demo-deployment-5979886fb7   3         3         3       8m56s</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                 DESIRED   CURRENT   READY   AGE
+quarkus-demo-deployment-5979886fb7   3         3         3       8m56s</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Make sure you have Pods:</p>
 </div>
-<div id="have-pods-service" class="listingblock">
+<div id="have-pods-service" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME                                       READY   STATUS    RESTARTS   AGE
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                       READY   STATUS    RESTARTS   AGE
 quarkus-demo-deployment-5979886fb7-c888m   1/1     Running   0          9m17s
 quarkus-demo-deployment-5979886fb7-gdtnz   1/1     Running   0          9m17s
-quarkus-demo-deployment-5979886fb7-grf59   1/1     Running   0          9m17s</pre>
+quarkus-demo-deployment-5979886fb7-grf59   1/1     Running   0          9m17s</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Create a Service</p>
 </div>
-<div id="create-service" class="listingblock">
+<div id="create-service" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
 apiVersion: v1
@@ -341,9 +323,9 @@ PORT=$(kubectl get service/the-service -o jsonpath="{.spec.ports[*].nodePort}")<
 <div class="paragraph">
 <p>Results:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-grf59:1</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-grf59:1</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -363,7 +345,7 @@ PORT=$(kubectl get service/the-service -o jsonpath="{.spec.ports[*].nodePort}")<
 <div class="sect1">
 <h2 id="_ingress"><a class="anchor" href="#_ingress"></a>Ingress</h2>
 <div class="sectionbody">
-<div id="create-ingress" class="listingblock">
+<div id="create-ingress" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1beta1
@@ -382,14 +364,14 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<div id="curl-services-ingress" class="listingblock">
+<div id="curl-services-ingress" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl stuff-myspace.apps.gcp.burrsutter.dev</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:2</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:2</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -403,41 +385,41 @@ EOF</code></pre>
 <div class="paragraph">
 <p>Delete the any manually created Ingress to avoid any naming collisions.  An OpenShift Route leverages ha-proxy for its default Ingress.</p>
 </div>
-<div id="delete-ingress" class="listingblock">
+<div id="delete-ingress" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete ingress myingress</code></pre>
 </div>
 </div>
-<div id="expose-service" class="listingblock">
+<div id="expose-service" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc expose service the-service
 kubectl get routes</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>NAME          HOST/PORT                                     PATH   SERVICES      PORT   TERMINATION   WILDCARD
-the-service   the-service-myspace.apps.gcp.burrsutter.dev          the-service   8080                 None</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME          HOST/PORT                                     PATH   SERVICES      PORT   TERMINATION   WILDCARD
+the-service   the-service-myspace.apps.gcp.burrsutter.dev          the-service   8080                 None</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Then make a request to the service:</p>
 </div>
-<div id="curl-services-route" class="listingblock">
+<div id="curl-services-route" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl the-service-myspace.apps.gcp.burrsutter.dev</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
-<pre>Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:3</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:3</code></pre>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_use_jq_to_pull_out_the_data_elements_you_need_for_scripting"><a class="anchor" href="#_use_jq_to_pull_out_the_data_elements_you_need_for_scripting"></a>Use jq to pull out the data elements you need for scripting</h3>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre>kubectl get route the-service -o json &gt; myroutes.json</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get route the-service -o json &gt; myroutes.json</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -446,12 +428,12 @@ the-service   the-service-myspace.apps.gcp.burrsutter.dev          the-service  
 <div class="paragraph">
 <p><a href="https://www.screencast.com/t/09biZYHNo62" class="bare">https://www.screencast.com/t/09biZYHNo62</a></p>
 </div>
-<div id="install-jq" class="listingblock">
+<div id="install-jq" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">brew install jq</code></pre>
 </div>
 </div>
-<div id="route-jq" class="listingblock">
+<div id="route-jq" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get route the-service -o json | jq '.spec.host'
 "the-service-myspace.apps.gcp.burrsutter.dev"</code></pre>
