@@ -23,6 +23,7 @@ include::partial$watching-pods.adoc[]
 Terminal 2: curl loop the service.
 
 :service-exposed: myboot
+
 include::partial$env-curl.adoc[]
 
 And run loop script:
