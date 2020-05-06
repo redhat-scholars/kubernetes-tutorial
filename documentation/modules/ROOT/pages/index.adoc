@@ -4,25 +4,4 @@ Welcome to your Kubernetes Journey!
 
 Your journey contains four steps, each one of them in a different section:
 
-== Installation
-* xref:installation.adoc[Installation & Setup]
-
-== Beginner
-* xref:kubectl.adoc[kubectl]
-* xref:pod-rs-deployment.adoc[Pod, ReplicaSet, Deployment]
-* xref:logs.adoc[Logs]
-* xref:service.adoc[Service]
-* xref:service-magic.adoc[Service Magic]
-* xref:blue-green.adoc[Blue/Green Deployments]
-
-== Elementary
-* xref:building-images.adoc[Building Images]
-* xref:resources.adoc[Resources/Limits]
-* xref:live-ready.adoc[Liveness & Readiness]
-* xref:exec.adoc[Exec]
-* xref:rolling-updates.adoc[Rolling Updates]
-* xref:configmap.adoc[ConfigMap]
-
-== Advanced
-* xref:secrets.adoc[Secrets]
-* xref:crds.adoc[CRDs]
+include::../nav.adoc[]
