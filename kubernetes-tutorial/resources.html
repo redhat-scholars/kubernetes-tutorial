@@ -111,13 +111,10 @@
     <a class="nav-link" href="resources.html">Resources/Limits</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="live-ready.html">Liveness &amp; Readiness</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="exec.html">Exec</a>
-  </li>
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="live-ready.html">Liveness &amp; Readiness</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="configmap.html">ConfigMap</a>
@@ -128,6 +125,9 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">4. Advanced</span>
 <ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="exec.html">Exec</a>
+  </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="secrets.html">Secrets</a>
   </li>
@@ -370,14 +370,22 @@ kubectl describe $PODNAME</code></pre>
 <div class="ulist tabs">
 <ul>
 <li>
-<p><a id="tabset1_hosted"></a>Hosted</p>
+<p><a id="tabset1_minikube"></a>Minikube</p>
 </li>
 <li>
-<p><a id="tabset1_minikube"></a>Minikube</p>
+<p><a id="tabset1_hosted"></a>Hosted</p>
 </li>
 </ul>
 </div>
 <div class="content">
+<div class="tab-pane" aria-labelledby="tabset1_minikube">
+<div id="resource-soft-limit-ip-port-minikube" class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
+PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
+</div>
+</div>
+</div>
 <div class="tab-pane" aria-labelledby="tabset1_hosted">
 <div class="paragraph">
 <p>If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port <code>8080</code> or get it using <code>kubectl</code>:</p>
@@ -386,14 +394,6 @@ kubectl describe $PODNAME</code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
-</div>
-</div>
-</div>
-<div class="tab-pane" aria-labelledby="tabset1_minikube">
-<div id="resource-soft-limit-ip-port-minikube" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
-PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
 </div>
 </div>
 </div>
