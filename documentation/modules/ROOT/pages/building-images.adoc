@@ -36,7 +36,7 @@ NOTE: Change `quay.io` for your registry (e.g. `docker.io`) and `rhdevelopers` t
 [source, bash]
 ----
 docker build -t quay.io/rhdevelopers/myboot:v1 .
----
+----
 
 Results:
 
