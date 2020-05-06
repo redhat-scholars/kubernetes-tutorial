@@ -17,11 +17,11 @@
 * 3. Elementary
 ** xref:building-images.adoc[Building Images]
 ** xref:resources.adoc[Resources/Limits]
-** xref:live-ready.adoc[Liveness & Readiness]
-** xref:exec.adoc[Exec]
 ** xref:rolling-updates.adoc[Rolling updates]
+** xref:live-ready.adoc[Liveness & Readiness]
 ** xref:configmap.adoc[ConfigMap]
 
 * 4. Advanced
+** xref:exec.adoc[Exec]
 ** xref:secrets.adoc[Secrets]
 ** xref:crds.adoc[CRDs]
