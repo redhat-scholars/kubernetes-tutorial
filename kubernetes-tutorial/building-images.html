@@ -169,8 +169,15 @@
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd apps/helloworld/springboot
 mvn clean package
-java -jar target/boot-demo-1.0.0.jar
-curl localhost:8080</code></pre>
+java -jar target/boot-demo-1.0.0.jar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then <code>curl</code> it in a separate terminal:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
@@ -200,191 +207,266 @@ Change <code>quay.io</code> for your registry (e.g. <code>docker.io</code>) and 
 </div>
 <div id="build-container--building-images" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker build -t quay.io/rhdevelopers/myboot:v1 .</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker build -t quay.io/rhdevelopers/myboot:v1 .
+---
+
+Results:
+
+[.console-output]
+[source,bash]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Results:</p>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Sending build context to Docker daemon  14.47MB
+<p>Sending build context to Docker daemon  14.47MB
 Step 1/6 : FROM openjdk:8u151
- ---&gt; a30a1e547e6d
+ --&#8594; a30a1e547e6d
 Step 2/6 : ENV JAVA_APP_JAR boot-demo-1.0.0.jar
- ---&gt; Using cache
- ---&gt; 62b714308856
+ --&#8594; Using cache
+ --&#8594; 62b714308856
 Step 3/6 : WORKDIR /app/
- ---&gt; Using cache
- ---&gt; aefc5bf44b15
+ --&#8594; Using cache
+ --&#8594; aefc5bf44b15
 Step 4/6 : COPY target/$JAVA_APP_JAR .
- ---&gt; f881c5f5815b
+ --&#8594; f881c5f5815b
 Step 5/6 : EXPOSE 8080
- ---&gt; Running in 4e9adc135345
+ --&#8594; Running in 4e9adc135345
 Removing intermediate container 4e9adc135345
- ---&gt; 2909459c83f6
+ --&#8594; 2909459c83f6
 Step 6/6 : CMD java $JAVA_OPTIONS -jar $JAVA_APP_JAR
- ---&gt; Running in 46bcab555de7
+ --&#8594; Running in 46bcab555de7
 Removing intermediate container 46bcab555de7
- ---&gt; 85b78b9b70b1
+ --&#8594; 85b78b9b70b1
 Successfully built 85b78b9b70b1
-Successfully tagged quay.io/rhdevelopers/myboot:v1</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_run_created_docker_image"><a class="anchor" href="#_run_created_docker_image"></a>Run Created Docker image</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Run and Test your newly created Docker container:</p>
-</div>
-<div id="run-container-building-images" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -p 8080:8080 --name myboot quay.io/rhdevelopers/myboot:v1</code></pre>
-</div>
-</div>
-<div id="curl-container-building-images" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Aloha from Spring Boot! 1 on 76851270a3e7</code></pre>
-</div>
-</div>
-<div id="curl-sys-container-building-images" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/sysresources</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Memory: 1268 Cores: 3</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>These numbers are based on the memory and CPUs allocated to the Docker daemon as seen in the image below:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="_images/docker-settings.png" alt="Docker Settings">
-</div>
-</div>
-<div id="curl-consume-container-building-images" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/consume</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Allocated about 80% (1.2 GiB) of the max allowed JVM memory size (1.2 GiB)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Stop &amp; remove the Docker container:</p>
+Successfully tagged quay.io/rhdevelopers/myboot:v1</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>control-c</pre>
+<pre>== Run Created Docker image
+
+Run and Test your newly created Docker container:
+
+[#run-container-building-images]
+[.console-input]
+[source, bash]</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now, constrain the resources associated with this Linux container</p>
+<p>docker run --rm -it -p 8080:8080 --name myboot quay.io/rhdevelopers/myboot:v1</p>
 </div>
-<div id="run-container-constrained-building-images" class="listingblock console-input">
+<div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdevelopers/myboot:v1</code></pre>
+<pre>[#curl-container-building-images]
+[.console-input]
+[source, bash]</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Ask for the container&#8217;s resources:</p>
+<p>curl localhost:8080</p>
 </div>
-<div id="curl-sys-constrained-container-building-images" class="listingblock console-input">
+<div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/sysresources</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Memory: 1268 Cores: 3</code></pre>
+<pre>[.console-output]
+[source,bash]</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Crash it:</p>
+<p>Aloha from Spring Boot! 1 on 76851270a3e7</p>
 </div>
-<div id="curl-consume-crash-container-building-images" class="listingblock console-input">
+<div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/consume</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_fix_memory_problems"><a class="anchor" href="#_fix_memory_problems"></a>Fix Memory Problems</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>To correct this behavior use a different Dockerfile:</p>
-</div>
-<div id="build-mem-container-building-images" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker build -t quay.io/rhdevelopers/myboot:v1 -f Dockerfile_Memory .</code></pre>
+<pre>[#curl-sys-container-building-images]
+[.console-input]
+[source, bash]</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now docker run it:</p>
+<p>curl localhost:8080/sysresources</p>
 </div>
-<div id="run-sys-constrained-fix-container-building-images" class="listingblock console-input">
+<div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdevelopers/myboot:v1</code></pre>
+<pre>[.console-output]
+[source,bash]</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And <code>curl</code> it:</p>
+<p>Memory: 1268 Cores: 3</p>
 </div>
-<div id="curl-sys-constrained-fix-container-building-images" class="listingblock console-input">
+<div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/sysresources</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Memory: 112 Cores: 3</code></pre>
+<pre>These numbers are based on the memory and CPUs allocated to the Docker daemon as seen in the image below:
+
+image::docker-settings.png[Docker Settings]
+
+[#curl-consume-container-building-images]
+[.console-input]
+[source, bash]</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And try to crash it:</p>
+<p>curl localhost:8080/consume</p>
 </div>
-<div id="curl-consume-fix-container-building-images" class="listingblock console-input">
+<div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/consume</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Allocated about 80% (98.0 MiB) of the max allowed JVM memory size (112.0 MiB)</code></pre>
+<pre>[.console-output]
+[source,bash]</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Once you are happy with your container image, push it up to your favorite registry:</p>
+<p>Allocated about 80% (1.2 GiB) of the max allowed JVM memory size (1.2 GiB)</p>
 </div>
-<div id="push-container-building-images" class="listingblock console-input">
+<div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker login quay.io
-docker push quay.io/rhdevelopers/myboot:v1</code></pre>
+<pre>Stop &amp; remove the Docker container:</pre>
 </div>
 </div>
-<div class="listingblock console-output">
+<div class="paragraph">
+<p>control-c</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">.
+<pre>Now, constrain the resources associated with this Linux container
+
+[#run-container-constrained-building-images]
+[.console-input]
+[source, bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdevelopers/myboot:v1</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Ask for the container's resources:
+
+[#curl-sys-constrained-container-building-images]
+[.console-input]
+[source, bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>curl localhost:8080/sysresources</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[.console-output]
+[source,bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Memory: 1268 Cores: 3</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Crash it:
+
+[#curl-consume-crash-container-building-images]
+[.console-input]
+[source, bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>curl localhost:8080/consume</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>== Fix Memory Problems
+
+To correct this behavior use a different Dockerfile:
+
+[#build-mem-container-building-images]
+[.console-input]
+[source, bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>docker build -t quay.io/rhdevelopers/myboot:v1 -f Dockerfile_Memory .</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Now docker run it:
+
+[#run-sys-constrained-fix-container-building-images]
+[.console-input]
+[source, bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myboot quay.io/rhdevelopers/myboot:v1</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>And `curl` it:
+
+[#curl-sys-constrained-fix-container-building-images]
+[.console-input]
+[source, bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>curl localhost:8080/sysresources</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[.console-output]
+[source,bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Memory: 112 Cores: 3</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>And try to crash it:
+
+[#curl-consume-fix-container-building-images]
+[.console-input]
+[source, bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>curl localhost:8080/consume</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[.console-output]
+[source,bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Allocated about 80% (98.0 MiB) of the max allowed JVM memory size (112.0 MiB)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Once you are happy with your container image, push it up to your favorite registry:
+
+[#push-container-building-images]
+[.console-input]
+[source, bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>docker login quay.io
+docker push quay.io/rhdevelopers/myboot:v1</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[.console-output]
+[source,bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>.
 .
 .
 20c527f217db: Pushed
 61c06e07759a: Pushed
 bcbe43405751: Pushed
 e1df5dc88d2c: Pushed
-v1: digest: sha256:d22d4af6e297a024b061dbaae05be76c771fdb1db51643dc2dd8b8e047f79647 size: 2630</code></pre>
+v1: digest: sha256:d22d4af6e297a024b061dbaae05be76c771fdb1db51643dc2dd8b8e047f79647 size: 2630</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre></pre>
 </div>
 </div>
 </div>
