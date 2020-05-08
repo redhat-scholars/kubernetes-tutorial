@@ -20,3 +20,21 @@ And then open your `gh-pages/index.html` file:
 ```
 open gh-pages/index.html
 ```
+
+## Iterative local development
+
+You can develop the tutorial docs locally using a rapid iterative cycle.
+
+First, install the `yarn` dependencies:
+
+[source,bash]
+----
+yarn install
+----
+
+And now start `gulp`. It will create the website and open your browser connected with `browser-sync`. Everytime it detects a change, it will automatically refresh your browser page.
+
+[source,bash]
+----
+gulp
+----
