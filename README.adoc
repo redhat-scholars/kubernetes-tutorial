@@ -38,3 +38,10 @@ And now start `gulp`. It will create the website and open your browser connected
 ----
 gulp
 ----
+
+You can clean the local cache using:
+
+[source,bash]
+----
+gulp clean
+----
