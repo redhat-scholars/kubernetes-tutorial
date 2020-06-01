@@ -1,4 +1,4 @@
-== Blue/Green
+= Blue/Green
 
 https://martinfowler.com/bliki/BlueGreenDeployment.html[Description of Blue/Green Deployment]
 

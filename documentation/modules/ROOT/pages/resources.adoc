@@ -1,4 +1,4 @@
-= Resources
+= Resources and Limits
 
 Make sure you are in the correct namespace:
 

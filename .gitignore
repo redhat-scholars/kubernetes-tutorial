@@ -17,8 +17,6 @@ node_modules
 .DS_Store
 .vscode
 firebase*
-yarn*
-package*
 node_modules
 .firebaserc
 .firebase
