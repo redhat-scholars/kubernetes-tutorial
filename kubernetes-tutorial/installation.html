@@ -108,7 +108,7 @@
     <a class="nav-link" href="building-images.html">Building Images</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="resources.html">Resources/Limits</a>
+    <a class="nav-link" href="resources.html">Resources and Limits</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
@@ -298,9 +298,17 @@ Although they are used in the tutorial, you could use others without any problem
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone <a href="https://github.com/redhat-developer-demos/kubernetes-tutorial" class="bare">https://github.com/redhat-developer-demos/kubernetes-tutorial</a> kubernetes-tutorial &amp;&amp; \
-export TUTORIAL_HOME="$(pwd)/kubernetes-tutorial" &amp;&amp; \
-cd $TUTORIAL_HOME</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone <a href="https://github.com/redhat-developer-demos/kubernetes-tutorial" class="bare">https://github.com/redhat-developer-demos/kubernetes-tutorial</a> kubernetes-tutorial</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export TUTORIAL_HOME="$(pwd)/kubernetes-tutorial"</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd $TUTORIAL_HOME</code></pre>
 </div>
 </div>
 <div class="admonitionblock important">
@@ -347,49 +355,86 @@ cd $TUTORIAL_HOME</code></pre>
 <div class="tab-pane" aria-labelledby="tabset1_macos">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir bin &amp;&amp; \
-cd bin &amp;&amp; \
-curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-darwin-amd64" class="bare">https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-darwin-amd64</a> &amp;&amp; \
-chmod +x minikube</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir bin &amp;&amp; cd bin</code></pre>
 </div>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl</a> &amp;&amp; \
-chmod +x kubectl &amp;&amp; \
-cd ..</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-darwin-amd64" class="bare">https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-darwin-amd64</a></code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">chmod +x minikube</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl</a></code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">chmod +x kubectl</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd ..</code></pre>
 </div>
 </div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_linux">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir bin &amp;&amp; \
-cd bin &amp;&amp; \
-curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-linux-amd64" class="bare">https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-linux-amd64</a> &amp;&amp; \
-chmod +x minikube</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir bin &amp;&amp; cd bin</code></pre>
 </div>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/linux/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/linux/amd64/kubectl</a> &amp;&amp; \
-chmod +x kubectl &amp;&amp; \
-cd ..</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-linux-amd64" class="bare">https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-linux-amd64</a></code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">chmod +x minikube</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/linux/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/linux/amd64/kubectl</a></code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">chmod +x kubectl</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd ..</code></pre>
 </div>
 </div>
 </div>
 <div class="tab-pane" aria-labelledby="tabset1_windows">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir bin &amp;&amp; \
-cd bin &amp;&amp; \
-curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-windows-amd64.exe" class="bare">https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-windows-amd64.exe</a></code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir bin &amp;&amp; cd bin</code></pre>
 </div>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/windows/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/windows/amd64/kubectl</a> &amp;&amp; \
-cd ..</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-windows-amd64.exe" class="bare">https://storage.googleapis.com/minikube/releases/v1.9.2/minikube-windows-amd64.exe</a></code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/windows/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/windows/amd64/kubectl</a></code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd ..</code></pre>
 </div>
 </div>
 </div>
