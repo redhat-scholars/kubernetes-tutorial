@@ -1,0 +1,68 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: quarkus-operator-example
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - delete
+  - patch
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - list
+- apiGroups:
+  - mykubernetes.acme.org
+  resources:
+  - pizzas
+  verbs:
+  - list
+  - watch
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: quarkus-operator-example
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: quarkus-operator-example
+subjects:
+- kind: ServiceAccount
+  name: quarkus-operator-example
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: quarkus-operator-example
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quarkus-operator-example
+spec:
+  selector:
+    matchLabels:
+      app: quarkus-operator-example
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: quarkus-operator-example
+    spec:
+      serviceAccountName: quarkus-operator-example
+      containers:
+      - image: quay.io/lordofthejars/pizza-operator:1.0.1
+        name: quarkus-operator-example
+        imagePullPolicy: IfNotPresent

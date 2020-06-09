@@ -1,0 +1,11 @@
+apiVersion: mykubernetes.acme.org/v1beta2
+kind: Pizza
+metadata:
+  name: alexmeats
+spec:
+  toppings:
+  - mozzarella
+  - pepperoni
+  - sausage
+  - bacon
+  sauce: extra
