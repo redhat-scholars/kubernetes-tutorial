@@ -1,0 +1,588 @@
+= Volumes & Persistent Volumes
+
+Containers are ephemeral by definition, which means that anything that it is stored at running time, it is lost when the container is stopped.
+This might cause problems with containers that need to persist its data like database containers.
+
+A Kubernetes volume is just a directory, that is accessible to the Containers in a Pod. 
+The concept is similar to Docker volumes, but in Docker, you are mapping the container to a computer host, in the case of Kubernetes volumes, the medium that backs it, and the contents of it are determined by the particular volume type used.
+
+Some of the volume types are:
+
+* awsElasticBlockStore
+* azureDisk
+* cephfs
+* nfs
+* local
+* empty dir
+* host path
+
+Let's start with two examples of `Volumes`.
+
+== Volumes
+
+=== EmptyDir
+
+An `emptyDir` volume is first created when a Pod is assigned to a node and exists as long as that Pod is running on that node.
+As the name says, it is initially empty.
+All Containers in the same Pod can read and write in the same `emptyDir` volume.
+When a Pod is restarted or removed, the data in the` emptyDir` is lost forever.
+
+Let's deploy a service that exposes two endpoints, one to write content to a file and another one to retrieve the content from that file.
+
+[source, yaml]
+----
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myboot-demo
+spec:
+  containers:
+  - name: myboot-demo
+    image: quay.io/rhdevelopers/myboot:v4
+    
+    volumeMounts:
+    - mountPath: /tmp/demo
+      name: demo-volume
+
+  volumes:
+  - name: demo-volume
+    emptyDir: {}
+----
+
+In `volumes` section, you are defining the volume, and in `volumeMounts` section, how the volume is mounted inside the container.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f myboot-pod-volume.yml
+
+kubectl get pods
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME          READY   STATUS    RESTARTS   AGE
+myboot-demo   1/1     Running   0          83s
+----
+
+Let's access into the container and run these methods:
+
+[.console-input]
+[source,bash]
+----
+kubectl exec -ti myboot-demo /bin/bash
+
+curl localhost:8080/appendgreetingfile
+curl localhost:8080/readgreetingfile
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Jambo
+----
+
+In this case, the `emptyDir` was set to `/tmp/demo` so you can check the directory content by running `ls`:
+
+[.console-input]
+[source,bash]
+----
+ls /tmp/demo
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+greeting.txt
+----
+
+Exit the container's shell:
+
+[.console-input]
+[source,bash]
+----
+exit
+----
+
+And delete the pod.
+
+[.console-input]
+[source,bash]
+----
+kubectl delete pod myboot-demo
+----
+
+Then if you deploy again the same service you'll notice that the directory content is empty.
+
+[.console-input]
+[source,bash]
+----
+kubectl exec -ti myboot-demo /bin/bash
+
+ls /tmp/demo
+exit
+----
+
+Delete the pod.
+
+[.console-input]
+[source,bash]
+----
+kubectl delete pod myboot-demo
+----
+
+`emptyDir` is shared between containers of the same Pod.
+The following deployment creates one pod with two containers mounting the same volume:
+
+[.console-input]
+[source,bash]
+----
+kubectl apply -f myboot-pods-volume.yml
+
+kubectl get pods
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME          READY   STATUS    RESTARTS   AGE
+myboot-demo   2/2     Running   0          4s
+----
+
+Let's access into the first container and generate some content to `/tmp/demo` directory.
+
+[.console-input]
+[source,bash]
+----
+kubectl exec -ti myboot-demo -c myboot-demo-1 /bin/bash
+
+curl localhost:8080/appendgreetingfile
+
+exit
+----
+
+And read the file contents from the other container:
+
+[.console-input]
+[source,bash]
+----
+kubectl exec myboot-demo -c myboot-demo-2 "cat /tmp/demo/greeting.txt"
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Jambo
+----
+
+You can get the volume information from a Pod by running:
+
+[.console-input]
+[source,bash]
+----
+kubectl describe pod myboot-demo
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Volumes:
+  demo-volume:
+    Type:       EmptyDir (a temporary directory that shares a pods lifetime)
+    Medium:
+    SizeLimit:  <unset>
+----
+
+==== Clean Up
+
+[.console-input]
+[source,bash]
+----
+kubectl delete -f myboot-pods-volume.yml
+----
+
+=== HostPath
+
+A `hostPath` volume mounts a file or directory from the node's filesystem into the Pod.
+
+[source, yaml]
+----
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myboot-demo
+spec:
+  containers:
+  - name: myboot-demo
+    image: quay.io/rhdevelopers/myboot:v4
+    
+    volumeMounts:
+    - mountPath: /tmp/demo
+      name: demo-volume
+
+  volumes:
+  - name: demo-volume
+    hostPath:
+      path: "/mnt/data"
+----
+
+In this case, you are defining the host/node directory where the contents are going to be stored.
+
+[.console-input]
+[source,bash]
+----
+kubectl apply -f myboot-pod-volume-hostpath.yaml
+----
+
+Now, if you describe the Pod, in volumes section, you'll see:
+
+[.console-input]
+[source,bash]
+----
+kubectl describe pod myboot-demo
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Volumes:
+  demo-volume:
+    Type:          HostPath (bare host directory volume)
+    Path:          /mnt/data
+    HostPathType:
+----
+
+Notice that now the content stored in `/tmp/demo` inside the Pod is stored at host path `/mnt/data`, so if the Pod dies, the content is not lost.
+But this might not solve all the problems as if Pod goes down and it is rescheduled in another node, then the data will not be in this other node.
+
+Let's see another example, in this case for an Amazon EBS Volume:
+
+[source, yaml]
+----
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-ebs
+spec:
+...  
+  volumes:
+    - name: test-volume
+      awsElasticBlockStore:
+        volumeID: <volume-id>
+        fsType: ext4
+----
+
+What we want you to notice from the previous snippet is that you are mixing things from your application (ie the container, probes, ports, ...) things that are more in the _dev_ side with things more related to the cloud (ie physical storage), which falls more in the _ops_ side.
+
+To avoid this mix of concepts, Kubernetes offers some layer of abstractions, so developers just ask for space to store data (-persistent volume claim_), and operations team offers physical storage configuration.
+
+==== Clean Up
+
+[.console-input]
+[source,bash]
+----
+kubectl delete pod myboot-demo
+----
+
+== Persistent Volume & Persistent Volume Claim
+
+A `PersistentVolume` (_PV_) is a Kubernetes resource that is created by an administrator or dynamically using `Storage Classes` independently from Pod.
+It captures the details of the implementation of the storage, it can be NFS, Ceph, iSCSI, or a cloud-provider-specific storage system.
+
+A `PersistentVolumeClaim` (_PVC_) is a request for storage by a user. 
+It can request for specific volume size or for example the access mode.
+
+=== Persistent volume/claim with hostPath
+
+Let's use `hostPath` strategy but not configuring it directly as volume, but using persistence volume and persistence volume claim.
+
+[source, yaml]
+----
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: my-persistent-volume
+  labels:
+    type: local
+spec:
+  storageClassName: pv-demo 
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/persistent-volume"
+----
+
+Now, the `volume` information is not in the pod anymore but in the _persistent volume_ object.
+
+[.console-input]
+[source,bash]
+----
+kubectl apply -f demo-persistent-volume-hostpath.yaml 
+
+kubectl get pv
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM                                           STORAGECLASS   REASON   AGE
+my-persistent-volume                       100Mi      RWO            Retain           Available                                                   pv-demo                 5s
+----
+
+Then from the dev side, we need to claim what we need from the _PV_.
+In the following example, we are requesting for 10Mi space.
+
+[source, yaml]
+----
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: myboot-volumeclaim
+spec:
+  storageClassName: pv-demo 
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+----
+
+
+[.console-input]
+[source,bash]
+----
+kubectl apply -f myboot-persistent-volume-claim.yaml
+
+kubectl get pvc
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                 STATUS   VOLUME                 CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myboot-volumeclaim   Bound    my-persistent-volume   100Mi      RWO            pv-demo        3s
+----
+
+The big difference is that now in the pod you are just defining in the `volumes` section, not the volume configuration directly, but the _persistent volume claim_ to use.
+
+[source, yaml]
+----
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myboot-demo
+spec:
+  containers:
+  - name: myboot-demo
+    image: quay.io/rhdevelopers/myboot:v4
+    
+    volumeMounts:
+    - mountPath: /tmp/demo
+      name: demo-volume
+
+  volumes:
+  - name: demo-volume
+    persistentVolumeClaim:
+      claimName: myboot-volumeclaim
+----
+
+[.console-input]
+[source,bash]
+----
+kubectl apply -f myboot-pod-volume-pvc.yaml
+
+kubectl describe pod myboot-demo
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Volumes:
+  demo-volume:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  myboot-volumeclaim
+    ReadOnly:   false
+----
+
+Notice that now the description of the pod shows that the volume is not set directly but through a persistence volume claim.
+
+[.console-input]
+[source,bash]
+----
+kubectl delete pod myboot-demo
+
+kubectl get pvc
+----
+
+Even though the pod has been deleted, the PVC (and the PV) are still there and need to be deleted manually.
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                 STATUS   VOLUME                 CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myboot-volumeclaim   Bound    my-persistent-volume   100Mi      RWO            pv-demo        14m
+----
+
+==== Clean Up
+
+[.console-input]
+[source,bash]
+----
+kubectl delete -f myboot-persistent-volume-claim.yaml
+kubectl delete -f demo-persistent-volume-hostpath.yaml
+----
+
+== Static vs Dynamic Provisioning
+
+Persistent Volumes can be provisioned dynamically or statically.
+
+Static provisioning allows cluster administrators to make *existing* storage device available to a cluster.
+When it is done in this way, the PV and the PVC must be provided manually.
+
+So far, in the last example, you've seen static provisioning.
+
+The dynamic provisioning eliminates the need for cluster administrators to pre-provision storage. 
+Instead, it automatically provisions storage when it is requested by users.
+To make it run you need to provide a Storage Class object and a PVC referring to it.
+After the PVC is created, the storage device and the PV are automatically created for you.
+The main purpose of dynamic provisioning is to work with cloud provider solutions.
+
+Normally, Kubernetes implementation offers a default Storage Class so anyone can get started quickly with dynamic provisioning.
+You can get information from default Storage Class by running:
+
+[.console-input]
+[source,bash]
+----
+kubectl get sc
+----
+
+[tabs]
+====
+Minikube::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                 PROVISIONER                RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+standard (default)   k8s.io/minikube-hostpath   Delete          Immediate           false                  47d
+----
+--
+OpenShift::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME            PROVISIONER             AGE
+gp2 (default)   kubernetes.io/aws-ebs   31h
+----
+
+By default, when OpenShift is installed in a cloud provider, it automatically creates a Storage Class with the underlying persistent technology of the cloud.
+For example in the case of AWS, a default Storage Class is provided pointing out to AWS EBS.
+--
+====
+
+Then you can create a Persistent Volume Claim which will create a Persistent Volume automatically.
+
+[source, yaml]
+----
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: myboot-volumeclaim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+----
+
+Since we've not specified any _storage class_ but there is one defined as the default, the _PVC_ implicitly refers to that one.
+
+[.console-input]
+[source,bash]
+----
+kubectl apply -f apps/kubefiles/demo-dynamic-persistent.yaml
+
+kubectl get pvc
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                 STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myboot-volumeclaim   Pending                                      gp2            46sç
+----
+
+Notice that the _PVC_ is in _Pending_ STATUS, because remember that we are creating dynamic storage and it means that until the _pod_ doesn't request the volume, the _PVC_ will remain in pending state and the _PV_ will not be created.
+
+[.console-input]
+[source,bash]
+----
+kubectl apply -f apps/kubefiles/myboot-pod-volume-pvc.yaml
+
+kubectl get pods
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME          READY   STATUS    RESTARTS   AGE
+myboot-demo   1/1     Running   0          2m36s
+----
+
+When the pod is in _Running_ status, then you can get _PVC_ and _PV_ parameters.
+
+[.console-input]
+[source,bash]
+----
+kubectl get pvc
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myboot-volumeclaim   Bound    pvc-6de4f27e-bd40-4b58-bb46-91eb08ca5bd7   1Gi        RWO            gp2            116s
+----
+
+Notice that now the volume claim is  _Bound_ to a volume.
+
+Finally, you can check that the _PV_ has been created automatically:
+
+[.console-input]
+[source,bash]
+----
+kubectl get pv
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                        STORAGECLASS   REASON   AGE
+pvc-6de4f27e-bd40-4b58-bb46-91eb08ca5bd7   1Gi        RWO            Delete           Bound    default/myboot-volumeclaim   gp2                     77s
+----
+
+Notice that the _CLAIM_ field points to the _PVC_ responsible for the creation of the _PV_.
+
+=== Clean Up
+
+[.console-input]
+[source,bash]
+----
+kubectl delete -f apps/kubefiles/myboot-pod-volume-pvc.yaml
+kubectl delete -f apps/kubefiles/demo-dynamic-persistent.yaml
+----
+
+== Distributed Filesystems
+
+It is important to notice that cloud-providers offer distributed storages so data is always available in all the nodes.
+As you've seen in the last example, this storage class guarantees that all nodes see the same disk content.
+
+If for example, if you are using Kubernetes/OpenShift on-prem or if you don't want to relay to a vendor solution, there is also support for distributed filesystems in Kubernetes.
+If that's the case, we recommend you to use NFS, https://www.gluster.org/[GlusterFS ] or https://ceph.io/[Ceph].

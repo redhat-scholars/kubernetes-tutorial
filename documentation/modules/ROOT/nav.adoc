@@ -25,3 +25,4 @@
 ** xref:exec.adoc[Exec]
 ** xref:secrets.adoc[Secrets]
 ** xref:crds.adoc[CRDs]
+** xref:volumes-persistentvolumes.adoc[Volumes]

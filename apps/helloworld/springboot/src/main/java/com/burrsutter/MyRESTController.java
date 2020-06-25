@@ -6,22 +6,44 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.core.env.Environment;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class MyRESTController {
-    @Autowired
-    private Environment environment;
+     @Autowired
+     private Environment environment;
 
-   final String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
-   String greeting;
-   
-   private int count = 0; // simple counter to see lifecycle
-   boolean behave = true;
-   boolean dead = false;
+     final String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
+     String greeting;
 
-   RestTemplate restTemplate = new RestTemplate();
+     private int count = 0; // simple counter to see lifecycle
+     boolean behave = true;
+     boolean dead = false;
+
+     RestTemplate restTemplate = new RestTemplate();
+
+   @RequestMapping("/appendgreetingfile")
+   public ResponseEntity<String> appendGreetingToFile() throws IOException {
+     
+       try(final FileWriter fileWriter = new FileWriter("/tmp/demo/greeting.txt", true)) {
+          fileWriter.append(environment.getProperty("GREETING","Jambo"));
+          fileWriter.close();
+       }
+       return ResponseEntity.status(HttpStatus.CREATED).build();
+   } 
+
+
+   @RequestMapping("readgreetingfile")
+   public String readGreetingFile() throws IOException {
+        return new String(Files.readAllBytes(Paths.get("/tmp/demo/greeting.txt")));
+   }
 
    @RequestMapping("/")
    public String sayHello() {

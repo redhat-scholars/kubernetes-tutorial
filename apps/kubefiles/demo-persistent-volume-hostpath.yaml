@@ -1,0 +1,14 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: my-persistent-volume
+  labels:
+    type: local
+spec:
+  storageClassName: pv-demo 
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/persistent-volume"
