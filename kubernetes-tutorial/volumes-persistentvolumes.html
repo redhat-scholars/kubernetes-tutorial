@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Volumes &amp; Persistent Volumes :: Kubernetes Tutorial</title>
+    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/volumes-persistentvolumes.html">
+    <meta name="generator" content="Antora 2.3.1">
+    <link rel="stylesheet" href="../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/NewRHDFullLogo_4-color_white-wordmark.png" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-developer-demos.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
+        <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
+        <a class="navbar-item" href="https://developers.redhat.com/events/" target="_blank">Upcoming Events</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">More Tutorials</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="index.html"></a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">1. Requirements</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="installation.html">Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="installation.html#tutorial-all-local">CLI</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="installation.html#env-path">Env and Path</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="installation.html#start-minikube">Start Minikube</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="installation.html#verify-setup">Verify Setup</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="installation.html#openshift">OpenShift</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">2. Beginner</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kubectl.html">kubectl</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="pod-rs-deployment.html">Pod, ReplicaSet, Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logs.html">Logs</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="service.html">Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="service-magic.html">Service Magic</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="blue-green.html">Blue/Green Deployments</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">3. Elementary</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="building-images.html">Building Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="resources.html">Resources and Limits</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="live-ready.html">Liveness &amp; Readiness</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configmap.html">ConfigMap</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">4. Advanced</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="exec.html">Exec</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="secrets.html">Secrets</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="crds.html">CRDs</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="volumes-persistentvolumes.html">Volumes</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">kubernetes-tutorial</a></li>
+    <li>4. Advanced</li>
+    <li><a href="volumes-persistentvolumes.html">Volumes</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/redhat-developer-demos/kubernetes-tutorial/edit/master/documentation/modules/ROOT/pages/volumes-persistentvolumes.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Volumes &amp; Persistent Volumes</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Containers are ephemeral by definition, which means that anything that it is stored at running time, it is lost when the container is stopped.
+This might cause problems with containers that need to persist its data like database containers.</p>
+</div>
+<div class="paragraph">
+<p>A Kubernetes volume is just a directory, that is accessible to the Containers in a Pod.
+The concept is similar to Docker volumes, but in Docker, you are mapping the container to a computer host, in the case of Kubernetes volumes, the medium that backs it, and the contents of it are determined by the particular volume type used.</p>
+</div>
+<div class="paragraph">
+<p>Some of the volume types are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>awsElasticBlockStore</p>
+</li>
+<li>
+<p>azureDisk</p>
+</li>
+<li>
+<p>cephfs</p>
+</li>
+<li>
+<p>nfs</p>
+</li>
+<li>
+<p>local</p>
+</li>
+<li>
+<p>empty dir</p>
+</li>
+<li>
+<p>host path</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s start with two examples of <code>Volumes</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_volumes"><a class="anchor" href="#_volumes"></a>Volumes</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_emptydir"><a class="anchor" href="#_emptydir"></a>EmptyDir</h3>
+<div class="paragraph">
+<p>An <code>emptyDir</code> volume is first created when a Pod is assigned to a node and exists as long as that Pod is running on that node.
+As the name says, it is initially empty.
+All Containers in the same Pod can read and write in the same <code>emptyDir</code> volume.
+When a Pod is restarted or removed, the data in the` emptyDir` is lost forever.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s deploy a service that exposes two endpoints, one to write content to a file and another one to retrieve the content from that file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: myboot-demo
+spec:
+  containers:
+  - name: myboot-demo
+    image: quay.io/rhdevelopers/myboot:v4
+
+    volumeMounts:
+    - mountPath: /tmp/demo
+      name: demo-volume
+
+  volumes:
+  - name: demo-volume
+    emptyDir: {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In <code>volumes</code> section, you are defining the volume, and in <code>volumeMounts</code> section, how the volume is mounted inside the container.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f myboot-pod-volume.yml
+
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME          READY   STATUS    RESTARTS   AGE
+myboot-demo   1/1     Running   0          83s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s access into the container and run these methods:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -ti myboot-demo /bin/bash
+
+curl localhost:8080/appendgreetingfile
+curl localhost:8080/readgreetingfile</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Jambo</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case, the <code>emptyDir</code> was set to <code>/tmp/demo</code> so you can check the directory content by running <code>ls</code>:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ls /tmp/demo</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">greeting.txt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Exit the container&#8217;s shell:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">exit</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And delete the pod.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pod myboot-demo</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then if you deploy again the same service you&#8217;ll notice that the directory content is empty.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -ti myboot-demo /bin/bash
+
+ls /tmp/demo
+exit</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Delete the pod.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pod myboot-demo</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>emptyDir</code> is shared between containers of the same Pod.
+The following deployment creates one pod with two containers mounting the same volume:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f myboot-pods-volume.yml
+
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME          READY   STATUS    RESTARTS   AGE
+myboot-demo   2/2     Running   0          4s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s access into the first container and generate some content to <code>/tmp/demo</code> directory.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -ti myboot-demo -c myboot-demo-1 /bin/bash
+
+curl localhost:8080/appendgreetingfile
+
+exit</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And read the file contents from the other container:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec myboot-demo -c myboot-demo-2 "cat /tmp/demo/greeting.txt"</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Jambo</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can get the volume information from a Pod by running:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe pod myboot-demo</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Volumes:
+  demo-volume:
+    Type:       EmptyDir (a temporary directory that shares a pods lifetime)
+    Medium:
+    SizeLimit:  &lt;unset&gt;</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h4>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f myboot-pods-volume.yml</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_hostpath"><a class="anchor" href="#_hostpath"></a>HostPath</h3>
+<div class="paragraph">
+<p>A <code>hostPath</code> volume mounts a file or directory from the node&#8217;s filesystem into the Pod.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: myboot-demo
+spec:
+  containers:
+  - name: myboot-demo
+    image: quay.io/rhdevelopers/myboot:v4
+
+    volumeMounts:
+    - mountPath: /tmp/demo
+      name: demo-volume
+
+  volumes:
+  - name: demo-volume
+    hostPath:
+      path: "/mnt/data"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case, you are defining the host/node directory where the contents are going to be stored.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f myboot-pod-volume-hostpath.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, if you describe the Pod, in volumes section, you&#8217;ll see:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe pod myboot-demo</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Volumes:
+  demo-volume:
+    Type:          HostPath (bare host directory volume)
+    Path:          /mnt/data
+    HostPathType:</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that now the content stored in <code>/tmp/demo</code> inside the Pod is stored at host path <code>/mnt/data</code>, so if the Pod dies, the content is not lost.
+But this might not solve all the problems as if Pod goes down and it is rescheduled in another node, then the data will not be in this other node.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s see another example, in this case for an Amazon EBS Volume:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: test-ebs
+spec:
+...
+  volumes:
+    - name: test-volume
+      awsElasticBlockStore:
+        volumeID: &lt;volume-id&gt;
+        fsType: ext4</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>What we want you to notice from the previous snippet is that you are mixing things from your application (ie the container, probes, ports, &#8230;&#8203;) things that are more in the <em>dev</em> side with things more related to the cloud (ie physical storage), which falls more in the <em>ops</em> side.</p>
+</div>
+<div class="paragraph">
+<p>To avoid this mix of concepts, Kubernetes offers some layer of abstractions, so developers just ask for space to store data (-persistent volume claim_), and operations team offers physical storage configuration.</p>
+</div>
+<div class="sect3">
+<h4 id="_clean_up_2"><a class="anchor" href="#_clean_up_2"></a>Clean Up</h4>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pod myboot-demo</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_persistent_volume_persistent_volume_claim"><a class="anchor" href="#_persistent_volume_persistent_volume_claim"></a>Persistent Volume &amp; Persistent Volume Claim</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A <code>PersistentVolume</code> (<em>PV</em>) is a Kubernetes resource that is created by an administrator or dynamically using <code>Storage Classes</code> independently from Pod.
+It captures the details of the implementation of the storage, it can be NFS, Ceph, iSCSI, or a cloud-provider-specific storage system.</p>
+</div>
+<div class="paragraph">
+<p>A <code>PersistentVolumeClaim</code> (<em>PVC</em>) is a request for storage by a user.
+It can request for specific volume size or for example the access mode.</p>
+</div>
+<div class="sect2">
+<h3 id="_persistent_volumeclaim_with_hostpath"><a class="anchor" href="#_persistent_volumeclaim_with_hostpath"></a>Persistent volume/claim with hostPath</h3>
+<div class="paragraph">
+<p>Let&#8217;s use <code>hostPath</code> strategy but not configuring it directly as volume, but using persistence volume and persistence volume claim.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: my-persistent-volume
+  labels:
+    type: local
+spec:
+  storageClassName: pv-demo
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/persistent-volume"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, the <code>volume</code> information is not in the pod anymore but in the <em>persistent volume</em> object.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f demo-persistent-volume-hostpath.yaml
+
+kubectl get pv</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM                                           STORAGECLASS   REASON   AGE
+my-persistent-volume                       100Mi      RWO            Retain           Available                                                   pv-demo                 5s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then from the dev side, we need to claim what we need from the <em>PV</em>.
+In the following example, we are requesting for 10Mi space.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: myboot-volumeclaim
+spec:
+  storageClassName: pv-demo
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f myboot-persistent-volume-claim.yaml
+
+kubectl get pvc</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                 STATUS   VOLUME                 CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myboot-volumeclaim   Bound    my-persistent-volume   100Mi      RWO            pv-demo        3s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The big difference is that now in the pod you are just defining in the <code>volumes</code> section, not the volume configuration directly, but the <em>persistent volume claim</em> to use.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: myboot-demo
+spec:
+  containers:
+  - name: myboot-demo
+    image: quay.io/rhdevelopers/myboot:v4
+
+    volumeMounts:
+    - mountPath: /tmp/demo
+      name: demo-volume
+
+  volumes:
+  - name: demo-volume
+    persistentVolumeClaim:
+      claimName: myboot-volumeclaim</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f myboot-pod-volume-pvc.yaml
+
+kubectl describe pod myboot-demo</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Volumes:
+  demo-volume:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  myboot-volumeclaim
+    ReadOnly:   false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that now the description of the pod shows that the volume is not set directly but through a persistence volume claim.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pod myboot-demo
+
+kubectl get pvc</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Even though the pod has been deleted, the PVC (and the PV) are still there and need to be deleted manually.</p>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                 STATUS   VOLUME                 CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myboot-volumeclaim   Bound    my-persistent-volume   100Mi      RWO            pv-demo        14m</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_clean_up_3"><a class="anchor" href="#_clean_up_3"></a>Clean Up</h4>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f myboot-persistent-volume-claim.yaml
+kubectl delete -f demo-persistent-volume-hostpath.yaml</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_static_vs_dynamic_provisioning"><a class="anchor" href="#_static_vs_dynamic_provisioning"></a>Static vs Dynamic Provisioning</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Persistent Volumes can be provisioned dynamically or statically.</p>
+</div>
+<div class="paragraph">
+<p>Static provisioning allows cluster administrators to make <strong>existing</strong> storage device available to a cluster.
+When it is done in this way, the PV and the PVC must be provided manually.</p>
+</div>
+<div class="paragraph">
+<p>So far, in the last example, you&#8217;ve seen static provisioning.</p>
+</div>
+<div class="paragraph">
+<p>The dynamic provisioning eliminates the need for cluster administrators to pre-provision storage.
+Instead, it automatically provisions storage when it is requested by users.
+To make it run you need to provide a Storage Class object and a PVC referring to it.
+After the PVC is created, the storage device and the PV are automatically created for you.
+The main purpose of dynamic provisioning is to work with cloud provider solutions.</p>
+</div>
+<div class="paragraph">
+<p>Normally, Kubernetes implementation offers a default Storage Class so anyone can get started quickly with dynamic provisioning.
+You can get information from default Storage Class by running:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get sc</code></pre>
+</div>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset1_minikube"></a>Minikube</p>
+</li>
+<li>
+<p><a id="tabset1_openshift"></a>OpenShift</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset1_minikube">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                 PROVISIONER                RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+standard (default)   k8s.io/minikube-hostpath   Delete          Immediate           false                  47d</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset1_openshift">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME            PROVISIONER             AGE
+gp2 (default)   kubernetes.io/aws-ebs   31h</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default, when OpenShift is installed in a cloud provider, it automatically creates a Storage Class with the underlying persistent technology of the cloud.
+For example in the case of AWS, a default Storage Class is provided pointing out to AWS EBS.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Then you can create a Persistent Volume Claim which will create a Persistent Volume automatically.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: myboot-volumeclaim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since we&#8217;ve not specified any <em>storage class</em> but there is one defined as the default, the <em>PVC</em> implicitly refers to that one.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/demo-dynamic-persistent.yaml
+
+kubectl get pvc</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                 STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myboot-volumeclaim   Pending                                      gp2            46sç</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that the <em>PVC</em> is in <em>Pending</em> STATUS, because remember that we are creating dynamic storage and it means that until the <em>pod</em> doesn&#8217;t request the volume, the <em>PVC</em> will remain in pending state and the <em>PV</em> will not be created.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pod-volume-pvc.yaml
+
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME          READY   STATUS    RESTARTS   AGE
+myboot-demo   1/1     Running   0          2m36s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the pod is in <em>Running</em> status, then you can get <em>PVC</em> and <em>PV</em> parameters.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pvc</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myboot-volumeclaim   Bound    pvc-6de4f27e-bd40-4b58-bb46-91eb08ca5bd7   1Gi        RWO            gp2            116s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that now the volume claim is  <em>Bound</em> to a volume.</p>
+</div>
+<div class="paragraph">
+<p>Finally, you can check that the <em>PV</em> has been created automatically:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pv</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                        STORAGECLASS   REASON   AGE
+pvc-6de4f27e-bd40-4b58-bb46-91eb08ca5bd7   1Gi        RWO            Delete           Bound    default/myboot-volumeclaim   gp2                     77s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that the <em>CLAIM</em> field points to the <em>PVC</em> responsible for the creation of the <em>PV</em>.</p>
+</div>
+<div class="sect2">
+<h3 id="_clean_up_4"><a class="anchor" href="#_clean_up_4"></a>Clean Up</h3>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-pod-volume-pvc.yaml
+kubectl delete -f apps/kubefiles/demo-dynamic-persistent.yaml</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_distributed_filesystems"><a class="anchor" href="#_distributed_filesystems"></a>Distributed Filesystems</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is important to notice that cloud-providers offer distributed storages so data is always available in all the nodes.
+As you&#8217;ve seen in the last example, this storage class guarantees that all nodes see the same disk content.</p>
+</div>
+<div class="paragraph">
+<p>If for example, if you are using Kubernetes/OpenShift on-prem or if you don&#8217;t want to relay to a vendor solution, there is also support for distributed filesystems in Kubernetes.
+If that&#8217;s the case, we recommend you to use NFS, <a href="https://www.gluster.org/">GlusterFS </a> or <a href="https://ceph.io/">Ceph</a>.</p>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://developers.redhat.com" target="_blank"></div>
+</footer>
+<script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
