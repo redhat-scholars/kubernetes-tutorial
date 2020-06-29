@@ -1,0 +1,206 @@
+= Jobs & CronJobs
+
+Most of the time, you are using Kubernetes as a platform to run "long" processes where their purpose is to serve responses for a given incoming request.
+
+But Kubernetes also lets you run processes that their purpose is to execute some logic (i.e. update database, batch processing, ...) and die.
+
+Kubernetes Jobs are tasks that execute some logic once. 
+
+Kubernetes CronJobs are Jobs that are repeated following a Cron pattern.
+
+== Jobs
+
+A Job is created using the Kubernetes `Job` resource:
+
+[source, yaml]
+----
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: whale-say-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: whale-say-container
+        image: docker/whalesay
+        command: ["cowsay","Hello DevNation"]
+      restartPolicy: Never
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/whalesay-job.yaml
+
+watch kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                  READY   STATUS              RESTARTS   AGE
+whale-say-job-lp4n5   0/1     ContainerCreating   0          9s
+
+NAME                  READY   STATUS    RESTARTS   AGE
+whale-say-job-lp4n5   1/1     Running   0          19s
+
+NAME                  READY   STATUS      RESTARTS   AGE
+whale-say-job-lp4n5   0/1     Completed   0          25s
+----
+
+You can get Jobs as any other Kubernetes resource:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get jobs
+----
+
+[.console-output]
+[source,bash]
+----
+NAME            COMPLETIONS   DURATION   AGE
+whale-say-job   1/1           20s        36s
+----
+
+To get the output of the Job execution:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl logs whale-say-job-lp4n5
+----
+
+[.console-output]
+[source,bash]
+----
+ _________________
+< Hello DevNation >
+ -----------------
+    \
+     \
+      \
+                    ##        .
+              ## ## ##       ==
+           ## ## ## ##      ===
+       /""""""""""""""""___/ ===
+  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~
+       \______ o          __/
+        \    \        __/
+          \____\______/
+----
+
+=== Clean Up
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl delete -f apps/kubefiles/whalesay-job.yaml
+----
+
+== CronJobs
+
+A CronJob is defined using the Kubernetes `CronJob` resource:
+
+[source, yaml]
+----
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: whale-say-cronjob
+spec:
+  schedule: "*/1 * * * *" # <1>
+  jobTemplate:                   
+    spec:                        
+      template:                  
+        spec:
+          containers:
+          - name: whale-say-container
+            image: docker/whalesay
+            command: ["cowsay","Hello DevNation"]
+          restartPolicy: Never
+----
+<1> Job is executed every minute.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/whalesay-cronjob.yaml
+
+kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                  READY   STATUS      RESTARTS   AGE
+----
+
+No Pod is running as CronJob is executed after 1 minute.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get cronjobs
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+whale-say-cronjob   */1 * * * *   False     0        <none>          34s
+----
+
+Wait one minute:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                                 READY   STATUS      RESTARTS   AGE
+whale-say-cronjob-1593436740-z9tf2   0/1     Completed   0          23s
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get cronjobs
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+whale-say-cronjob   */1 * * * *   False     0        48s             3m41s
+----
+
+Notice that one important field there is the _Last Schedule_ as show us when was the last time a job was executed.
+
+It is important to notice that a CronJob creates a Job:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get jobs
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                           COMPLETIONS   DURATION   AGE
+whale-say-cronjob-1593436800   1/1           3s         44s
+----
+
+=== Clean Up
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl delete -f apps/kubefiles/whalesay-cronjob.yaml
+----

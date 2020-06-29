@@ -27,3 +27,4 @@
 ** xref:crds.adoc[CRDs]
 ** xref:volumes-persistentvolumes.adoc[Volumes]
 ** xref:taints-affinity.adoc[Taints & Affinity]
+** xref::jobs-cronjobs.adoc[Jobs & CronJobs]
