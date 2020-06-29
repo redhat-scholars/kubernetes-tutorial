@@ -26,3 +26,4 @@
 ** xref:secrets.adoc[Secrets]
 ** xref:crds.adoc[CRDs]
 ** xref:volumes-persistentvolumes.adoc[Volumes]
+** xref:taints-affinity.adoc[Taints & Affinity]

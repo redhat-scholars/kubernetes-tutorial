@@ -14,6 +14,15 @@ spec:
       labels:
         app: myboot
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: color
+                operator: In
+                values:
+                - blue
       containers:
       - name: myboot
         image: quay.io/rhdevelopers/myboot:v1

@@ -1,0 +1,617 @@
+= Taints and Affinity
+
+So far, when we deployed any Pod in the Kubernetes cluster, it was run into a node that just meets the required requirements (ie memory requirements, CPU requirements, ...)
+
+But in Kubernetes, there are two concepts that allow us to configure this, so Pods are deployed following some business criteria.
+
+== Preparation
+
+If you are running this tutorial in Minikube, you'll need to stop previous Minikube instance and start Minikube with multiple nodes (at least 2).
+
+[source, bash]
+----
+minikube stop -p {profile}
+
+minikube start --nodes 2 --memory=2048 --cpus=2 --kubernetes-version={kubernetes-version} --vm-driver=virtualbox -p {profile}
+----
+
+== Taints and Tolerations
+
+A Taint is a concept that Kubernetes has to avoid that some Pods can run on specific nodes.
+
+Toleration is placed in a Pod definition and provides an exception to taint so Pod can run on those nodes although there is a taint that is blocking to run it there.
+
+Let's describe the current nodes:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl describe nodes | egrep "Name:|Taints:"
+----
+
+[.console-output]
+[source,bash]
+----
+Name:               ip-10-0-136-107.eu-central-1.compute.internal
+Taints:             node-role.kubernetes.io/master:NoSchedule
+Name:               ip-10-0-140-186.eu-central-1.compute.internal
+Taints:             <none>
+Name:               ip-10-0-141-128.eu-central-1.compute.internal
+Taints:             <none>
+Name:               ip-10-0-146-109.eu-central-1.compute.internal
+Taints:             <none>
+Name:               ip-10-0-150-226.eu-central-1.compute.internal
+Taints:             <none>
+----
+
+Notice that in this case, only `master` node contains a taint which makes that no Pods can be scheduled there.
+
+=== Taints
+
+Let's add a taint to all nodes:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl taint nodes --all=true color=blue:NoSchedule
+----
+
+[.console-output]
+[source,bash]
+----
+node/ip-10-0-136-107.eu-central-1.compute.internal tainted
+node/ip-10-0-140-186.eu-central-1.compute.internal tainted
+node/ip-10-0-141-128.eu-central-1.compute.internal tainted
+node/ip-10-0-146-109.eu-central-1.compute.internal tainted
+node/ip-10-0-150-226.eu-central-1.compute.internal tainted
+node/ip-10-0-155-122.eu-central-1.compute.internal tainted
+node/ip-10-0-162-206.eu-central-1.compute.internal tainted
+node/ip-10-0-168-102.eu-central-1.compute.internal tainted
+node/ip-10-0-175-64.eu-central-1.compute.internal tainted
+----
+
+And deploy a service.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/myboot-deployment.yml
+
+kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                     READY   STATUS    RESTARTS   AGE
+myboot-7f889dd6d-n5z55   0/1     Pending   0          55s
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl describe pod myboot-7f889dd6d-n5z55
+----
+
+[.console-output]
+[source,bash]
+----
+Name:           myboot-7f889dd6d-n5z55
+Namespace:      kubetut
+Priority:       0
+Node:           <none>
+Labels:         app=myboot
+                pod-template-hash=7f889dd6d
+Annotations:    openshift.io/scc: restricted
+Status:         Pending
+
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type     Reason            Age        From               Message
+  ----     ------            ----       ----               -------
+  Warning  FailedScheduling  <unknown>  default-scheduler  0/9 nodes are available: 9 node(s) had taints that the pod didn't tolerate.
+  Warning  FailedScheduling  <unknown>  default-scheduler  0/9 nodes are available: 9 node(s) had taints that the pod didn't tolerate.
+----
+
+Now let's remove one taint from one node and see what's happening:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get nodes
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                                            STATUS   ROLES    AGE   VERSION
+ip-10-0-136-107.eu-central-1.compute.internal   Ready    master   20h   v1.16.2
+ip-10-0-140-186.eu-central-1.compute.internal   Ready    worker   20h   v1.16.2
+ip-10-0-141-128.eu-central-1.compute.internal   Ready    worker   18h   v1.16.2
+ip-10-0-146-109.eu-central-1.compute.internal   Ready    worker   18h   v1.16.2
+ip-10-0-150-226.eu-central-1.compute.internal   Ready    worker   20h   v1.16.2
+ip-10-0-155-122.eu-central-1.compute.internal   Ready    master   20h   v1.16.2
+ip-10-0-162-206.eu-central-1.compute.internal   Ready    worker   20h   v1.16.2
+ip-10-0-168-102.eu-central-1.compute.internal   Ready    master   20h   v1.16.2
+ip-10-0-175-64.eu-central-1.compute.internal    Ready    worker   18h   v1.16.2
+----
+
+Pick one node.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl taint node ip-10-0-140-186.eu-central-1.compute.internal color:NoSchedule-
+----
+
+[.console-output]
+[source,bash]
+----
+node/ip-10-0-140-186.eu-central-1.compute.internal  untainted
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl describe nodes | egrep "Name:|Taints:"
+----
+
+[.console-output]
+[source,bash]
+----
+Name:               ip-10-0-136-107.eu-central-1.compute.internal
+Taints:             node-role.kubernetes.io/master:NoSchedule
+Name:               ip-10-0-140-186.eu-central-1.compute.internal
+Taints:             <none>
+Name:               ip-10-0-141-128.eu-central-1.compute.internal
+Taints:             color=blue:NoSchedule
+Name:               ip-10-0-146-109.eu-central-1.compute.internal
+Taints:             color=blue:NoSchedule
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                     READY   STATUS    RESTARTS   AGE
+myboot-7f889dd6d-n5z55   1/1     Running   0          11m
+----
+
+==== Clean Up
+
+Undeploy the myboot deployment and add again the taint to the node:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl delete -f apps/kubefiles/myboot-deployment.yml
+
+kubectl taint node ip-10-0-140-186.eu-central-1.compute.internal color=blue:NoSchedule
+----
+
+=== Tolerations
+
+Let's create a Pod but containing toleration, so it can be scheduled in a node even though it has a taint.
+
+[source, yaml]
+----
+spec:
+  tolerations:
+  - key: "color"
+    operator: "Equal"
+    value: "blue"
+    effect: "NoSchedule"
+  containers:
+  - name: myboot
+    image: quay.io/rhdevelopers/myboot:v1
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/myboot-toleration.yaml
+
+kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                      READY   STATUS    RESTARTS   AGE
+myboot-84b457458b-mbf9r   1/1     Running   0          3m18s
+----
+
+Now, although all nodes contain a taint, the Pod is scheduled and run as we defined a tolerance against one taint.
+
+==== Clean Up
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl delete -f apps/kubefiles/myboot-toleration.yaml
+----
+
+=== NoExecution Taint
+
+So far, you've seen that the taint we created with `NoSchedule` effect which means that Pods will not be scheduled there unless they have a tolerant.
+But notice that if we add this taint at one node and there were Pods already running, hence scheduled, this taint will not stop them.
+
+Let's change that by using `NoExecution` effect. 
+
+First of all, let's remove all previous taints.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl taint nodes --all=true color=blue:NoSchedule-
+----
+
+Then deploy a service:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/myboot-deployment.yml
+
+kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                     READY   STATUS    RESTARTS   AGE
+myboot-7f889dd6d-bkfg5   1/1     Running   0          16s
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get pod myboot-7f889dd6d-bkfg5 -o json | jq '.spec.nodeName'
+----
+
+[.console-output]
+[source,bash]
+----
+"ip-10-0-146-109.eu-central-1.compute.internal"
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl taint node ip-10-0-146-109.eu-central-1.compute.internal color=blue:NoExecute
+
+kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                     READY   STATUS        RESTARTS   AGE
+myboot-7f889dd6d-8fm2v   1/1     Running       0          14s
+myboot-7f889dd6d-bkfg5   1/1     Terminating   0          5m51s
+----
+
+If you have more nodes available then the Pod is terminated and deployed into another node, if it is not the case, then the Pod will remain in _Pending_ status.
+
+==== Clean Up
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl delete -f apps/kubefiles/myboot-deployment.yml
+
+kubectl taint node ip-10-0-146-109.eu-central-1.compute.internal color=blue:NoExecute-
+----
+
+== Affinity & AntiAffinity
+
+There is another way of changing where Pods are scheduled. This is by using Node/Pod Affinity and Antiaffinity.
+So you can create rules not only to ban where Pods can run but also to favor where they should run.
+
+Also notice that you can set not only affinities between Pods and Nodes, but also between Pods, so you can decide that some groups of Pods should be always deployed together in the same nodes.
+The reason to do that could be that there is a lot of communication between both Pods and you want to avoid external network calls.
+
+=== Node Affinity
+
+Let's deploy a new service with a node affinity:
+
+[source, yaml]
+----
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: color
+            operator: In
+            values:
+            - blue
+      containers:
+      - name: myboot
+        image: quay.io/rhdevelopers/myboot:v1
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/myboot-node-affinity.yml
+
+kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                                                              READY   STATUS    RESTARTS   AGE
+myboot-54d788fdc8-f6wks                                           0/1     Pending   0          13s
+----
+
+Let's create a label in a node mathcing the affinity expression:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get nodes
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                                            STATUS   ROLES    AGE   VERSION
+ip-10-0-136-107.eu-central-1.compute.internal   Ready    master   26h   v1.16.2
+ip-10-0-140-186.eu-central-1.compute.internal   Ready    worker   26h   v1.16.2
+ip-10-0-141-128.eu-central-1.compute.internal   Ready    worker   25h   v1.16.2
+ip-10-0-146-109.eu-central-1.compute.internal   Ready    worker   25h   v1.16.2
+ip-10-0-150-226.eu-central-1.compute.internal   Ready    worker   26h   v1.16.2
+ip-10-0-155-122.eu-central-1.compute.internal   Ready    master   26h   v1.16.2
+ip-10-0-162-206.eu-central-1.compute.internal   Ready    worker   26h   v1.16.2
+ip-10-0-168-102.eu-central-1.compute.internal   Ready    master   26h   v1.16.2
+ip-10-0-175-64.eu-central-1.compute.internal    Ready    worker   25h   v1.16.2
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl label nodes ip-10-0-175-64.eu-central-1.compute.internal color=blue
+----
+
+[.console-output]
+[source,bash]
+----
+node/ip-10-0-175-64.eu-central-1.compute.internal labeled
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                                                              READY   STATUS    RESTARTS   AGE
+myboot-54d788fdc8-f6wks                                           1/1     Running   0          7m57s
+----
+
+Let's delete the label from the node:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl label nodes ip-10-0-175-64.eu-central-1.compute.internal color-
+
+kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                                                              READY   STATUS    RESTARTS   AGE
+myboot-54d788fdc8-f6wks                                           1/1     Running   0          7m57s
+----
+
+As happens with taints, if the rule is set to be applied during the scheduling phase, then the Pod is not removed.
+
+What you've seen here is a _hard_ rule, as it does not find any node with the required label, then the Pod reminds in _Pending_ state.
+But there is a way to use a _soft_ rule, where instead of forcing to match the rules, it tries to accomplish them, but if not, then the Pod is scheduled in a node.
+
+[source, yaml]
+----
+spec:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: color
+            operator: In
+            values:
+            - blue
+----
+
+==== Clean Up
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl delete -f apps/kubefiles/myboot-node-affinity.yml
+----
+
+=== Pod Affinity/AntiAffinity
+
+Let's deploy a new service with a node affinity:
+
+[source, yaml]
+----
+spec:
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - topologyKey: kubernetes.io/hostname # <1>
+        labelSelector: 
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - myboot # <2>
+  containers:
+----
+<1> It is the key of node labels. If two nodes are labelled with this key and have identical values for that label, the scheduler treats both nodes as being in the same topology. In this case, `hostname` is a label that is different for each node.
+<2> The affinity is with Pods labelled with `app=myboot`.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/myboot-pod-affinity.yml
+
+kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                                                              READY   STATUS    RESTARTS   AGE
+myboot2-784bc58c8d-j2l74                                          0/1     Pending   0          19s
+----
+
+The `myboot2` Pod is pending as couldn't find any Pod matching the affinity rule.
+Let's deploy `myboot` application labeled with `app=myboot`.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/myboot-deployment.yml
+
+kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                                                              READY   STATUS    RESTARTS   AGE
+myboot-7f889dd6d-tr7gr                                            1/1     Running   0          3m27s
+myboot2-64566b697b-snm7p                                          1/1     Running   0          18s
+----
+
+Now both applications are running in the same node:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get pod myboot-7f889dd6d-tr7gr -o json | jq '.spec.nodeName'
+----
+
+[.console-output]
+[source,bash]
+----
+"ip-10-0-146-109.eu-central-1.compute.internal"
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get pod myboot2-64566b697b-snm7p -o json | jq '.spec.nodeName'
+----
+
+[.console-output]
+[source,bash]
+----
+"ip-10-0-146-109.eu-central-1.compute.internal"
+----
+
+What you've seen here is a _hard_ rule, you can use a "soft" rules as well in Pod Affinity.
+
+[source, yaml]
+----
+spec:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        podAffinityTerm:
+          topologyKey: kubernetes.io/hostname 
+          labelSelector:
+            matchExpressions:  
+            - key: app
+              operator: In
+              values:
+              - myboot   
+----
+
+Antiaffinity is used to avoid that two Pods can run together in the same node.
+
+[source, yaml]
+----
+spec:
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - topologyKey: kubernetes.io/hostname
+        labelSelector: 
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - myboot
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/myboot-pod-antiaffinity.yml
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                                                              READY   STATUS    RESTARTS   AGE
+myboot-7f889dd6d-tr7gr                                            1/1     Running   0          3m27s
+myboot2-64566b697b-snm7p                                          1/1     Running   0          18s
+myboot3-78656b637r-suy1t                                          1/1     Running   0          1s
+----
+
+`myboot3` Pod is deployed in a different node than the `myboot` Pod:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get pod myboot-7f889dd6d-tr7gr -o json | jq '.spec.nodeName'
+----
+
+[.console-output]
+[source,bash]
+----
+"ip-10-0-146-109.eu-central-1.compute.internal"
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get pod myboot3-78656b637r-suy1t -o json | jq '.spec.nodeName'
+----
+
+[.console-output]
+[source,bash]
+----
+"ip-10-0-162-206.eu-central-1.compute.internal"
+----
+
+==== Clean Up
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl delete -f apps/kubefiles/myboot-pod-affinity.yml
+kubectl delete -f apps/kubefiles/myboot-pod-antiaffinity.yml
+kubectl delete -f apps/kubefiles/myboot-deployment.yml
+----
