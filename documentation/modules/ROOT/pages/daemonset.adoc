@@ -1,0 +1,64 @@
+= DaemonSets
+include::_attributes.adoc[]
+
+A DaemonSet ensures that all nodes run a copy of a Pod. 
+As nodes are added to the cluster, Pods are added to them automatically.
+When the nodes are deleted, they are not rescheduled but deleted.
+
+So DaemonSet allows you to deploy a Pod across all nodes.
+
+== Preparation
+
+include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/minikube-multinode.adoc[]
+
+== DaemonSet
+
+DaemonSet is created using the Kubernetes `DaemonSet` resource:
+
+[source, yaml]
+----
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: quarkus-daemonset
+  labels:
+    app: quarkus-daemonset
+spec:
+  selector:
+    matchLabels:
+      app: quarkus-daemonset
+  template:
+    metadata:
+      labels:
+        app: quarkus-daemonset
+    spec:
+      containers:
+      - name: quarkus-daemonset
+        image: quay.io/rhdevelopers/quarkus-demo:v1
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/quarkus-daemonset.yaml
+
+kubectl get pods -o wide
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                      READY   STATUS    RESTARTS   AGE   IP           NODE            NOMINATED NODE   READINESS GATES
+quarkus-daemonset-jl2t5   1/1     Running   0          23s   10.244.0.2   multinode       <none>           <none>
+quarkus-daemonset-r64ql   1/1     Running   0          23s   10.244.1.2   multinode-m02   <none>           <none>
+----
+
+Notice that an instance of the Quarkus Pod is deployed to every node.
+
+=== Clean Up
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl delete -f apps/kubefiles/quarkus-daemonset.yaml
+----

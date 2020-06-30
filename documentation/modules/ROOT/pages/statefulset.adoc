@@ -1,0 +1,161 @@
+= StatefulSets
+include::_attributes.adoc[]
+
+A `StatefulSet` provides a unique identity to the Pods that are managing.
+It can be used when your application requires a unique network identifier or persistence storage across Pod (re)scheduling or some guarantee about the ordering of deployment and scaling.
+
+One of the most typical examples of using _StatefulSets_ is when you need to deploy a primary/secondary servers (i.e database cluster) where you need to know beforehand the hostname of each of the servers to start the cluster.
+Also, when you scale up and down you want to do it in a specified order (i.e you want to start the primary node first and then the secondary node).
+
+IMPORTANT: `StatefulSet` requires a Kubernetes _Headless Service_ instead of a standard Kubernetes _service_.
+
+== StatefulSet
+
+StatefulSet is created by using the Kubernetes `StatefulSet` resource with a headless service:
+
+[source, yaml]
+----
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: quarkus-statefulset
+  labels:
+    app: quarkus-statefulset
+spec:
+  serviceName: "quarkus" # <1>
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: quarkus-statefulset
+    spec:
+      containers:
+      - name: quarkus-statefulset
+        image: quay.io/rhdevelopers/quarkus-demo:v1
+        ports:
+        - containerPort: 8080
+          name: web
+----
+<1> Sets the `statefulset` name used as a hostname.
+
+Hostname follows the same pattern in all cases `serviceName` + a number starting from 0 and it is incremented for every replica by one.
+
+And a headless service:
+
+[source, yaml]
+----
+apiVersion: v1
+kind: Service
+metadata:
+  name: quarkus-statefulset
+  labels:
+    app: quarkus-statefulset
+spec:
+  ports:
+  - port: 8080
+    name: web
+  clusterIP: None # <1>
+  selector:
+    app: quarkus-statefulset
+----
+<1> Makes service headless.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/quarkus-statefulset.yml
+
+kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                     READY   STATUS    RESTARTS   AGE
+quarkus-statefulset-0   1/1     Running   0          12s
+----
+
+Notice that the Pod name is the `serviceName` with a 0, as it is the first instance.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get statefulsets
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                   READY   AGE
+quarkus-statefulset   1/1     109s
+----
+
+Now, let's scale up to 3.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl scale statefulset quarkus-statefulset --replicas=3
+
+kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                     READY   STATUS    RESTARTS   AGE
+quarkus-statefulset-0   1/1     Running   0          95s
+quarkus-statefulset-1   1/1     Running   0          2s
+quarkus-statefulset-2   1/1     Running   0          1s
+----
+
+Notice that the name of the Pods uses the same nomenclature of `serviceName` + incremental number.
+
+Also, if you check the order of events in the Kubernetes cluster, you'll notice that the Pod name ending with `-1` is created first and then the one ending with `-2`.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get events --sort-by=.metadata.creationTimestamp
+----
+
+[.console-output]
+[source,bash]
+----
+4m4s        Normal   SuccessfulCreate          statefulset/quarkus-statefulset   create Pod quarkus-statefulset-1 in StatefulSet quarkus-statefulset successful
+4m3s        Normal   Pulled                    pod/quarkus-statefulset-1         Container image "quay.io/rhdevelopers/quarkus-demo:v1" already present on machine
+4m3s        Normal   Scheduled                 pod/quarkus-statefulset-2         Successfully assigned default/quarkus-statefulset-2 to kube
+4m3s        Normal   Created                   pod/quarkus-statefulset-1         Created container quarkus-statefulset
+4m3s        Normal   Started                   pod/quarkus-statefulset-1         Started container quarkus-statefulset
+4m3s        Normal   SuccessfulCreate          statefulset/quarkus-statefulset   create Pod quarkus-statefulset-2 in StatefulSet quarkus-statefulset successful
+4m2s        Normal   Pulled                    pod/quarkus-statefulset-2         Container image "quay.io/rhdevelopers/quarkus-demo:v1" already present on machine
+4m2s        Normal   Created                   pod/quarkus-statefulset-2         Created container quarkus-statefulset
+4m2s        Normal   Started                   pod/quarkus-statefulset-2         Started container quarkus-statefulset
+----
+
+Finally, if we scale down to two instances, the one that is destroyed is not randomly chosen, but the one started later (`quarkus.statefulset-2`).
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl scale statefulset quarkus-statefulset --replicas=3
+
+kubectl get pods
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                     READY   STATUS        RESTARTS   AGE
+quarkus-statefulset-0   1/1     Running       0          9m22s
+quarkus-statefulset-1   1/1     Running       0          7m49s
+quarkus-statefulset-2   0/1     Terminating   0          7m48s
+----
+
+=== Clean Up
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl delete -f apps/kubefiles/quarkus-statefulset.yml
+----

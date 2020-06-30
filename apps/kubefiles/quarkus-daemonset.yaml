@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: quarkus-daemonset
+  labels:
+    app: quarkus-daemonset
+spec:
+  selector:
+    matchLabels:
+      app: quarkus-daemonset
+  template:
+    metadata:
+      labels:
+        app: quarkus-daemonset
+    spec:
+      containers:
+      - name: quarkus-daemonset
+        image: quay.io/rhdevelopers/quarkus-demo:v1
