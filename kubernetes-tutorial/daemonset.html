@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Kubernetes Tutorial :: Kubernetes Tutorial</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/index.html">
+    <title>DaemonSets :: Kubernetes Tutorial</title>
+    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/daemonset.html">
     <meta name="generator" content="Antora 2.3.1">
     <link rel="stylesheet" href="../_/css/site.css">
   </head>
@@ -143,7 +143,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="jobs-cronjobs.html">Jobs &amp; CronJobs</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="daemonset.html">DaemonSet</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -162,134 +162,148 @@
 <main class="article">
 <div class="toolbar" role="navigation">
 <button class="nav-toggle"></button>
-  <a href="index.html" class="home-link is-current"></a>
+  <a href="index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">kubernetes-tutorial</a></li>
-    <li><a href="index.html">Kubernetes Tutorial</a></li>
+    <li>4. Advanced</li>
+    <li><a href="daemonset.html">DaemonSet</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="https://github.com/redhat-developer-demos/kubernetes-tutorial/edit/master/documentation/modules/ROOT/pages/index.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="https://github.com/redhat-developer-demos/kubernetes-tutorial/edit/master/documentation/modules/ROOT/pages/daemonset.adoc">Edit this Page</a></div>
   </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">Kubernetes Tutorial</h1>
+<h1 class="page">DaemonSets</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>Welcome to your Kubernetes Journey!</p>
+<p>A DaemonSet ensures that all nodes run a copy of a Pod.
+As nodes are added to the cluster, Pods are added to them automatically.
+When the nodes are deleted, they are not rescheduled but deleted.</p>
 </div>
 <div class="paragraph">
-<p>Your journey contains four steps, each one of them in a different section:</p>
+<p>So DaemonSet allows you to deploy a Pod across all nodes.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>1. Requirements</p>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="installation.html" class="page">Installation</a></p>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="installation.html#tutorial-all-local" class="page">CLI</a></p>
-</li>
-<li>
-<p><a href="installation.html#env-path" class="page">Env and Path</a></p>
-</li>
-<li>
-<p><a href="installation.html#start-minikube" class="page">Start Minikube</a></p>
-</li>
-<li>
-<p><a href="installation.html#verify-setup" class="page">Verify Setup</a></p>
-</li>
-<li>
-<p><a href="installation.html#openshift" class="page">OpenShift</a></p>
-</li>
-</ul>
 </div>
-</li>
-</ul>
 </div>
-</li>
-<li>
-<p>2. Beginner</p>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="kubectl.html" class="page">kubectl</a></p>
-</li>
-<li>
-<p><a href="pod-rs-deployment.html" class="page">Pod, ReplicaSet, Deployment</a></p>
-</li>
-<li>
-<p><a href="logs.html" class="page">Logs</a></p>
-</li>
-<li>
-<p><a href="service.html" class="page">Service</a></p>
-</li>
-<li>
-<p><a href="service-magic.html" class="page">Service Magic</a></p>
-</li>
-<li>
-<p><a href="blue-green.html" class="page">Blue/Green Deployments</a></p>
-</li>
-</ul>
+<div class="sect1">
+<h2 id="_preparation"><a class="anchor" href="#_preparation"></a>Preparation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you are running this tutorial in Minikube, you need to add more nodes to run this part of the tutorial.
+Check the number of nodes you have delpoyed by running:</p>
 </div>
-</li>
-<li>
-<p>3. Elementary</p>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="building-images.html" class="page">Building Images</a></p>
-</li>
-<li>
-<p><a href="resources.html" class="page">Resources and Limits</a></p>
-</li>
-<li>
-<p><a href="rolling-updates.html" class="page">Rolling updates</a></p>
-</li>
-<li>
-<p><a href="live-ready.html" class="page">Liveness &amp; Readiness</a></p>
-</li>
-<li>
-<p><a href="configmap.html" class="page">ConfigMap</a></p>
-</li>
-</ul>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get nodes</code></pre>
 </div>
-</li>
-<li>
-<p>4. Advanced</p>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="exec.html" class="page">Exec</a></p>
-</li>
-<li>
-<p><a href="secrets.html" class="page">Secrets</a></p>
-</li>
-<li>
-<p><a href="crds.html" class="page">CRDs</a></p>
-</li>
-<li>
-<p><a href="volumes-persistentvolumes.html" class="page">Volumes</a></p>
-</li>
-<li>
-<p><a href="taints-affinity.html" class="page">Taints &amp; Affinity</a></p>
-</li>
-<li>
-<p><a href="jobs-cronjobs.html" class="page">Jobs &amp; CronJobs</a></p>
-</li>
-<li>
-<p><a href="daemonset.html" class="page">DaemonSet</a></p>
-</li>
-<li>
-<p><a href="statefulset.html" class="page">StatefulSet</a></p>
-</li>
-</ul>
 </div>
-</li>
-</ul>
+<div class="paragraph">
+<p>If only one node is present then you need to create a new node by following the next steps:</p>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME       STATUS     ROLES    AGE     VERSION
+kube       Ready   master   54d     v1.17.3</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Having <code>minikube</code> installed and in your <code>PATH</code>, then run:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube node add -p devnation</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or if you do not have enough resources to add a new node with same resources as master node, you can create a new cluster with minial requirements.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube start --nodes 2 -p multinode --kubernetes-version='v1.17.4' --vm-driver='virtualbox' --memory=2048</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get nodes</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME       STATUS     ROLES    AGE     VERSION
+kube       Ready   master   54d     v1.17.3
+kube-m02   Ready      &lt;none&gt;   2m50s   v1.17.3</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Multi-node clusters are currently experimental and might exhibit unintended behavior.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_daemonset"><a class="anchor" href="#_daemonset"></a>DaemonSet</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>DaemonSet is created using the Kubernetes <code>DaemonSet</code> resource:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: quarkus-daemonset
+  labels:
+    app: quarkus-daemonset
+spec:
+  selector:
+    matchLabels:
+      app: quarkus-daemonset
+  template:
+    metadata:
+      labels:
+        app: quarkus-daemonset
+    spec:
+      containers:
+      - name: quarkus-daemonset
+        image: quay.io/rhdevelopers/quarkus-demo:v1</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/quarkus-daemonset.yaml
+
+kubectl get pods -o wide</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   STATUS    RESTARTS   AGE   IP           NODE            NOMINATED NODE   READINESS GATES
+quarkus-daemonset-jl2t5   1/1     Running   0          23s   10.244.0.2   multinode       &lt;none&gt;           &lt;none&gt;
+quarkus-daemonset-r64ql   1/1     Running   0          23s   10.244.1.2   multinode-m02   &lt;none&gt;           &lt;none&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that an instance of the Quarkus Pod is deployed to every node.</p>
+</div>
+<div class="sect2">
+<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h3>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/quarkus-daemonset.yaml</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">

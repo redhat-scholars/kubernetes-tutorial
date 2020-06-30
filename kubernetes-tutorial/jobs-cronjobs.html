@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Logs :: Kubernetes Tutorial</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/logs.html">
+    <title>Jobs &amp; CronJobs :: Kubernetes Tutorial</title>
+    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/jobs-cronjobs.html">
     <meta name="generator" content="Antora 2.3.1">
     <link rel="stylesheet" href="../_/css/site.css">
   </head>
@@ -86,7 +86,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="pod-rs-deployment.html">Pod, ReplicaSet, Deployment</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="logs.html">Logs</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -140,7 +140,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="taints-affinity.html">Taints &amp; Affinity</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="jobs-cronjobs.html">Jobs &amp; CronJobs</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -166,249 +166,229 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">kubernetes-tutorial</a></li>
-    <li>2. Beginner</li>
-    <li><a href="logs.html">Logs</a></li>
+    <li>4. Advanced</li>
+    <li><a href="jobs-cronjobs.html">Jobs &amp; CronJobs</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="https://github.com/redhat-developer-demos/kubernetes-tutorial/edit/master/documentation/modules/ROOT/pages/logs.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="https://github.com/redhat-developer-demos/kubernetes-tutorial/edit/master/documentation/modules/ROOT/pages/jobs-cronjobs.adoc">Edit this Page</a></div>
   </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">Logs</h1>
+<h1 class="page">Jobs &amp; CronJobs</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>There are various "production-ready" ways to do log gathering and viewing across a Kubernetes/OpenShift cluster. Many folks like some flavor of ELK (ElasticSearch, Logstash, Kibana) or EFK (ElasticSearch, FluentD, Kibana).</p>
+<p>Most of the time, you are using Kubernetes as a platform to run "long" processes where their purpose is to serve responses for a given incoming request.</p>
 </div>
 <div class="paragraph">
-<p>The focus here is on things a developer needs to get access to do help understand the behavior of their application running inside of a pod.</p>
+<p>But Kubernetes also lets you run processes that their purpose is to execute some logic (i.e. update database, batch processing, &#8230;&#8203;) and die.</p>
 </div>
 <div class="paragraph">
-<p>Make sure you have an application (Deployment) running:</p>
-</div>
-<div id="create-deployment" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: my-deployment
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: myapp
-  template:
-    metadata:
-      labels:
-        app: myapp
-        env: dev
-    spec:
-      containers:
-      - name: myapp
-        image: quay.io/rhdevelopers/myboot:v1
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-EOF</code></pre>
-</div>
+<p>Kubernetes Jobs are tasks that execute some logic once.</p>
 </div>
 <div class="paragraph">
-<p>Make sure you are running 3 replicas (3 pods/instances of your application):</p>
-</div>
-<div id="logs-get-replicas" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployment my-deployment -o json | jq '.status.replicas'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If not, scale up to 3:</p>
-</div>
-<div id="logs-scale-replicas" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale --replicas=3 deployment/my-deployment</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                             READY   STATUS    RESTARTS   AGE
-my-deployment-5dc67997c7-5bq4n   1/1     Running   0          34s
-my-deployment-5dc67997c7-m7z9f   1/1     Running   0          34s
-my-deployment-5dc67997c7-s4jc6   1/1     Running   0          34s</code></pre>
-</div>
-</div>
-<div id="logs-log-deployment" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs my-deployment-5dc67997c7-m7z9f</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code>  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::        (v1.5.3.RELEASE)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You can follow logs with <code>-f</code> parameter:</p>
-</div>
-<div id="logs-log-deployment-follow" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs my-deployment-5dc67997c7-m7z9f -f</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>And in another Terminal:</p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it my-deployment-5dc67997c7-m7z9f /bin/bash
-curl localhost:8080</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Aloha from my-deployment-5dc67997c7-m7z9f</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Deploy a Service for <code>my-deployment</code>:</p>
-</div>
-<div id="create-service" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
-apiVersion: v1
-kind: Service
-metadata:
-  name: the-service
-spec:
-  selector:
-    app: myapp
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
-  type: LoadBalancer
-EOF</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In another Terminal, loop and curl that service</p>
-</div>
-<div class="tabset is-loading">
-<div class="ulist tabs">
-<ul>
-<li>
-<p><a id="tabset1_minikube"></a>Minikube</p>
-</li>
-<li>
-<p><a id="tabset1_hosted"></a>Hosted</p>
-</li>
-</ul>
-</div>
-<div class="content">
-<div class="tab-pane" aria-labelledby="tabset1_minikube">
-<div id="logs-ip-port-minikube" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
-PORT=$(kubectl get service/the-service -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
-</div>
-</div>
-</div>
-<div class="tab-pane" aria-labelledby="tabset1_hosted">
-<div class="paragraph">
-<p>If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port <code>8080</code> or get it using <code>kubectl</code>:</p>
-</div>
-<div id="logs-ip-port-openshift" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service the-service -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-PORT=$(kubectl get service the-service -o jsonpath="{.spec.ports[*].port}")</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>Curl the Service:</p>
-</div>
-<div id="logs-curl-the-service" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Start sending request in a loop:</p>
-</div>
-<div id="logs-curl-loop" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true
-do curl $IP:$PORT
-sleep .3
-done</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then use Stern to view the logs across all pods</p>
-</div>
-<div id="stern-my-deployment" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">stern my-deployment</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">my-deployment-5dc67997c7-5bq4n myapp Aloha from my-deployment-5dc67997c7-5bq4n
-my-deployment-5dc67997c7-m7z9f myapp Aloha from my-deployment-5dc67997c7-m7z9f
-my-deployment-5dc67997c7-s4jc6 myapp Aloha from my-deployment-5dc67997c7-s4jc6
-my-deployment-5dc67997c7-s4jc6 myapp Aloha from my-deployment-5dc67997c7-s4jc6</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Another option is <a href="https://github.com/boz/kail">kail</a>:</p>
-</div>
-<div id="install-kail" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">brew tap boz/repo
-brew install boz/repo/kail</code></pre>
-</div>
-</div>
-<div id="run-kail" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kail --deploy=my-deployment -c myapp --since=1h</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>To potentially pull the logs from a failing pod use <code>-p</code></p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs my-deployment-5dc67997c7-s4jc6 -p</code></pre>
-</div>
-</div>
-</td>
-</tr>
-</table>
+<p>Kubernetes CronJobs are Jobs that are repeated following a Cron pattern.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h2>
+<h2 id="_jobs"><a class="anchor" href="#_jobs"></a>Jobs</h2>
 <div class="sectionbody">
-<div id="clean-up" class="listingblock console-input">
+<div class="paragraph">
+<p>A Job is created using the Kubernetes <code>Job</code> resource:</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete service the-service
-kubectl delete deployment my-deployment</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: batch/v1
+kind: Job
+metadata:
+  name: whale-say-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: whale-say-container
+        image: docker/whalesay
+        command: ["cowsay","Hello DevNation"]
+      restartPolicy: Never</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/whalesay-job.yaml
+
+watch kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                  READY   STATUS              RESTARTS   AGE
+whale-say-job-lp4n5   0/1     ContainerCreating   0          9s
+
+NAME                  READY   STATUS    RESTARTS   AGE
+whale-say-job-lp4n5   1/1     Running   0          19s
+
+NAME                  READY   STATUS      RESTARTS   AGE
+whale-say-job-lp4n5   0/1     Completed   0          25s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can get Jobs as any other Kubernetes resource:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get jobs</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME            COMPLETIONS   DURATION   AGE
+whale-say-job   1/1           20s        36s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To get the output of the Job execution:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs whale-say-job-lp4n5</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"> _________________
+&lt; Hello DevNation &gt;
+ -----------------
+    \
+     \
+      \
+                    ##        .
+              ## ## ##       ==
+           ## ## ## ##      ===
+       /""""""""""""""""___/ ===
+  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~
+       \______ o          __/
+        \    \        __/
+          \____\______/</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h3>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/whalesay-job.yaml</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cronjobs"><a class="anchor" href="#_cronjobs"></a>CronJobs</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A CronJob is defined using the Kubernetes <code>CronJob</code> resource:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: whale-say-cronjob
+spec:
+  schedule: "*/1 * * * *" <i class="conum" data-value="1"></i><b>(1)</b>
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: whale-say-container
+            image: docker/whalesay
+            command: ["cowsay","Hello DevNation"]
+          restartPolicy: Never</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Job is executed every minute.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/whalesay-cronjob.yaml
+
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                  READY   STATUS      RESTARTS   AGE</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>No Pod is running as CronJob is executed after 1 minute.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get cronjobs</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+whale-say-cronjob   */1 * * * *   False     0        &lt;none&gt;          34s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait one minute:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                 READY   STATUS      RESTARTS   AGE
+whale-say-cronjob-1593436740-z9tf2   0/1     Completed   0          23s</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get cronjobs</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+whale-say-cronjob   */1 * * * *   False     0        48s             3m41s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that one important field there is the <em>Last Schedule</em> as show us when was the last time a job was executed.</p>
+</div>
+<div class="paragraph">
+<p>It is important to notice that a CronJob creates a Job:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get jobs</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                           COMPLETIONS   DURATION   AGE
+whale-say-cronjob-1593436800   1/1           3s         44s</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_clean_up_2"><a class="anchor" href="#_clean_up_2"></a>Clean Up</h3>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/whalesay-cronjob.yaml</code></pre>
+</div>
 </div>
 </div>
 </div>

@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Taints and Affinity :: Kubernetes Tutorial</title>
+    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/taints-affinity.html">
+    <meta name="generator" content="Antora 2.3.1">
+    <link rel="stylesheet" href="../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/NewRHDFullLogo_4-color_white-wordmark.png" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-developer-demos.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
+        <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
+        <a class="navbar-item" href="https://developers.redhat.com/events/" target="_blank">Upcoming Events</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">More Tutorials</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="index.html"></a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">1. Requirements</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="installation.html">Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="installation.html#tutorial-all-local">CLI</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="installation.html#env-path">Env and Path</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="installation.html#start-minikube">Start Minikube</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="installation.html#verify-setup">Verify Setup</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="installation.html#openshift">OpenShift</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">2. Beginner</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kubectl.html">kubectl</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="pod-rs-deployment.html">Pod, ReplicaSet, Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logs.html">Logs</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="service.html">Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="service-magic.html">Service Magic</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="blue-green.html">Blue/Green Deployments</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">3. Elementary</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="building-images.html">Building Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="resources.html">Resources and Limits</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="live-ready.html">Liveness &amp; Readiness</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configmap.html">ConfigMap</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">4. Advanced</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="exec.html">Exec</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="secrets.html">Secrets</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="crds.html">CRDs</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="volumes-persistentvolumes.html">Volumes</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="taints-affinity.html">Taints &amp; Affinity</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="jobs-cronjobs.html">Jobs &amp; CronJobs</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="daemonset.html">DaemonSet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="statefulset.html">StatefulSet</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">kubernetes-tutorial</a></li>
+    <li>4. Advanced</li>
+    <li><a href="taints-affinity.html">Taints &amp; Affinity</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/redhat-developer-demos/kubernetes-tutorial/edit/master/documentation/modules/ROOT/pages/taints-affinity.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Taints and Affinity</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>So far, when we deployed any Pod in the Kubernetes cluster, it was run into a node that just meets the required requirements (ie memory requirements, CPU requirements, &#8230;&#8203;)</p>
+</div>
+<div class="paragraph">
+<p>But in Kubernetes, there are two concepts that allow us to configure this, so Pods are deployed following some business criteria.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_preparation"><a class="anchor" href="#_preparation"></a>Preparation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you are running this tutorial in Minikube, you need to add more nodes to run this part of the tutorial.
+Check the number of nodes you have delpoyed by running:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get nodes</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If only one node is present then you need to create a new node by following the next steps:</p>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME       STATUS     ROLES    AGE     VERSION
+kube       Ready   master   54d     v1.17.3</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Having <code>minikube</code> installed and in your <code>PATH</code>, then run:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube node add -p devnation</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or if you do not have enough resources to add a new node with same resources as master node, you can create a new cluster with minial requirements.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube start --nodes 2 -p multinode --kubernetes-version='v1.17.4' --vm-driver='virtualbox' --memory=2048</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get nodes</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME       STATUS     ROLES    AGE     VERSION
+kube       Ready   master   54d     v1.17.3
+kube-m02   Ready      &lt;none&gt;   2m50s   v1.17.3</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Multi-node clusters are currently experimental and might exhibit unintended behavior.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_taints_and_tolerations"><a class="anchor" href="#_taints_and_tolerations"></a>Taints and Tolerations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A Taint is a concept that Kubernetes has to avoid that some Pods can run on specific nodes.</p>
+</div>
+<div class="paragraph">
+<p>Toleration is placed in a Pod definition and provides an exception to taint so Pod can run on those nodes although there is a taint that is blocking to run it there.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s describe the current nodes, in this case as a public cloud is used, you can see several nodes:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe nodes | egrep "Name:|Taints:"</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Name:               ip-10-0-136-107.eu-central-1.compute.internal
+Taints:             node-role.kubernetes.io/master:NoSchedule
+Name:               ip-10-0-140-186.eu-central-1.compute.internal
+Taints:             &lt;none&gt;
+Name:               ip-10-0-141-128.eu-central-1.compute.internal
+Taints:             &lt;none&gt;
+Name:               ip-10-0-146-109.eu-central-1.compute.internal
+Taints:             &lt;none&gt;
+Name:               ip-10-0-150-226.eu-central-1.compute.internal
+Taints:             &lt;none&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that in this case, only <code>master</code> node contains a taint which makes that no Pods can be scheduled there.</p>
+</div>
+<div class="sect2">
+<h3 id="_taints"><a class="anchor" href="#_taints"></a>Taints</h3>
+<div class="paragraph">
+<p>Let&#8217;s add a taint to all nodes:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl taint nodes --all=true color=blue:NoSchedule</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">node/ip-10-0-136-107.eu-central-1.compute.internal tainted
+node/ip-10-0-140-186.eu-central-1.compute.internal tainted
+node/ip-10-0-141-128.eu-central-1.compute.internal tainted
+node/ip-10-0-146-109.eu-central-1.compute.internal tainted
+node/ip-10-0-150-226.eu-central-1.compute.internal tainted
+node/ip-10-0-155-122.eu-central-1.compute.internal tainted
+node/ip-10-0-162-206.eu-central-1.compute.internal tainted
+node/ip-10-0-168-102.eu-central-1.compute.internal tainted
+node/ip-10-0-175-64.eu-central-1.compute.internal tainted</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And deploy a service.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment.yml
+
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS    RESTARTS   AGE
+myboot-7f889dd6d-n5z55   0/1     Pending   0          55s</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe pod myboot-7f889dd6d-n5z55</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Name:           myboot-7f889dd6d-n5z55
+Namespace:      kubetut
+Priority:       0
+Node:           &lt;none&gt;
+Labels:         app=myboot
+                pod-template-hash=7f889dd6d
+Annotations:    openshift.io/scc: restricted
+Status:         Pending
+
+Node-Selectors:  &lt;none&gt;
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type     Reason            Age        From               Message
+  ----     ------            ----       ----               -------
+  Warning  FailedScheduling  &lt;unknown&gt;  default-scheduler  0/9 nodes are available: 9 node(s) had taints that the pod didn't tolerate.
+  Warning  FailedScheduling  &lt;unknown&gt;  default-scheduler  0/9 nodes are available: 9 node(s) had taints that the pod didn't tolerate.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now let&#8217;s remove one taint from one node and see what&#8217;s happening:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get nodes</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                            STATUS   ROLES    AGE   VERSION
+ip-10-0-136-107.eu-central-1.compute.internal   Ready    master   20h   v1.16.2
+ip-10-0-140-186.eu-central-1.compute.internal   Ready    worker   20h   v1.16.2
+ip-10-0-141-128.eu-central-1.compute.internal   Ready    worker   18h   v1.16.2
+ip-10-0-146-109.eu-central-1.compute.internal   Ready    worker   18h   v1.16.2
+ip-10-0-150-226.eu-central-1.compute.internal   Ready    worker   20h   v1.16.2
+ip-10-0-155-122.eu-central-1.compute.internal   Ready    master   20h   v1.16.2
+ip-10-0-162-206.eu-central-1.compute.internal   Ready    worker   20h   v1.16.2
+ip-10-0-168-102.eu-central-1.compute.internal   Ready    master   20h   v1.16.2
+ip-10-0-175-64.eu-central-1.compute.internal    Ready    worker   18h   v1.16.2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pick one node.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl taint node ip-10-0-140-186.eu-central-1.compute.internal color:NoSchedule-</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">node/ip-10-0-140-186.eu-central-1.compute.internal  untainted</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe nodes | egrep "Name:|Taints:"</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Name:               ip-10-0-136-107.eu-central-1.compute.internal
+Taints:             node-role.kubernetes.io/master:NoSchedule
+Name:               ip-10-0-140-186.eu-central-1.compute.internal
+Taints:             &lt;none&gt;
+Name:               ip-10-0-141-128.eu-central-1.compute.internal
+Taints:             color=blue:NoSchedule
+Name:               ip-10-0-146-109.eu-central-1.compute.internal
+Taints:             color=blue:NoSchedule</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS    RESTARTS   AGE
+myboot-7f889dd6d-n5z55   1/1     Running   0          11m</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h4>
+<div class="paragraph">
+<p>Undeploy the myboot deployment and add again the taint to the node:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-deployment.yml
+
+kubectl taint node ip-10-0-140-186.eu-central-1.compute.internal color=blue:NoSchedule</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_tolerations"><a class="anchor" href="#_tolerations"></a>Tolerations</h3>
+<div class="paragraph">
+<p>Let&#8217;s create a Pod but containing toleration, so it can be scheduled in a node even though it has a taint.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  tolerations:
+  - key: "color"
+    operator: "Equal"
+    value: "blue"
+    effect: "NoSchedule"
+  containers:
+  - name: myboot
+    image: quay.io/rhdevelopers/myboot:v1</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-toleration.yaml
+
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   STATUS    RESTARTS   AGE
+myboot-84b457458b-mbf9r   1/1     Running   0          3m18s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, although all nodes contain a taint, the Pod is scheduled and run as we defined a tolerance against one taint.</p>
+</div>
+<div class="sect3">
+<h4 id="_clean_up_2"><a class="anchor" href="#_clean_up_2"></a>Clean Up</h4>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-toleration.yaml</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_noexecution_taint"><a class="anchor" href="#_noexecution_taint"></a>NoExecution Taint</h3>
+<div class="paragraph">
+<p>So far, you&#8217;ve seen that the taint we created with <code>NoSchedule</code> effect which means that Pods will not be scheduled there unless they have a tolerant.
+But notice that if we add this taint at one node and there were Pods already running, hence scheduled, this taint will not stop them.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s change that by using <code>NoExecution</code> effect.</p>
+</div>
+<div class="paragraph">
+<p>First of all, let&#8217;s remove all previous taints.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl taint nodes --all=true color=blue:NoSchedule-</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then deploy a service:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment.yml
+
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS    RESTARTS   AGE
+myboot-7f889dd6d-bkfg5   1/1     Running   0          16s</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pod myboot-7f889dd6d-bkfg5 -o json | jq '.spec.nodeName'</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"ip-10-0-146-109.eu-central-1.compute.internal"</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl taint node ip-10-0-146-109.eu-central-1.compute.internal color=blue:NoExecute
+
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS        RESTARTS   AGE
+myboot-7f889dd6d-8fm2v   1/1     Running       0          14s
+myboot-7f889dd6d-bkfg5   1/1     Terminating   0          5m51s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you have more nodes available then the Pod is terminated and deployed into another node, if it is not the case, then the Pod will remain in <em>Pending</em> status.</p>
+</div>
+<div class="sect3">
+<h4 id="_clean_up_3"><a class="anchor" href="#_clean_up_3"></a>Clean Up</h4>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-deployment.yml
+
+kubectl taint node ip-10-0-146-109.eu-central-1.compute.internal color=blue:NoExecute-</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_affinity_antiaffinity"><a class="anchor" href="#_affinity_antiaffinity"></a>Affinity &amp; AntiAffinity</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There is another way of changing where Pods are scheduled. This is by using Node/Pod Affinity and Antiaffinity.
+So you can create rules not only to ban where Pods can run but also to favor where they should run.</p>
+</div>
+<div class="paragraph">
+<p>Also notice that you can set not only affinities between Pods and Nodes, but also between Pods, so you can decide that some groups of Pods should be always deployed together in the same nodes.
+The reason to do that could be that there is a lot of communication between both Pods and you want to avoid external network calls.</p>
+</div>
+<div class="sect2">
+<h3 id="_node_affinity"><a class="anchor" href="#_node_affinity"></a>Node Affinity</h3>
+<div class="paragraph">
+<p>Let&#8217;s deploy a new service with a node affinity:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: color
+            operator: In
+            values:
+            - blue
+      containers:
+      - name: myboot
+        image: quay.io/rhdevelopers/myboot:v1</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-node-affinity.yml
+
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                                              READY   STATUS    RESTARTS   AGE
+myboot-54d788fdc8-f6wks                                           0/1     Pending   0          13s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s create a label in a node mathcing the affinity expression:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get nodes</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                            STATUS   ROLES    AGE   VERSION
+ip-10-0-136-107.eu-central-1.compute.internal   Ready    master   26h   v1.16.2
+ip-10-0-140-186.eu-central-1.compute.internal   Ready    worker   26h   v1.16.2
+ip-10-0-141-128.eu-central-1.compute.internal   Ready    worker   25h   v1.16.2
+ip-10-0-146-109.eu-central-1.compute.internal   Ready    worker   25h   v1.16.2
+ip-10-0-150-226.eu-central-1.compute.internal   Ready    worker   26h   v1.16.2
+ip-10-0-155-122.eu-central-1.compute.internal   Ready    master   26h   v1.16.2
+ip-10-0-162-206.eu-central-1.compute.internal   Ready    worker   26h   v1.16.2
+ip-10-0-168-102.eu-central-1.compute.internal   Ready    master   26h   v1.16.2
+ip-10-0-175-64.eu-central-1.compute.internal    Ready    worker   25h   v1.16.2</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label nodes ip-10-0-175-64.eu-central-1.compute.internal color=blue</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">node/ip-10-0-175-64.eu-central-1.compute.internal labeled</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                                              READY   STATUS    RESTARTS   AGE
+myboot-54d788fdc8-f6wks                                           1/1     Running   0          7m57s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s delete the label from the node:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label nodes ip-10-0-175-64.eu-central-1.compute.internal color-
+
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                                              READY   STATUS    RESTARTS   AGE
+myboot-54d788fdc8-f6wks                                           1/1     Running   0          7m57s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As happens with taints, if the rule is set to be applied during the scheduling phase, then the Pod is not removed.</p>
+</div>
+<div class="paragraph">
+<p>What you&#8217;ve seen here is a <em>hard</em> rule, as it does not find any node with the required label, then the Pod reminds in <em>Pending</em> state.
+But there is a way to use a <em>soft</em> rule, where instead of forcing to match the rules, it tries to accomplish them, but if not, then the Pod is scheduled in a node.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: color
+            operator: In
+            values:
+            - blue</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_clean_up_4"><a class="anchor" href="#_clean_up_4"></a>Clean Up</h4>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-node-affinity.yml</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_pod_affinityantiaffinity"><a class="anchor" href="#_pod_affinityantiaffinity"></a>Pod Affinity/AntiAffinity</h3>
+<div class="paragraph">
+<p>Let&#8217;s deploy a new service with a node affinity:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - topologyKey: kubernetes.io/hostname <i class="conum" data-value="1"></i><b>(1)</b>
+        labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - myboot <i class="conum" data-value="2"></i><b>(2)</b>
+  containers:</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>It is the key of node labels. If two nodes are labelled with this key and have identical values for that label, the scheduler treats both nodes as being in the same topology. In this case, <code>hostname</code> is a label that is different for each node.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The affinity is with Pods labelled with <code>app=myboot</code>.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pod-affinity.yml
+
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                                              READY   STATUS    RESTARTS   AGE
+myboot2-784bc58c8d-j2l74                                          0/1     Pending   0          19s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>myboot2</code> Pod is pending as couldn&#8217;t find any Pod matching the affinity rule.
+Let&#8217;s deploy <code>myboot</code> application labeled with <code>app=myboot</code>.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment.yml
+
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                                              READY   STATUS    RESTARTS   AGE
+myboot-7f889dd6d-tr7gr                                            1/1     Running   0          3m27s
+myboot2-64566b697b-snm7p                                          1/1     Running   0          18s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now both applications are running in the same node:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pod myboot-7f889dd6d-tr7gr -o json | jq '.spec.nodeName'</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"ip-10-0-146-109.eu-central-1.compute.internal"</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pod myboot2-64566b697b-snm7p -o json | jq '.spec.nodeName'</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"ip-10-0-146-109.eu-central-1.compute.internal"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>What you&#8217;ve seen here is a <em>hard</em> rule, you can use a "soft" rules as well in Pod Affinity.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        podAffinityTerm:
+          topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - myboot</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Antiaffinity is used to avoid that two Pods can run together in the same node.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - myboot</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pod-antiaffinity.yml</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                                              READY   STATUS    RESTARTS   AGE
+myboot-7f889dd6d-tr7gr                                            1/1     Running   0          3m27s
+myboot2-64566b697b-snm7p                                          1/1     Running   0          18s
+myboot3-78656b637r-suy1t                                          1/1     Running   0          1s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>myboot3</code> Pod is deployed in a different node than the <code>myboot</code> Pod:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pod myboot-7f889dd6d-tr7gr -o json | jq '.spec.nodeName'</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"ip-10-0-146-109.eu-central-1.compute.internal"</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pod myboot3-78656b637r-suy1t -o json | jq '.spec.nodeName'</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"ip-10-0-162-206.eu-central-1.compute.internal"</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_clean_up_5"><a class="anchor" href="#_clean_up_5"></a>Clean Up</h4>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-pod-affinity.yml
+kubectl delete -f apps/kubefiles/myboot-pod-antiaffinity.yml
+kubectl delete -f apps/kubefiles/myboot-deployment.yml</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://developers.redhat.com" target="_blank"></div>
+</footer>
+<script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
