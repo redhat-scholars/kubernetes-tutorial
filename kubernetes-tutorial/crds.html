@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>CRDs &amp; Controllers :: Kubernetes Tutorial</title>
+    <title>Operators :: Kubernetes Tutorial</title>
     <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/crds.html">
     <meta name="generator" content="Antora 2.3.1">
     <link rel="stylesheet" href="../_/css/site.css">
@@ -126,13 +126,10 @@
     <span class="nav-text">4. Advanced</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="exec.html">Exec</a>
-  </li>
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="secrets.html">Secrets</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="crds.html">CRDs</a>
+    <a class="nav-link" href="crds.html">Operators</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="volumes-persistentvolumes.html">Volumes</a>
@@ -167,14 +164,14 @@
   <ul>
     <li><a href="index.html">kubernetes-tutorial</a></li>
     <li>4. Advanced</li>
-    <li><a href="crds.html">CRDs</a></li>
+    <li><a href="crds.html">Operators</a></li>
   </ul>
 </nav>
   <div class="edit-this-page"><a href="https://github.com/redhat-developer-demos/kubernetes-tutorial/edit/master/documentation/modules/ROOT/pages/crds.adoc">Edit this Page</a></div>
   </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">CRDs &amp; Controllers</h1>
+<h1 class="page">Operators</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
@@ -210,14 +207,12 @@ kubectl api-resources</code></pre>
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
-  name: pizzas.mykubernetes.burrsutter.com
+  name: pizzas.mykubernetes.acme.org
   labels:
     app: pizzamaker
     mylabel: stuff
-  annotations:
-    "yourannotation": morestuff
 spec:
-  group: mykubernetes.burrsutter.com
+  group: mykubernetes.acme.org
   scope: Namespaced
   version: v1beta2
   names:
@@ -234,7 +229,10 @@ spec:
 <h3 id="_add_pizzas"><a class="anchor" href="#_add_pizzas"></a>Add Pizzas</h3>
 <div id="add-pizzas" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/pizzas/pizza-crd.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create namespace pizzahat
+kubectl config set-context --current --namespace=pizzahat
+
+kubectl apply -f apps/pizzas/pizza-crd.yaml</code></pre>
 </div>
 </div>
 </div>
@@ -250,12 +248,13 @@ spec:
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">pizzas.mykubernetes.burrsutter.com                          2020-03-31T20:36:10Z</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                           CREATED AT
+pizzas.mykubernetes.acme.org   2020-07-01T08:12:00Z</code></pre>
 </div>
 </div>
 <div id="get-api-pizzas-crds" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl api-resources | grep burr</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl api-resources | grep pizzas</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -263,7 +262,23 @@ spec:
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">pizzas                                pz               mykubernetes.burrsutter.com           true         Pizza</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">pizzas                            pz           mykubernetes.acme.org          true         Pizza</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deploying_the_operator"><a class="anchor" href="#_deploying_the_operator"></a>Deploying the Operator</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/pizzas/pizza-deployment.yaml
+
+kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                        READY   STATUS    RESTARTS   AGE
+quarkus-operator-example-5f5bf777bc-glfg9   1/1     Running   0          58s</code></pre>
 </div>
 </div>
 </div>
@@ -271,11 +286,69 @@ spec:
 <h3 id="_make_some_pizzas"><a class="anchor" href="#_make_some_pizzas"></a>Make some Pizzas</h3>
 <div id="create-pizzas-crds" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create namespace pizzahat
-kubectl config set-context --current --namespace=pizzahat
-kubectl apply -f apps/pizzas/cheese-pizza.yaml
-kubectl get pizzas
-kubectl describe pizza burrcheese</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/pizzas/cheese-pizza.yaml
+kubectl get pizzas</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME      AGE
+cheesep   4s</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe pizza cheesep</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Name:         cheesep
+Namespace:    pizzahat
+Labels:       &lt;none&gt;
+Annotations:  kubectl.kubernetes.io/last-applied-configuration:
+                {"apiVersion":"mykubernetes.acme.org/v1beta2","kind":"Pizza","metadata":{"annotations":{},"name":"cheesep","namespace":"pizzahat"},"spec":...
+API Version:  mykubernetes.acme.org/v1beta2
+Kind:         Pizza
+...</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                        READY   STATUS      RESTARTS   AGE
+cheesep-pod                                 0/1     Completed   0          3s
+quarkus-operator-example-5f5bf777bc-glfg9   1/1     Running     0          44m</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And check the logs of the cheese Pod:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs cheesep-pod</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">__  ____  __  _____   ___  __ ____  ______
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/
+ -/ /_/ / /_/ / __ |/ , _/ ,&lt; / /_/ /\ \
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/
+2020-07-01 09:03:11,537 INFO  [io.quarkus] (main) pizza-maker 1.0-SNAPSHOT (powered by Quarkus 1.4.0.CR1) started in 0.006s.
+2020-07-01 09:03:11,537 INFO  [io.quarkus] (main) Profile prod activated.
+2020-07-01 09:03:11,537 INFO  [io.quarkus] (main) Installed features: [cdi]
+Doing The Base
+Adding Sauce regular
+Adding Toppings [mozzarella]
+Baking
+Baked
+Ready For Delivery
+2020-07-01 09:03:12,038 INFO  [io.quarkus] (main) pizza-maker stopped in 0.000s</code></pre>
 </div>
 </div>
 </div>
@@ -294,6 +367,14 @@ kubectl get pizzas --all-namespaces</code></pre>
 <div id="delete-pizzas-crds" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pizzas --all</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h3>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete all --all</code></pre>
 </div>
 </div>
 </div>
@@ -390,7 +471,7 @@ my-cluster   3                        3</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean up</h3>
+<h3 id="_clean_up_2"><a class="anchor" href="#_clean_up_2"></a>Clean up</h3>
 <div id="clean-up" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete namespace pizzahat
