@@ -22,9 +22,8 @@
 ** xref:configmap.adoc[ConfigMap]
 
 * 4. Advanced
-** xref:exec.adoc[Exec]
 ** xref:secrets.adoc[Secrets]
-** xref:crds.adoc[CRDs]
+** xref:crds.adoc[Operators]
 ** xref:volumes-persistentvolumes.adoc[Volumes]
 ** xref:taints-affinity.adoc[Taints & Affinity]
 ** xref::jobs-cronjobs.adoc[Jobs & CronJobs]

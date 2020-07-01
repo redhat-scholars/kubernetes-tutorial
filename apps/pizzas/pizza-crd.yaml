@@ -1,12 +1,12 @@
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
-  name: pizzas.mykubernetes.burrsutter.com
+  name: pizzas.mykubernetes.acme.org
   labels:
     app: pizzamaker
     mylabel: stuff
 spec:
-  group: mykubernetes.burrsutter.com
+  group: mykubernetes.acme.org
   scope: Namespaced
   version: v1beta2
   names:
@@ -16,14 +16,3 @@ spec:
     singular: pizza
     shortNames:
     - pz
-  validation:
-    openAPIV3Schema:
-      type: object
-      properties:
-        spec:
-          type: object
-          properties:
-            toppings:
-              type: array
-            sauce:
-              type: string

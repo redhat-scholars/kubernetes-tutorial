@@ -1,7 +1,7 @@
 apiVersion: mykubernetes.acme.org/v1beta2
 kind: Pizza
 metadata:
-  name: alexmeats
+  name: meatsp
 spec:
   toppings:
   - mozzarella

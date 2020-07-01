@@ -63,6 +63,6 @@ spec:
     spec:
       serviceAccountName: quarkus-operator-example
       containers:
-      - image: quay.io/lordofthejars/pizza-operator:1.0.1
+      - image: quay.io/rhdevelopers/pizza-operator:1.0.1
         name: quarkus-operator-example
         imagePullPolicy: IfNotPresent

@@ -1,8 +1,8 @@
-apiVersion: mykubernetes.burrsutter.com/v1beta2
+apiVersion: mykubernetes.acme.org/v1beta2
 kind: Pizza
 metadata:
-  name: burrcheese
+  name: cheesep
 spec:
-  toppings: 
+  toppings:
   - mozzarella
   sauce: regular
