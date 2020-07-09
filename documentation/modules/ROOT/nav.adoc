@@ -1,10 +1,8 @@
 * 1. Requirements
 ** xref:installation.adoc[Installation]
 *** xref:installation.adoc#tutorial-all-local[CLI]
-*** xref:installation.adoc#env-path[Env and Path]
-*** xref:installation.adoc#start-minikube[Start Minikube]
-*** xref:installation.adoc#verify-setup[Verify Setup]
-*** xref:installation.adoc#openshift[OpenShift]
+*** xref:installation.adoc#install-minikube[Install Minikube]
+*** xref:installation.adoc#start-kubernetes[Start Kubernetes]
 
 * 2. Beginner
 ** xref:kubectl.adoc[kubectl]

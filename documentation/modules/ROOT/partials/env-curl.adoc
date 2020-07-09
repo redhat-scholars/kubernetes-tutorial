@@ -10,7 +10,7 @@ Minikube::
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-IP=$(minikube ip)
+IP=$(minikube ip -p devnation)
 PORT=$(kubectl get service/{tmp-service-exposed} -o jsonpath="{.spec.ports[*].nodePort}")
 ----
 --
