@@ -7,8 +7,8 @@
 * 2. Beginner
 ** xref:kubectl.adoc[kubectl]
 ** xref:pod-rs-deployment.adoc[Pod, ReplicaSet, Deployment]
-** xref:logs.adoc[Logs]
 ** xref:service.adoc[Service]
+** xref:logs.adoc[Logs]
 ** xref:service-magic.adoc[Service Magic]
 ** xref:blue-green.adoc[Blue/Green Deployments]
 
