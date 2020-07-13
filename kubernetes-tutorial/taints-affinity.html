@@ -169,10 +169,10 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>So far, when we deployed any Pod in the Kubernetes cluster, it was run into a node that just meets the required requirements (ie memory requirements, CPU requirements, &#8230;&#8203;)</p>
+<p>So far, when we deployed any Pod in the Kubernetes cluster, it was run on any node that met the requirements (ie memory requirements, CPU requirements, &#8230;&#8203;)</p>
 </div>
 <div class="paragraph">
-<p>But in Kubernetes, there are two concepts that allow us to configure this, so Pods are deployed following some business criteria.</p>
+<p>However, in Kubernetes there are two concepts that allow you to further configure the scheduler, so that Pods are assigned to Nodes following some business criteria.</p>
 </div>
 </div>
 </div>
@@ -193,8 +193,8 @@ Check the number of nodes you have delpoyed by running:</p>
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME       STATUS     ROLES    AGE     VERSION
-kube       Ready   master   54d     v1.17.3</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME       STATUS   ROLES    AGE     VERSION
+kube       Ready    master   54m     v1.17.3</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -220,9 +220,9 @@ kube       Ready   master   54d     v1.17.3</code></pre>
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME       STATUS     ROLES    AGE     VERSION
-kube       Ready   master   54d     v1.17.3
-kube-m02   Ready      &lt;none&gt;   2m50s   v1.17.3</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME       STATUS   ROLES    AGE     VERSION
+kube       Ready    master   54m     v1.17.3
+kube-m02   Ready    &lt;none&gt;   2m50s   v1.17.3</code></pre>
 </div>
 </div>
 <div class="admonitionblock important">
@@ -243,13 +243,13 @@ Multi-node clusters are currently experimental and might exhibit unintended beha
 <h2 id="_taints_and_tolerations"><a class="anchor" href="#_taints_and_tolerations"></a>Taints and Tolerations</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A Taint is a concept that Kubernetes has to avoid that some Pods can run on specific nodes.</p>
+<p>A Taint is applied to a Kubernetes Node that signals the scheduler to avoid or not schedule certain Pods.</p>
 </div>
 <div class="paragraph">
-<p>Toleration is placed in a Pod definition and provides an exception to taint so Pod can run on those nodes although there is a taint that is blocking to run it there.</p>
+<p>A Toleration is applied to a Pod definition and provides an exception to the taint.</p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s describe the current nodes, in this case as a public cloud is used, you can see several nodes:</p>
+<p>Let&#8217;s describe the current nodes, in this case as an OpenShift cluster is used, you can see several nodes:</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
@@ -271,7 +271,7 @@ Taints:             &lt;none&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Notice that in this case, only <code>master</code> node contains a taint which makes that no Pods can be scheduled there.</p>
+<p>Notice that in this case, the <code>master</code> node contains a taint which blocks your application Pods from being scheduled there.</p>
 </div>
 <div class="sect2">
 <h3 id="_taints"><a class="anchor" href="#_taints"></a>Taints</h3>
@@ -297,7 +297,10 @@ node/ip-10-0-175-64.eu-central-1.compute.internal tainted</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And deploy a service.</p>
+<p>The color=blue is simply a key=value pair to identify the taint and NoSchedule is the specific effect.</p>
+</div>
+<div class="paragraph">
+<p>Now deploy a new pod.</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
@@ -305,6 +308,9 @@ node/ip-10-0-175-64.eu-central-1.compute.internal tainted</code></pre>
 
 kubectl get pods</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The pod will remain in Pending status as it has no schedulable Node available.</p>
 </div>
 <div class="listingblock console-output">
 <div class="content">
@@ -390,6 +396,9 @@ Name:               ip-10-0-146-109.eu-central-1.compute.internal
 Taints:             color=blue:NoSchedule</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>And you should see the Pending pod scheduled to the newly untained node.</p>
+</div>
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
@@ -400,6 +409,20 @@ Taints:             color=blue:NoSchedule</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS    RESTARTS   AGE
 myboot-7f889dd6d-n5z55   1/1     Running   0          11m</code></pre>
 </div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can use <code>kubectl get pods -o wide</code> to see the node upon which the pod is scheduled.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h4>
@@ -418,7 +441,7 @@ kubectl taint node ip-10-0-140-186.eu-central-1.compute.internal color=blue:NoSc
 <div class="sect2">
 <h3 id="_tolerations"><a class="anchor" href="#_tolerations"></a>Tolerations</h3>
 <div class="paragraph">
-<p>Let&#8217;s create a Pod but containing toleration, so it can be scheduled in a node even though it has a taint.</p>
+<p>Let&#8217;s create a Pod but containing a toleration, so it can be scheduled to a tainted node.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -447,7 +470,7 @@ myboot-84b457458b-mbf9r   1/1     Running   0          3m18s</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now, although all nodes contain a taint, the Pod is scheduled and run as we defined a tolerance against one taint.</p>
+<p>Now, although all nodes contain a taint, the Pod is scheduled and run as we defined a tolerance against color=blue taint.</p>
 </div>
 <div class="sect3">
 <h4 id="_clean_up_2"><a class="anchor" href="#_clean_up_2"></a>Clean Up</h4>
@@ -461,8 +484,8 @@ myboot-84b457458b-mbf9r   1/1     Running   0          3m18s</code></pre>
 <div class="sect2">
 <h3 id="_noexecution_taint"><a class="anchor" href="#_noexecution_taint"></a>NoExecution Taint</h3>
 <div class="paragraph">
-<p>So far, you&#8217;ve seen that the taint we created with <code>NoSchedule</code> effect which means that Pods will not be scheduled there unless they have a tolerant.
-But notice that if we add this taint at one node and there were Pods already running, hence scheduled, this taint will not stop them.</p>
+<p>So far, you&#8217;ve seen the <code>NoSchedule</code> taint effect which means that newly created Pods will not be scheduled there unless they have an overriding toleration.
+But notice that if we add this taint to a node that already has running/scheduled Pods, this taint will not terminate them.</p>
 </div>
 <div class="paragraph">
 <p>Let&#8217;s change that by using <code>NoExecution</code> effect.</p>
@@ -516,15 +539,36 @@ myboot-7f889dd6d-bkfg5   1/1     Terminating   0          5m51s</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If you have more nodes available then the Pod is terminated and deployed into another node, if it is not the case, then the Pod will remain in <em>Pending</em> status.</p>
+<p>If you have more nodes available then the Pod is terminated and deployed onto another node, if it is not the case, then the Pod will remain in <em>Pending</em> status.</p>
+</div>
+<div class="paragraph">
+<p>You can watch this "rescheduling" occur with use of  <code>-o wide</code></p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods -o wide</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS        RESTARTS   AGE     IP           NODE
+myboot-7f889dd6d-b9tks   1/1     Running       0          6s      10.88.0.5    devnation-m02
+myboot-7f889dd6d-l897f   1/1     Terminating   0          9m11s   172.17.0.4   devnation</code></pre>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_clean_up_3"><a class="anchor" href="#_clean_up_3"></a>Clean Up</h4>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-deployment.yml
-
-kubectl taint node ip-10-0-146-109.eu-central-1.compute.internal color=blue:NoExecute-</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-deployment.yml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And remove the NoExecute taint</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl taint node ip-10-0-146-109.eu-central-1.compute.internal color=blue:NoExecute-</code></pre>
 </div>
 </div>
 </div>
@@ -532,20 +576,20 @@ kubectl taint node ip-10-0-146-109.eu-central-1.compute.internal color=blue:NoEx
 </div>
 </div>
 <div class="sect1">
-<h2 id="_affinity_antiaffinity"><a class="anchor" href="#_affinity_antiaffinity"></a>Affinity &amp; AntiAffinity</h2>
+<h2 id="_affinity_anti_affinity"><a class="anchor" href="#_affinity_anti_affinity"></a>Affinity &amp; Anti-Affinity</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>There is another way of changing where Pods are scheduled. This is by using Node/Pod Affinity and Antiaffinity.
-So you can create rules not only to ban where Pods can run but also to favor where they should run.</p>
+<p>There is another way of changing where Pods are scheduled using Node/Pod Affinity and Anti-affinity.
+You can create rules that not only ban where Pods can run but also to favor where they should be run.</p>
 </div>
 <div class="paragraph">
-<p>Also notice that you can set not only affinities between Pods and Nodes, but also between Pods, so you can decide that some groups of Pods should be always deployed together in the same nodes.
-The reason to do that could be that there is a lot of communication between both Pods and you want to avoid external network calls.</p>
+<p>In addition to creating affinities between Pods and Nodes, you can also create affinities between Pods.  You can decide that a group of Pods should be always be deployed together on the same node(s).
+Reasons such as significant network communication between Pods and you want to avoid external network calls or perhaps shared storage devices.</p>
 </div>
 <div class="sect2">
 <h3 id="_node_affinity"><a class="anchor" href="#_node_affinity"></a>Node Affinity</h3>
 <div class="paragraph">
-<p>Let&#8217;s deploy a new service with a node affinity:</p>
+<p>Let&#8217;s deploy a new pod with a node affinity:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -573,12 +617,12 @@ kubectl get pods</code></pre>
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                                              READY   STATUS    RESTARTS   AGE
-myboot-54d788fdc8-f6wks                                           0/1     Pending   0          13s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                           READY   STATUS    RESTARTS   AGE
+myboot-54d788fdc8-f6wks        0/1     Pending   0          13s</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s create a label in a node mathcing the affinity expression:</p>
+<p>Let&#8217;s create a label on a node matching the affinity expression:</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
@@ -616,8 +660,8 @@ ip-10-0-175-64.eu-central-1.compute.internal    Ready    worker   25h   v1.16.2<
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                                              READY   STATUS    RESTARTS   AGE
-myboot-54d788fdc8-f6wks                                           1/1     Running   0          7m57s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                          READY   STATUS    RESTARTS   AGE
+myboot-54d788fdc8-f6wks       1/1     Running   0          7m57s</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -632,16 +676,16 @@ kubectl get pods</code></pre>
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                                              READY   STATUS    RESTARTS   AGE
-myboot-54d788fdc8-f6wks                                           1/1     Running   0          7m57s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                         READY   STATUS    RESTARTS   AGE
+myboot-54d788fdc8-f6wks      1/1     Running   0          7m57s</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>As happens with taints, if the rule is set to be applied during the scheduling phase, then the Pod is not removed.</p>
+<p>As with taints, the rule is set during the scheduling phase, therefore, the Pod is not removed.</p>
 </div>
 <div class="paragraph">
-<p>What you&#8217;ve seen here is a <em>hard</em> rule, as it does not find any node with the required label, then the Pod reminds in <em>Pending</em> state.
-But there is a way to use a <em>soft</em> rule, where instead of forcing to match the rules, it tries to accomplish them, but if not, then the Pod is scheduled in a node.</p>
+<p>This is an example of a <em>hard</em> rule, if the Kubernetes scheduler does not find any node with the required label then the Pod reminds in <em>Pending</em> state.
+There is also a way to create a <em>soft</em> rule, where the Kubernetes scheduler attempts to match the rules but if it can not then the Pod is scheduled to any node.  In the example below, you can see the use of the word <em>preferred</em> vs <em>required</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -668,9 +712,9 @@ But there is a way to use a <em>soft</em> rule, where instead of forcing to matc
 </div>
 </div>
 <div class="sect2">
-<h3 id="_pod_affinityantiaffinity"><a class="anchor" href="#_pod_affinityantiaffinity"></a>Pod Affinity/AntiAffinity</h3>
+<h3 id="_pod_affinityanti_affinity"><a class="anchor" href="#_pod_affinityanti_affinity"></a>Pod Affinity/Anti-Affinity</h3>
 <div class="paragraph">
-<p>Let&#8217;s deploy a new service with a node affinity:</p>
+<p>Let&#8217;s deploy a new pod with a Pod Affinity:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -692,11 +736,11 @@ But there is a way to use a <em>soft</em> rule, where instead of forcing to matc
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>It is the key of node labels. If two nodes are labelled with this key and have identical values for that label, the scheduler treats both nodes as being in the same topology. In this case, <code>hostname</code> is a label that is different for each node.</td>
+<td>The node label key. If two nodes are labeled with this key and have identical values, the scheduler treats both nodes as being in the same topology. In this case, <code>hostname</code> is a label that is different for each node.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The affinity is with Pods labelled with <code>app=myboot</code>.</td>
+<td>The affinity is with Pods labeled with <code>app=myboot</code>.</td>
 </tr>
 </table>
 </div>
@@ -775,7 +819,7 @@ myboot2-64566b697b-snm7p                                          1/1     Runnin
 </div>
 </div>
 <div class="paragraph">
-<p>Antiaffinity is used to avoid that two Pods can run together in the same node.</p>
+<p>Anti-affinity is used to insure that two Pods do NOT run together on the same node.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -792,41 +836,32 @@ myboot2-64566b697b-snm7p                                          1/1     Runnin
             - myboot</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Deploy a myboot3 with an anti-affinity rule</p>
+</div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pod-antiaffinity.yml</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                                              READY   STATUS    RESTARTS   AGE
-myboot-7f889dd6d-tr7gr                                            1/1     Running   0          3m27s
-myboot2-64566b697b-snm7p                                          1/1     Running   0          18s
-myboot3-78656b637r-suy1t                                          1/1     Running   0          1s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pod-antiaffinity.yaml</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><code>myboot3</code> Pod is deployed in a different node than the <code>myboot</code> Pod:</p>
+<p>And then use the <code>kubectl get pods -o wide</code> command to see which pods land on which nodes.</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pod myboot-7f889dd6d-tr7gr -o json | jq '.spec.nodeName'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods -o wide</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"ip-10-0-146-109.eu-central-1.compute.internal"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                       READY   STATUS    RESTARTS   AGE    IP          NODE
+myboot-7f889dd6d-tr7gz     1/1     Running   0          4m27s  10.88.0.9   devnation-m02
+myboot2-64566b697b-snm7p   1/1     Running   0          48s    10.88.0.10  devnation-m02
+myboot3-78656b637r-suy1t   1/1     Running   0          1s     172.17.0.2  devnation</code></pre>
 </div>
 </div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pod myboot3-78656b637r-suy1t -o json | jq '.spec.nodeName'</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"ip-10-0-162-206.eu-central-1.compute.internal"</code></pre>
-</div>
+<div class="paragraph">
+<p><code>myboot3</code> Pod is deployed in a different node than the <code>myboot</code> Pod</p>
 </div>
 <div class="sect3">
 <h4 id="_clean_up_5"><a class="anchor" href="#_clean_up_5"></a>Clean Up</h4>
