@@ -117,7 +117,7 @@
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">4. Advanced</span>
+    <span class="nav-text">4. Intermediate</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="secrets.html">Secrets</a>
@@ -157,7 +157,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">kubernetes-tutorial</a></li>
-    <li>4. Advanced</li>
+    <li>4. Intermediate</li>
     <li><a href="volumes-persistentvolumes.html">Volumes</a></li>
   </ul>
 </nav>
@@ -248,7 +248,7 @@ spec:
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f myboot-pod-volume.yml
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pod-volume.yml
 
 kubectl get pods</code></pre>
 </div>
@@ -329,7 +329,7 @@ The following deployment creates one pod with two containers mounting the same v
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f myboot-pods-volume.yml
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pods-volume.yml
 
 kubectl get pods</code></pre>
 </div>
@@ -386,7 +386,7 @@ exit</code></pre>
 <h4 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h4>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f myboot-pods-volume.yml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-pods-volume.yml</code></pre>
 </div>
 </div>
 </div>
@@ -520,7 +520,7 @@ spec:
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f demo-persistent-volume-hostpath.yaml
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/demo-persistent-volume-hostpath.yaml
 
 kubectl get pv</code></pre>
 </div>
@@ -552,7 +552,7 @@ spec:
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f myboot-persistent-volume-claim.yaml
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-persistent-volume-claim.yaml
 
 kubectl get pvc</code></pre>
 </div>
@@ -589,7 +589,7 @@ spec:
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f myboot-pod-volume-pvc.yaml
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pod-volume-pvc.yaml
 
 kubectl describe pod myboot-demo</code></pre>
 </div>
@@ -626,8 +626,8 @@ myboot-volumeclaim   Bound    my-persistent-volume   100Mi      RWO            p
 <h4 id="_clean_up_3"><a class="anchor" href="#_clean_up_3"></a>Clean Up</h4>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f myboot-persistent-volume-claim.yaml
-kubectl delete -f demo-persistent-volume-hostpath.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-persistent-volume-claim.yaml
+kubectl delete -f apps/kubefiles/demo-persistent-volume-hostpath.yaml</code></pre>
 </div>
 </div>
 </div>
