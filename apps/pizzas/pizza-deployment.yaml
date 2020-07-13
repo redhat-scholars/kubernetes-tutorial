@@ -41,7 +41,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: quarkus-operator-example
-  namespace: default
+  namespace: pizzahat
 roleRef:
   kind: ClusterRole
   name: quarkus-operator-example
