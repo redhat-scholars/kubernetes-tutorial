@@ -19,7 +19,7 @@
 ** xref:live-ready.adoc[Liveness & Readiness]
 ** xref:configmap.adoc[ConfigMap]
 
-* 4. Advanced
+* 4. Intermediate
 ** xref:secrets.adoc[Secrets]
 ** xref:crds.adoc[Operators]
 ** xref:volumes-persistentvolumes.adoc[Volumes]
