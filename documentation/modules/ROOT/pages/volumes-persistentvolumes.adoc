@@ -54,7 +54,7 @@ In `volumes` section, you are defining the volume, and in `volumeMounts` section
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl apply -f myboot-pod-volume.yml
+kubectl apply -f apps/kubefiles/myboot-pod-volume.yml
 
 kubectl get pods
 ----
@@ -138,7 +138,7 @@ The following deployment creates one pod with two containers mounting the same v
 [.console-input]
 [source,bash]
 ----
-kubectl apply -f myboot-pods-volume.yml
+kubectl apply -f apps/kubefiles/myboot-pods-volume.yml
 
 kubectl get pods
 ----
@@ -199,7 +199,7 @@ Volumes:
 [.console-input]
 [source,bash]
 ----
-kubectl delete -f myboot-pods-volume.yml
+kubectl delete -f apps/kubefiles/myboot-pods-volume.yml
 ----
 
 === HostPath
@@ -320,7 +320,7 @@ Now, the `volume` information is not in the pod anymore but in the _persistent v
 [.console-input]
 [source,bash]
 ----
-kubectl apply -f demo-persistent-volume-hostpath.yaml 
+kubectl apply -f apps/kubefiles/demo-persistent-volume-hostpath.yaml 
 
 kubectl get pv
 ----
@@ -354,7 +354,7 @@ spec:
 [.console-input]
 [source,bash]
 ----
-kubectl apply -f myboot-persistent-volume-claim.yaml
+kubectl apply -f apps/kubefiles/myboot-persistent-volume-claim.yaml
 
 kubectl get pvc
 ----
@@ -392,7 +392,7 @@ spec:
 [.console-input]
 [source,bash]
 ----
-kubectl apply -f myboot-pod-volume-pvc.yaml
+kubectl apply -f apps/kubefiles/myboot-pod-volume-pvc.yaml
 
 kubectl describe pod myboot-demo
 ----
@@ -431,8 +431,8 @@ myboot-volumeclaim   Bound    my-persistent-volume   100Mi      RWO            p
 [.console-input]
 [source,bash]
 ----
-kubectl delete -f myboot-persistent-volume-claim.yaml
-kubectl delete -f demo-persistent-volume-hostpath.yaml
+kubectl delete -f apps/kubefiles/myboot-persistent-volume-claim.yaml
+kubectl delete -f apps/kubefiles/demo-persistent-volume-hostpath.yaml
 ----
 
 == Static vs Dynamic Provisioning
