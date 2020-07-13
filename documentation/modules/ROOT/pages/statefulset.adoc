@@ -63,7 +63,7 @@ spec:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl apply -f apps/kubefiles/quarkus-statefulset.yml
+kubectl apply -f apps/kubefiles/quarkus-statefulset.yaml
 
 kubectl get pods
 ----
@@ -157,5 +157,5 @@ quarkus-statefulset-2   0/1     Terminating   0          7m48s
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl delete -f apps/kubefiles/quarkus-statefulset.yml
+kubectl delete -f apps/kubefiles/quarkus-statefulset.yaml
 ----
