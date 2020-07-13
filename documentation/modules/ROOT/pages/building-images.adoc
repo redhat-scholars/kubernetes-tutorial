@@ -1,5 +1,11 @@
 = Building Images
 
+== Prerequisite
+
+In this section, we are assuming you are running Docker in your local machine (either using Docker Tools or native Docker).
+
+IMPORTANT: To make it work correctly, you need to run this section in a new terminal window to avoid using the Kubernetes (`minikube`) environment used in previous sections.
+
 == Build your application artifact
 
 Compile, build and test the Spring Boot Java project:
