@@ -19,4 +19,7 @@ And then open your `gh-pages/index.html` file:
 
 ```
 open gh-pages/index.html
+
 ```
+
+This is just for testing purposes!
