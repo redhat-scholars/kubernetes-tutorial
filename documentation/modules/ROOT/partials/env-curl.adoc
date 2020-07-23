@@ -31,7 +31,7 @@ IMPORTANT: If you are in AWS, you need to get the `hostname` instead of `ip.`
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-IP=$(kubectl get service {tmp-service-exposed} -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+IP=$(kubectl get service {tmp-service-exposed} -o jsonpath="{.status.loadBalancer.ingress[0].hostname}")
 ----
 --
 ====
