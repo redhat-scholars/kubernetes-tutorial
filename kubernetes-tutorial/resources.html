@@ -385,7 +385,7 @@ kubectl describe $PODNAME</code></pre>
 </div>
 <div class="content">
 <div class="tab-pane" aria-labelledby="tabset1_minikube">
-<div id="resource-soft-limit-ip-port-minikube" class="listingblock console-input">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip -p devnation)
 PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
@@ -396,10 +396,27 @@ PORT=$(kubectl get service/myboot -o jsonpath="{.spec.ports[*].nodePort}")</code
 <div class="paragraph">
 <p>If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port <code>8080</code> or get it using <code>kubectl</code>:</p>
 </div>
-<div id="resource-soft-limit-ip-port-openshift" class="listingblock console-input">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+If you are in AWS, you need to get the <code>hostname</code> instead of <code>ip.</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myboot -o jsonpath="{.status.loadBalancer.ingress[0].ip}")</code></pre>
 </div>
 </div>
 </div>
@@ -408,7 +425,7 @@ PORT=$(kubectl get service myboot -o jsonpath="{.spec.ports[*].port}")</code></p
 <div class="paragraph">
 <p>Curl the Service:</p>
 </div>
-<div id="resource-soft-limit-curl-the-service" class="listingblock console-input">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>

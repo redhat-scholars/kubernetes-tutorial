@@ -366,7 +366,7 @@ myapp   LoadBalancer   172.30.103.41   34.71.122.153   8080:31974/TCP   44s</cod
 </div>
 <div class="content">
 <div class="tab-pane" aria-labelledby="tabset1_minikube">
-<div id="kubectl-ip-port-minikube" class="listingblock console-input">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip -p devnation)
 PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
@@ -377,10 +377,27 @@ PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</code>
 <div class="paragraph">
 <p>If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port <code>8080</code> or get it using <code>kubectl</code>:</p>
 </div>
-<div id="kubectl-ip-port-openshift" class="listingblock console-input">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myapp -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service myapp -o jsonpath="{.spec.ports[*].port}")</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+If you are in AWS, you need to get the <code>hostname</code> instead of <code>ip.</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myapp -o jsonpath="{.status.loadBalancer.ingress[0].ip}")</code></pre>
 </div>
 </div>
 </div>
@@ -389,7 +406,7 @@ PORT=$(kubectl get service myapp -o jsonpath="{.spec.ports[*].port}")</code></pr
 <div class="paragraph">
 <p>Curl the Service:</p>
 </div>
-<div id="kubectl-curl-the-service" class="listingblock console-input">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
@@ -416,30 +433,58 @@ PORT=$(kubectl get service myapp -o jsonpath="{.spec.ports[*].port}")</code></pr
 <div class="ulist tabs">
 <ul>
 <li>
-<p><a id="tabset2_hosted"></a>Hosted</p>
+<p><a id="tabset2_minikube"></a>Minikube</p>
 </li>
 <li>
-<p><a id="tabset2_minikube"></a>Minikube</p>
+<p><a id="tabset2_hosted"></a>Hosted</p>
 </li>
 </ul>
 </div>
 <div class="content">
+<div class="tab-pane" aria-labelledby="tabset2_minikube">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip -p devnation)
+PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
+</div>
+</div>
+</div>
 <div class="tab-pane" aria-labelledby="tabset2_hosted">
-<div id="env-vars-openshift" class="listingblock console-input">
+<div class="paragraph">
+<p>If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERNAL-IP address with port <code>8080</code> or get it using <code>kubectl</code>:</p>
+</div>
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myapp -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service myapp -o jsonpath="{.spec.ports[*].port}")</code></pre>
 </div>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+If you are in AWS, you need to get the <code>hostname</code> instead of <code>ip.</code>
+</td>
+</tr>
+</table>
 </div>
-<div class="tab-pane" aria-labelledby="tabset2_minikube">
-<div id="env-vars-minikube" class="listingblock console-input">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(minikube ip)
-PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IP=$(kubectl get service myapp -o jsonpath="{.status.loadBalancer.ingress[0].ip}")</code></pre>
 </div>
 </div>
 </div>
+</div>
+</div>
+<div class="paragraph">
+<p>Curl the Service:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $IP:$PORT</code></pre>
 </div>
 </div>
 <div class="paragraph">
