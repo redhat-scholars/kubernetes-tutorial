@@ -174,31 +174,9 @@ watch kubectl get pods
 
 === Terminal 2
 
-[tabs]
-====
-Hosted::
-+
---
-[#env-vars-openshift]
-[.console-input]
-[source,bash]
-----
-IP=$(kubectl get service myapp -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-PORT=$(kubectl get service myapp -o jsonpath="{.spec.ports[*].port}")
-----
---
-Minikube::
-+
---
-[#env-vars-minikube]
-[.console-input]
-[source,bash]
-----
-IP=$(minikube ip)
-PORT=$(kubectl get service/myapp -o jsonpath="{.spec.ports[*].nodePort}")
-----
---
-====
+:service-exposed: myapp
+
+include::partial$env-curl.adoc[]
 
 Poll the endpoint:
 

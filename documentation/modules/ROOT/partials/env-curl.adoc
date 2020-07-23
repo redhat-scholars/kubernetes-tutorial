@@ -1,4 +1,3 @@
-
 [tabs]
 ====
 Minikube::
@@ -6,7 +5,6 @@ Minikube::
 --
 :tmp-service-exposed: {service-exposed}
 
-[#{section-k8s}-ip-port-minikube]
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -21,19 +19,25 @@ If using a hosted Kubernetes cluster like OpenShift then use curl and the EXTERN
 
 :tmp-service-exposed: {service-exposed}
 
-[#{section-k8s}-ip-port-openshift]
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 IP=$(kubectl get service {tmp-service-exposed} -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 PORT=$(kubectl get service {tmp-service-exposed} -o jsonpath="{.spec.ports[*].port}")
 ----
+
+IMPORTANT: If you are in AWS, you need to get the `hostname` instead of `ip.`
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+IP=$(kubectl get service {tmp-service-exposed} -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+----
 --
 ====
 
 Curl the Service:
 
-[#{section-k8s}-curl-the-service]
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
