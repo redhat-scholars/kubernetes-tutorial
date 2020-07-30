@@ -108,7 +108,7 @@
     <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="live-ready.html">Liveness &amp; Readiness</a>
+    <a class="nav-link" href="live-ready.html">Liveness, Readiness &amp; Startup</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="configmap.html">ConfigMap</a>
@@ -158,7 +158,7 @@
   <ul>
     <li><a href="index.html">kubernetes-tutorial</a></li>
     <li>3. Elementary</li>
-    <li><a href="live-ready.html">Liveness &amp; Readiness</a></li>
+    <li><a href="live-ready.html">Liveness, Readiness &amp; Startup</a></li>
   </ul>
 </nav>
   <div class="edit-this-page"><a href="https://github.com/redhat-developer-demos/kubernetes-tutorial/edit/master/documentation/modules/ROOT/pages/live-ready.adoc">Edit this Page</a></div>
@@ -587,6 +587,157 @@ Jambo from Spring Boot! 176 on myboot-558b4f8678-z7f9n</code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete deployment myboot
 kubectl delete service myboot</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_startup_probe"><a class="anchor" href="#_startup_probe"></a>Startup Probe</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some applications require an additional startup time on their first initialization.</p>
+</div>
+<div class="paragraph">
+<p>It might be tricky to fit this scenario into liveness/readiness probe as you need to configure them for their normal behaviour to detect abnormalities during the running time and moreover covering the long start up time.</p>
+</div>
+<div class="paragraph">
+<p>Startup probes fixes this problem, as once the startup probe has succeeded, the rest of the probes takes over</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myboot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myboot
+  template:
+    metadata:
+      labels:
+        app: myboot
+        env: dev
+    spec:
+      containers:
+      - name: myboot
+        image: quay.io/rhdevelopers/myboot:zoombie
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "300Mi"
+            cpu: "250m" # 1/4 core
+          limits:
+            memory: "400Mi"
+            cpu: "1000m" # 1 core
+        livenessProbe:
+          httpGet:
+              port: 8080
+              path: /
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 2
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 3
+        startupProbe:
+          httpGet:
+            path: /alive
+            port: 8080
+          failureThreshold: 12
+          periodSeconds: 5
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The startup probe waits for one minute (<code>5 * 12</code>) to startup the application.</p>
+</div>
+<div class="paragraph">
+<p>The current application returns a <code>503</code> error in <code>/alive</code> endpoint so it will never succeed to boot up and <code>restartPolicy</code> is applied.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output bash">
+<div class="content">
+<pre class="highlightjs highlight"><code>NAME                      READY   STATUS    RESTARTS   AGE
+myboot-579cc5cc47-2bk5p   0/1     Running   0          67s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait for 60 seconds until you see that the pod is restarted.</p>
+</div>
+<div class="paragraph">
+<p>And you will see it restarted:</p>
+</div>
+<div class="listingblock console-output bash">
+<div class="content">
+<pre class="highlightjs highlight"><code>NAME                      READY   STATUS    RESTARTS   AGE
+myboot-579cc5cc47-2bk5p   0/1     Running   1          3m7s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To make the pod succeed, <code>exec</code> into it and reborn it:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it myboot-579cc5cc47-2bk5p /bin/bash</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/reborn</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And finally it is started:</p>
+</div>
+<div class="listingblock console-output bash">
+<div class="content">
+<pre class="highlightjs highlight"><code>NAME                      READY   STATUS    RESTARTS   AGE
+myboot-579cc5cc47-2bk5p   1/1     Running   1          3m41s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Describe the pod to get the statistics of probes:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe pod myboot-579cc5cc47-2bk5p</code></pre>
+</div>
+</div>
+<div class="listingblock console-output yaml">
+<div class="content">
+<pre class="highlightjs highlight"><code>Limits:
+  cpu:     1
+  memory:  400Mi
+Requests:
+  cpu:        250m
+  memory:     300Mi
+Liveness:     http-get http://:8080/ delay=10s timeout=2s period=5s #success=1 #failure=3
+Readiness:    http-get http://:8080/health delay=10s timeout=1s period=3s #success=1 #failure=3
+Startup:      http-get http://:8080/alive delay=0s timeout=1s period=5s #success=1 #failure=12
+Environment:  &lt;none&gt;
+Mounts:</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_clean_up_2"><a class="anchor" href="#_clean_up_2"></a>Clean Up</h2>
+<div class="sectionbody">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete deplpoyment myboot</code></pre>
 </div>
 </div>
 </div>

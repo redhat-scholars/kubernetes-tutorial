@@ -108,7 +108,7 @@
     <a class="nav-link" href="rolling-updates.html">Rolling updates</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="live-ready.html">Liveness &amp; Readiness</a>
+    <a class="nav-link" href="live-ready.html">Liveness, Readiness &amp; Startup</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="configmap.html">ConfigMap</a>
@@ -208,16 +208,16 @@ Please have them installed and configured before you get started with any of the
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://www.virtualbox.org/wiki/Linux_Downloads">Download</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/tasks/tools/install-minikube">Minikube</a> v1.11.0</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/kubernetes/minikube/releases/download/v1.11.0/minikube-darwin-amd64">Download</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/kubernetes/minikube/releases/download/v1.11.0/minikube-windows-amd64.exe">Download</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/kubernetes/minikube/releases/download/v1.11.0/minikube-linux-amd64">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/tasks/tools/install-minikube">Minikube</a> v1.12.1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/kubernetes/minikube/releases/download/v1.12.1/minikube-darwin-amd64">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/kubernetes/minikube/releases/download/v1.12.1/minikube-windows-amd64.exe">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/kubernetes/minikube/releases/download/v1.12.1/minikube-linux-amd64">Download</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>kubectl v1.17.4</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl">Download</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/linux/amd64/kubectl">Download</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/windows/amd64/kubectl.exe">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>kubectl v1.18.6</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/darwin/amd64/kubectl">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/windows/amd64/kubectl.exe">Download</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/wercker/stern">stern</a></p></td>
@@ -330,7 +330,7 @@ Although they are used in the tutorial, you could use others without any problem
 <div class="ulist">
 <ul>
 <li>
-<p>Minikube <code>v1.11.0</code></p>
+<p>Minikube <code>v1.12.1</code></p>
 </li>
 <li>
 <p>OpenShift <code>4.3</code></p>
@@ -366,7 +366,7 @@ Although they are used in the tutorial, you could use others without any problem
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.11.0/minikube-darwin-amd64" class="bare">https://storage.googleapis.com/minikube/releases/v1.11.0/minikube-darwin-amd64</a></code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.12.1/minikube-darwin-amd64" class="bare">https://storage.googleapis.com/minikube/releases/v1.12.1/minikube-darwin-amd64</a></code></pre>
 </div>
 </div>
 <div class="listingblock console-input">
@@ -376,7 +376,7 @@ Although they are used in the tutorial, you could use others without any problem
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/darwin/amd64/kubectl</a></code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/darwin/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/darwin/amd64/kubectl</a></code></pre>
 </div>
 </div>
 <div class="listingblock console-input">
@@ -398,7 +398,7 @@ Although they are used in the tutorial, you could use others without any problem
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.11.0/minikube-linux-amd64" class="bare">https://storage.googleapis.com/minikube/releases/v1.11.0/minikube-linux-amd64</a></code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.12.1/minikube-linux-amd64" class="bare">https://storage.googleapis.com/minikube/releases/v1.12.1/minikube-linux-amd64</a></code></pre>
 </div>
 </div>
 <div class="listingblock console-input">
@@ -408,7 +408,7 @@ Although they are used in the tutorial, you could use others without any problem
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/linux/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/linux/amd64/kubectl</a></code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl</a></code></pre>
 </div>
 </div>
 <div class="listingblock console-input">
@@ -430,12 +430,12 @@ Although they are used in the tutorial, you could use others without any problem
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.11.0/minikube-windows-amd64.exe" class="bare">https://storage.googleapis.com/minikube/releases/v1.11.0/minikube-windows-amd64.exe</a></code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -Lo minikube <a href="https://storage.googleapis.com/minikube/releases/v1.12.1/minikube-windows-amd64.exe" class="bare">https://storage.googleapis.com/minikube/releases/v1.12.1/minikube-windows-amd64.exe</a></code></pre>
 </div>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/windows/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.17.4/bin/windows/amd64/kubectl</a></code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -LO <a href="https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/windows/amd64/kubectl" class="bare">https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/windows/amd64/kubectl</a></code></pre>
 </div>
 </div>
 <div class="listingblock console-input">
@@ -510,7 +510,7 @@ set KUBE_EDITOR="code -w"</code></pre>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube start --memory=8192 --cpus=3 --kubernetes-version=v1.17.4 --vm-driver=virtualbox -p devnation</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube start --memory=8192 --cpus=3 --kubernetes-version=v1.18.6 --vm-driver=virtualbox -p devnation</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -521,10 +521,10 @@ set KUBE_EDITOR="code -w"</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">❌  profile "devnation" not found
 ✅  Created a new profile : devnation
 ✅  minikube profile was successfully set to devnation
-😄  [default] minikube v1.11.0 on Darwin 10.15.2
+😄  [default] minikube v1.12.1 on Darwin 10.15.2
 ✨  Selecting 'virtualbox' driver from user configuration (alternates: [hyperkit])
 🔥  Creating virtualbox VM (CPUs=2, Memory=8192MB, Disk=50000MB) ...
-🐳  Preparing Kubernetes v1.17.4 on Docker '19.03.5' ...
+🐳  Preparing Kubernetes v1.18.6 on Docker '19.03.5' ...
     ▪ apiserver.enable-admission-plugins=LimitRanger,NamespaceExists,NamespaceLifecycle,ResourceQuota,ServiceAccount,DefaultStorageClass,MutatingAdmissionWebhook
 🚜  Pulling images ...
 🚀  Launching Kubernetes ...
@@ -565,7 +565,7 @@ Once you have your cluster, you can download the latest OpenShift client(oc) fro
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Client Version: openshift-clients-4.3.0-201910250623-88-g6a937dfe
-Kubernetes Version: v1.17.4</code></pre>
+Kubernetes Version: v1.18.6</code></pre>
 </div>
 </div>
 <div class="paragraph">
