@@ -111,6 +111,13 @@ public class MyRESTController {
         // https://www.quora.com/Why-can-zombies-only-die-by-being-shot-in-the-head-Why-can-they-survive-all-the-blood-loss-and-still-live-If-zombies-were-real-anyway
    }
 
+   @RequestMapping(method = RequestMethod.GET, value = "/reborn")   
+   public ResponseEntity<String> reborn() {
+        dead = false;
+        return ResponseEntity.status(HttpStatus.OK).body("I have been reborn");
+        // https://www.quora.com/Why-can-zombies-only-die-by-being-shot-in-the-head-Why-can-they-survive-all-the-blood-loss-and-still-live-If-zombies-were-real-anyway
+   }
+
    @RequestMapping(method = RequestMethod.GET, value = "/alive")   
    public ResponseEntity<String> alive() {
     if (!dead) {

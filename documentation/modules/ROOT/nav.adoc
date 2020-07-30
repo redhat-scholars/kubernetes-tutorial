@@ -16,7 +16,7 @@
 ** xref:building-images.adoc[Building Images]
 ** xref:resources.adoc[Resources and Limits]
 ** xref:rolling-updates.adoc[Rolling updates]
-** xref:live-ready.adoc[Liveness & Readiness]
+** xref:live-ready.adoc[Liveness, Readiness & Startup]
 ** xref:configmap.adoc[ConfigMap]
 
 * 4. Intermediate

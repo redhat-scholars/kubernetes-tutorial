@@ -73,7 +73,6 @@ spec:
 EOF
 ----
 
-
 Describe the deployment:
 
 :describe-deployment-name: myboot
@@ -368,4 +367,149 @@ Jambo from Spring Boot! 176 on myboot-558b4f8678-z7f9n
 ----
 kubectl delete deployment myboot
 kubectl delete service myboot
+----
+
+== Startup Probe
+
+Some applications require an additional startup time on their first initialization.
+
+It might be tricky to fit this scenario into liveness/readiness probe as you need to configure them for their normal behaviour to detect abnormalities during the running time and moreover covering the long start up time.
+
+Startup probes fixes this problem, as once the startup probe has succeeded, the rest of the probes takes over 
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myboot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myboot
+  template:
+    metadata:
+      labels:
+        app: myboot
+        env: dev
+    spec:
+      containers:
+      - name: myboot
+        image: quay.io/rhdevelopers/myboot:zoombie
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "300Mi"
+            cpu: "250m" # 1/4 core
+          limits:
+            memory: "400Mi"
+            cpu: "1000m" # 1 core
+        livenessProbe:
+          httpGet:
+              port: 8080
+              path: /
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 2
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 3
+        startupProbe:
+          httpGet:
+            path: /alive
+            port: 8080
+          failureThreshold: 12
+          periodSeconds: 5        
+EOF
+----
+
+The startup probe waits for one minute (`5 * 12`) to startup the application.
+
+The current application returns a `503` error in `/alive` endpoint so it will never succeed to boot up and `restartPolicy` is applied.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+watch kubectl get pods
+----
+
+[.console-output]
+[source.bash]
+----
+NAME                      READY   STATUS    RESTARTS   AGE
+myboot-579cc5cc47-2bk5p   0/1     Running   0          67s
+----
+
+Wait for 60 seconds until you see that the pod is restarted.
+
+And you will see it restarted:
+
+[.console-output]
+[source.bash]
+----
+NAME                      READY   STATUS    RESTARTS   AGE
+myboot-579cc5cc47-2bk5p   0/1     Running   1          3m7s
+----
+
+To make the pod succeed, `exec` into it and reborn it:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl exec -it myboot-579cc5cc47-2bk5p /bin/bash
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+curl localhost:8080/reborn
+----
+
+And finally it is started:
+
+[.console-output]
+[source.bash]
+----
+NAME                      READY   STATUS    RESTARTS   AGE
+myboot-579cc5cc47-2bk5p   1/1     Running   1          3m41s
+----
+
+Describe the pod to get the statistics of probes:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl describe pod myboot-579cc5cc47-2bk5p
+----
+
+[.console-output]
+[source.yaml]
+----
+Limits:
+  cpu:     1
+  memory:  400Mi
+Requests:
+  cpu:        250m
+  memory:     300Mi
+Liveness:     http-get http://:8080/ delay=10s timeout=2s period=5s #success=1 #failure=3
+Readiness:    http-get http://:8080/health delay=10s timeout=1s period=3s #success=1 #failure=3
+Startup:      http-get http://:8080/alive delay=0s timeout=1s period=5s #success=1 #failure=12
+Environment:  <none>
+Mounts:
+----
+
+== Clean Up
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl delete deplpoyment myboot
 ----

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myboot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myboot
+  template:
+    metadata:
+      labels:
+        app: myboot
+        env: dev
+    spec:
+      containers:
+      - name: myboot
+        image: quay.io/rhdevelopers/myboot:zoombie
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "300Mi"
+            cpu: "250m" # 1/4 core
+          limits:
+            memory: "400Mi"
+            cpu: "1000m" # 1 core
+        livenessProbe:
+          httpGet:
+              port: 8080
+              path: /
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 2
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 3
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          failureThreshold: 12
+          periodSeconds: 5
