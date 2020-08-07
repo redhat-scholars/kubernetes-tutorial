@@ -1,0 +1,264 @@
+= Ingress
+
+Make sure you are in the correct namespace.
+
+== Enable Ingress Controller
+
+In case of using `minikube` you need to enable NGNIX Ingress controller.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+minikube addons enable ingress -p devnation
+----
+
+Wait a minute or so and verify that it has been deployed correctly:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get pods -n kube-system
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+ingress-nginx-admission-create-lqfh2        0/1     Completed   0          6m28s
+ingress-nginx-admission-patch-z2lzj         0/1     Completed   2          6m28s
+ingress-nginx-controller-69ccf5d9d8-95xgp   1/1     Running     0          6m28s
+----
+
+== Deploy Application
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quarkus-demo-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quarkus-demo
+  template:
+    metadata:
+      labels:
+        app: quarkus-demo
+        env: dev
+    spec:
+      containers:
+      - name: quarkus-demo
+        image: quay.io/rhdevelopers/quarkus-demo:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+EOF
+----
+
+Expose the service:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl expose deployment quarkus-demo-deployment --type=NodePort --port=8080
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get service quarkus-demo-deployment
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                      TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+quarkus-demo-deployment   NodePort   10.105.106.66   <none>        8080:30408/TCP   11s
+----
+
+:section-k8s: ingress
+:service-exposed: quarkus-demo-deployment
+include::partial$env-curl.adoc[]
+
+== Configuring Ingress
+
+An Ingress resource is defined as:
+
+[source, yaml]
+----
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: example-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  - host: kube-devnation.info
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: quarkus-demo-deployment
+          servicePort: 8080
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/demo-ingress.yaml
+----
+
+Get the information from the Ingress resource:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get ingress
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME              CLASS    HOSTS                 ADDRESS          PORTS   AGE
+example-ingress   <none>   kube-devnation.info   192.168.99.115   80      68s
+----
+
+You need to wait until address field is set.
+It might take some minutes.
+
+Modify the `/etc/hosts` to point the hostname to the Ingress address.
+
+IMPORTANT: If you are using minikube, use the `minikube ip -p kube` as address because the Ingress IP is an internal IP.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+./etc/hosts
+----
+172.17.0.15 kube-devnation.info
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+curl kube-devnation.info
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-8cf45f5c8-qmzwl:1
+----
+
+== Second Deployment
+
+Deploy a second version of the service:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mynode-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mynode
+  template:
+    metadata:
+      labels:
+        app: mynode
+    spec:
+      containers:
+      - name: mynode
+        image: quay.io/rhdevelopers/mynode:v1
+        ports:
+        - containerPort: 8000
+EOF
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl expose deployment mynode-deployment --type=NodePort --port=8000
+----
+
+== Ingress Update
+
+Then you need to update the Ingress resource with the new `path`:
+
+[source, yaml]
+----
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: example-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  - host: kube-devnation.info
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: quarkus-demo-deployment
+          servicePort: 8080
+      - path: /v2
+        backend:
+          serviceName: mynode-deployment
+          servicePort: 8000
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/demo-ingress-2.yaml
+----
+
+Test it:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+curl kube-devnation.info
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-8cf45f5c8-qmzwl:2
+----
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+curl kube-devnation.info/v2
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Node Bonjour on mynode-deployment-77c7bf857d-5nfl4 0
+----
+
+
+== Clean Up
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl delete deployment mynode-deployment
+kubectl delete service mynode-deployment
+
+kubectl delete deployment quarkus-demo-deployment
+kubectl delete service quarkus-demo-deployment
+
+kubectl delete -f apps/kubefiles/demo-ingress-2.yaml
+----

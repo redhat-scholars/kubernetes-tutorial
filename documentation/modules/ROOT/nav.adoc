@@ -27,3 +27,6 @@
 ** xref::jobs-cronjobs.adoc[Jobs & CronJobs]
 ** xref::daemonset.adoc[DaemonSet]
 ** xref::statefulset.adoc[StatefulSet]
+
+* 5. Advanced
+** xref:ingress.adoc[Ingress]

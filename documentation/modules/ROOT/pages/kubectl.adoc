@@ -191,6 +191,7 @@ done
 ----
 
 Results of the polling:
+
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
