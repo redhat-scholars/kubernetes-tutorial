@@ -5,7 +5,7 @@ image:https://github.com/redhat-developer-demos/kubernetes-tutorial/workflows/he
 image:https://github.com/redhat-developer-demos/kubernetes-tutorial/workflows/helloworld-spring-boot/badge.svg[]
 image:https://github.com/redhat-developer-demos/kubernetes-tutorial/workflows/helloworld-quarkus/badge.svg[]
 
-You can access the HTML version of this tutorial here: https://redhat-developer-demos.github.io/kubernetes-tutorial/
+You can access the HTML version of this tutorial here: https://redhat-scholars.github.io/kubernetes-tutorial/
 
 ## Building the HTML locally
 
