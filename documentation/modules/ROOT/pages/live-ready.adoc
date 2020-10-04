@@ -511,5 +511,5 @@ Mounts:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl delete deplpoyment myboot
+kubectl delete deployment myboot
 ----
