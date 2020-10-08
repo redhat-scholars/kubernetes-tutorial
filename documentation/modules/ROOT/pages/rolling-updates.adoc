@@ -265,7 +265,7 @@ Try using the Quarkus image instead of the Spring Boot one
 [.console-input]
 [source, bash]
 ----
-kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/quarkus-demo:1.0.0
+kubectl set image deployment/myboot myboot=quay.io/rhdevelopers/quarkus-demo:v1
 ----
 
 And there should be no errors, Quarkus simply boots up crazy fast
