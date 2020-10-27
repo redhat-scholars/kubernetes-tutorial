@@ -232,7 +232,7 @@ In this case, you are defining the host/node directory where the contents are go
 [.console-input]
 [source,bash]
 ----
-kubectl apply -f myboot-pod-volume-hostpath.yaml
+kubectl apply -f apps/kubefiles/myboot-pod-volume-hostpath.yaml
 ----
 
 Now, if you describe the Pod, in volumes section, you'll see:

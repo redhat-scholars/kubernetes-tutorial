@@ -29,4 +29,4 @@
 ** xref::statefulset.adoc[StatefulSet]
 
 * 5. Advanced
-** xref:ingress.adoc[Ingress]
+** xref:ingress.adoc[Ingress]-
