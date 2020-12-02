@@ -138,7 +138,7 @@ Finally, if we scale down to two instances, the one that is destroyed is not ran
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl scale statefulset quarkus-statefulset --replicas=3
+kubectl scale statefulset quarkus-statefulset --replicas=2
 
 kubectl get pods
 ----
