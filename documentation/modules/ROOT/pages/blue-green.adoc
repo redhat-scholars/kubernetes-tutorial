@@ -30,7 +30,7 @@ Deploy V1 of `myboot`:
 [.console-input]
 [source, bash]
 ----
-kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
+kubectl apply -f https://raw.githubusercontent.com/redhat-scholars/kubernetes-tutorial/master/apps/kubefiles/myboot-deployment-resources-limits.yml
 ----
 
 Scale to 2 replicas:
@@ -57,7 +57,7 @@ Deploy the service:
 [.console-input]
 [source, bash]
 ----
-kubectl apply -f apps/kubefiles/myboot-service.yml
+kubectl apply -f https://raw.githubusercontent.com/redhat-scholars/kubernetes-tutorial/master/apps/kubefiles/myboot-service.yml
 ----
 
 :section-k8s: bluegreen
@@ -74,7 +74,7 @@ Deploy V2 of `myboot`:
 [.console-input]
 [source, bash]
 ----
-kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits-v2.yml
+kubectl apply -f https://raw.githubusercontent.com/redhat-scholars/kubernetes-tutorial/master/apps/kubefiles/myboot-deployment-resources-limits-v2.yml
 ----
 
 Verify that the new pod/deployment carries the new code:
