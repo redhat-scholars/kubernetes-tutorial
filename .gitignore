@@ -21,3 +21,6 @@ node_modules
 .firebaserc
 .firebase
 .vscode/
+
+# local kubernetes cluster info
+local-config/
