@@ -2,6 +2,7 @@
 	"name": "Java Operator SDK Tutorial",
 	"dockerFile": "Dockerfile",
 	"runArgs": [
+		"-v", "/var/run/docker.sock.raw:/var/run/docker.sock",
 		"-v", "${env:HOME}/.kube:/home/jboss/.kube",
 		"-v", "${env:HOME}/.vs-kubernetes:/home/jboss/.vs-kubernetes",
 
