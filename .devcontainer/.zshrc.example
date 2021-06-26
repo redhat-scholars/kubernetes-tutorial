@@ -100,3 +100,4 @@ source $ZSH/oh-my-zsh.sh
 #
 
 source $DEMO_HOME/scripts/shell-setup.sh
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
