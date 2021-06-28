@@ -8,12 +8,16 @@ site:
 
 content:
   sources:
-    - url: ./
+    - url: .
+      branches: HEAD
       start_path: documentation
       
 asciidoc:
   attributes:
     release-version: master
+    myrepo: mhildenb
+    docker-host: docker.for.mac.localhost
+    experimental: true
   extensions:
     - ./lib/tab-block.js
     - ./lib/remote-include-processor.js
