@@ -10,10 +10,12 @@ declare KEYFILE_PATH=${2:-${HOME}/.ssh/emu-fedora}
 # user on the minikube host
 declare USER=${3:-mwh}
 
+declare MINIKUBE_CTX_NAME=${4:-minikube}
+
 # as the remote server, assume we want the kubeconfig at the exported KUBECONFIG location
 declare REMOTE_KUBECONFIG_PATH=${KUBECONFIG}
 declare CERTS_DIR="$DEMO_HOME/$CONFIG_SUBDIR/certs"
-declare MINIKUBE_CTX_NAME="minikube"
+
 
 if [[ -f $REMOTE_KUBECONFIG_PATH ]]; then
     echo "Removing old config file at ${REMOTE_KUBECONFIG_PATH}"
