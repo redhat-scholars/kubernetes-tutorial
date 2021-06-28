@@ -37,6 +37,8 @@ RUN ( set -x; cd "$(mktemp -d)" && \
 # Subdirectory where local-config files should reside (matched to gitignore to ensure no secrets are checked in)
 ENV CONFIG_SUBDIR "local-config"
 ENV DEMO_HOME "/workspaces/kubernetes-tutorial/"
+# Use VSCode with kubectl edit commands
+ENV KUBE_EDITOR="code -w"
 
 # this is done in the base image already (to support the demo shell images too), but for those that make
 # local changes to .zshrc they should not have to rebuild the base
