@@ -10,6 +10,8 @@ RUN dnf -y install yum && yum install -y yum-utils && \
     yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo && \
 # install docker client
     yum install -y docker-ce-cli && \
+# make sure jboss user has rights to run docker
+    usermod -aG docker jboss && \
 # cleanup packages and yum
     yum remove -y yum-utils && yum clean all && dnf clean all
 
