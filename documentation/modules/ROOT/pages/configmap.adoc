@@ -81,9 +81,9 @@ love=Default
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl set env deployment/myboot GREETING="namaste"
-kubectl set env deployment/myboot LOVE="Aloha"
-kubectl set env deployment/myboot DBCONN="jdbc:sqlserver://45.91.12.123:1443;user=MyUserName;password=*****;"
+kubectl set env deployment/myboot GREETING="namaste" \
+  LOVE="Aloha" \
+  DBCONN="jdbc:sqlserver://45.91.12.123:1443;user=MyUserName;password=*****;"
 ----
 
 Watch the pods being reborn:
@@ -144,9 +144,9 @@ Remove environment variables:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl set env deployment/myboot GREETING-
-kubectl set env deployment/myboot LOVE-
-kubectl set env deployment/myboot DBCONN-
+kubectl set env deployment/myboot GREETING- \
+  LOVE- \
+  DBCONN-
 ----
 
 And verify that they have been removed:
@@ -226,6 +226,17 @@ Amour
 Events:  <none>
 ----
 
+[NOTE]
+====
+If it's easier to show, you can also use the VSCode editor to show what's in the config map by running (assuming you already have your `KUBE_EDITOR` environment variable set)
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl edit cm my-config
+----
+====
+
 Now deploy the app with its request for the `ConfigMap`:
 
 [#deploy-myboot-configmap-configmaps]
@@ -262,7 +273,7 @@ And switch to the other properties file by recreating the `ConfigMap`:
 ----
 kubectl delete cm my-config
 kubectl create cm my-config --from-env-file=apps/config/other.properties
-kubectl delete pod -l app=myboot
+kubectl delete pod -l app=myboot --wait=false
 ----
 
 [#get-config5-configmaps]

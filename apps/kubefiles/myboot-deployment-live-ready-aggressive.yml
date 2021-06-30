@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: myboot
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: myboot
@@ -29,13 +29,12 @@ spec:
         livenessProbe:
           httpGet:
               port: 8080
-              path: /
-          initialDelaySeconds: 10
-          periodSeconds: 5
+              path: /alive
+          periodSeconds: 2
           timeoutSeconds: 2
+          failureThreshold: 2
         readinessProbe:
           httpGet:
             path: /health
             port: 8080
-          initialDelaySeconds: 10
           periodSeconds: 3

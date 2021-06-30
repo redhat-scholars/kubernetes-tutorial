@@ -6,6 +6,10 @@ Make sure you are in the correct namespace
 :set-namespace: myspace
 include::partial$set-context.adoc[]
 
+.TIP
+****
+If you just came from xref::resources.adoc[the Resources and Limits section, window=_blank] then you should already have the pods and deployments active that you need.  If not, you will need run the following commands to deploy the needed elements into {set-namespace}
+
 Deploy the Spring Boot app if needed:
 
 [#deploy-myboot-rolling]
@@ -16,11 +20,11 @@ kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
 kubectl apply -f apps/kubefiles/myboot-service.yml
 ----
 
-Terminal 1: watch the Pods.
+*Terminal 1*: watch the Pods.
 
 include::partial$watching-pods.adoc[]
 
-Terminal 2: curl loop the service.
+*Terminal 2*: curl loop the service.
 
 :service-exposed: myboot
 
@@ -30,9 +34,11 @@ And run loop script:
 
 include::partial$loop.adoc[]
 
-Terminal 3: Run commands.
+****
 
-Describe the Deployment:
+*Terminal 3*: Run commands.
+
+Describe (or `kubectl edit`) the Deployment:
 
 :describe-deployment-name: myboot
 :section-k8s: rolling-init

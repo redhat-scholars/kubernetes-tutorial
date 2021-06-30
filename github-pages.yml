@@ -18,6 +18,7 @@ asciidoc:
     myrepo: mhildenb
     docker-host: docker.for.mac.localhost
     experimental: true
+    curl-loop-sleep-time: .8
   extensions:
     - ./lib/tab-block.js
     - ./lib/remote-include-processor.js

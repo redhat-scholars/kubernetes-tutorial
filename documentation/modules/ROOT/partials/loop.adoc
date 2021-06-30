@@ -4,6 +4,6 @@
 ----
 while true
 do curl $IP:$PORT
-sleep .3
+sleep {curl-loop-sleep-time}
 done
 ----
