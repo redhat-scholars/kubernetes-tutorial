@@ -91,6 +91,7 @@ pizzas                            pz           mykubernetes.acme.org          tr
 
 === Deploying the Operator
 
+[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/pizzas/pizza-deployment.yaml
@@ -106,6 +107,23 @@ quarkus-operator-example-5f5bf777bc-glfg9   1/1     Running   0          58s
 ----
 
 === Make some Pizzas
+
+Our operator will be on the lookout for information in our `Pizza` Custom Resources and use it to (pretend) make some pizzas by spinning up a pod configurated with information from the Custom Resource instance.
+
+For example, consider this instance of the Pizza `CustomResourceDefinition`:
+
+[.console-output]
+[source,yaml,subs="+macros,+attributes"]
+----
+include::example$cheese-pizza.yaml[]
+----
+
+Pay special attention to:
+
+* *Sauce*: `regular`
+* *Toppings*: `mozzarella`
+
+Now let's create this `CustomResource`:
 
 [#create-pizzas-crds]
 [.console-input]
@@ -141,6 +159,8 @@ Kind:         Pizza
 ...
 ----
 
+And now let's see how the Operator responds...
+
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -155,7 +175,7 @@ cheesep-pod                                 0/1     Completed   0          3s
 quarkus-operator-example-5f5bf777bc-glfg9   1/1     Running     0          44m
 ----
 
-And check the logs of the cheese Pod:
+...by checking the logs of the cheese Pod:
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
@@ -164,31 +184,52 @@ kubectl logs cheesep-pod
 ----
 
 [.console-output]
-[source,bash]
+[source,bash,subs="+macros,+quotes"]
 ----
-__  ____  __  _____   ___  __ ____  ______
- --/ __ \/ / / / _ | / _ \/ //_/ / / / __/
- -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \
---\___\_\____/_/ |_/_/|_/_/|_|\____/___/
+pass:[__  ____  __  _____   ___  __ ____  ______]
+pass:[ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/]
+pass:[ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \ ]
+pass:[--\___\_\____/_/ |_/_/|_/_/|_|\____/___/]
 2020-07-01 09:03:11,537 INFO  [io.quarkus] (main) pizza-maker 1.0-SNAPSHOT (powered by Quarkus 1.4.0.CR1) started in 0.006s.
 2020-07-01 09:03:11,537 INFO  [io.quarkus] (main) Profile prod activated.
 2020-07-01 09:03:11,537 INFO  [io.quarkus] (main) Installed features: [cdi]
 Doing The Base
-Adding Sauce regular
-Adding Toppings [mozzarella]
+Adding Sauce #regular#
+Adding Toppings #[mozzarella]#
 Baking
 Baked
 Ready For Delivery
 2020-07-01 09:03:12,038 INFO  [io.quarkus] (main) pizza-maker stopped in 0.000s
 ----
 
+Notice that *Sauce* and *Toppings* matches what was specified in the `pizza` CustomResource
+
 === Make more Pizzas
+
+Use kbd:[CMD+p] (on Mac OSX) to quickly open both `meat-pizza.yaml` and `veggie-lovers.yaml` to show the sauce and toppings options there
+
+.Meat Pizza Example
+[.console-output]
+[source,yaml,subs="+macros,+attributes"]
+----
+include::example$meat-pizza.yaml[]
+----
+
+Just prior to the next command, in a separate visible terminal, run `stern` to capture log output
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+stern p-pod
+----
+
+Now make the pizzas
 
 [#create-more-pizzas-crds]
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl apply -f apps/pizzas/meat-lovers.yaml
+kubectl apply -f apps/pizzas/meat-pizza.yaml
 kubectl apply -f apps/pizzas/veggie-lovers.yaml
 kubectl get pizzas --all-namespaces
 ----
