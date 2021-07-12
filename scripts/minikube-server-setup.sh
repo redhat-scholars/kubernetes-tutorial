@@ -1,13 +1,12 @@
+set -euo pipefail
+
 declare MINIKUBE_PROFILE=${1:-devnation}
 declare MINIKUBE_IP=${2:-$(hostname -I | awk '{print $1}')}
 declare MINIKUBE_MEM=${3:-4096}
 declare MINIKUBE_CPU=${4:-2}
+declare DRIVER=${5:-kvm2}  # for MacOS you might want to use hyperkit or virtualbox
 
-#minikube start --memory=${MINIKUBE_MEM} --cpus=${MINIKUBE_CPU} --driver=kvm2 -p ${MINIKUBE_PROFILE} --apiserver-ips=${MINIKUBE_IP}
-
-#MacOS
-minikube start --memory=${MINIKUBE_MEM} --cpus=${MINIKUBE_CPU} --driver=virtualbox -p ${MINIKUBE_PROFILE} --apiserver-ips=${MINIKUBE_IP}
-
+minikube start --memory=${MINIKUBE_MEM} --cpus=${MINIKUBE_CPU} --driver=${DRIVER} -p ${MINIKUBE_PROFILE} --apiserver-ips=${MINIKUBE_IP}
 
 minikube config set profile ${MINIKUBE_PROFILE}
 
