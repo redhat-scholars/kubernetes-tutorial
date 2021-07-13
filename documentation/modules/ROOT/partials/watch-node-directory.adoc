@@ -1,0 +1,34 @@
+.Remote Minikube
+****
+If you are running minikube remotely you will need to first SSH to the machine that is running minikube.  For example
+
+[.console-input]
+[source,bash]
+----
+IP=$(kubectl cluster-info | grep "Kubernetes " | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g' | sed -r 's#^.*https://([^:]+):[[:digit:]]+$#\1#')
+ssh -i ~/.ssh/fedora-mbp mwh@${IP}   
+----
+****
+
+Let's use the `minikube ssh` command to simulate a connection to the kubernetes node.  (There is only one node running in minikube)
+
+[.console-input]
+[source,bash]
+----
+minikube ssh
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Last login: Tue Jul 13 08:26:18 2021 from 192.168.49.1
+docker@devnation:~$
+----
+
+Now that we're there, let's watch the `{mount-dir}` directory that the pod has mounted as `/tmp/demo`
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+watch -n1 -- eval "ls -al {mount-dir} && echo $(cat {mount-dir}/greeting.txt)"
+----

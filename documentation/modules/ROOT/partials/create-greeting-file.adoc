@@ -1,0 +1,29 @@
+[.console-input]
+[source,bash]
+----
+kubectl exec -ti myboot-demo /bin/bash
+----
+
+and then from within the pod, generate some content to `/tmp/demo` directory.
+
+[.console-input]
+[source,bash]
+----
+curl localhost:8080/appendgreetingfile
+----
+
+And then show the file exists and its content: 
+
+[.console-input]
+[source,bash]
+----
+ls -l /tmp/demo && echo $(cat /tmp/demo/greeting.txt) 
+----
+
+[.console-output]
+[source,bash]
+----
+total 4
+-rw-r--r--. 1 root root 5 Jul 13 08:11 greeting.txt
+Jambo
+----
