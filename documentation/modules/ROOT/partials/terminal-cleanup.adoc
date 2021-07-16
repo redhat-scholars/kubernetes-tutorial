@@ -1,0 +1,34 @@
+[tabs]
+====
+Terminal 2::
++
+--
+[.console-input]
+[source,bash]
+----
+exit
+----
+
+This should close out the terminal
+--
+Terminal 1::
++
+--
+Exit the `exec` command
+
+[.console-input]
+[source,bash]
+----
+exit
+----
+
+Now delete the deployment
+
+[.console-input]
+[source,bash]
+----
+kubectl delete -f apps/kubefiles/myboot-pods-volume.yml
+----
+
+--
+====

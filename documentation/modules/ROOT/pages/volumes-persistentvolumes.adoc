@@ -288,40 +288,7 @@ Volumes:
 
 ==== Clean Up
 
-[tabs]
-====
-Terminal 2::
-+
---
-[.console-input]
-[source,bash]
-----
-exit
-----
-
-This should close out the terminal
---
-Terminal 1::
-+
---
-Exit the `exec` command
-
-[.console-input]
-[source,bash]
-----
-exit
-----
-
-Now delete the deployment
-
-[.console-input]
-[source,bash]
-----
-kubectl delete -f apps/kubefiles/myboot-pods-volume.yml
-----
-
---
-====
+include::partial$terminal-cleanup.adoc[]
 
 === HostPath
 
@@ -374,41 +341,10 @@ Terminal 2::
 +
 --
 
-.Remote Minikube
-****
-If you are running minikube remotely you will need to first SSH to the machine that is running minikube.  For example
+:mount-dir: /mnt/data
+include::partial$watch-node-directory.adoc[]
 
-[.console-input]
-[source,bash]
-----
-IP=$(kubectl cluster-info | grep "Kubernetes " | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g' | sed -r 's#^.*https://([^:]+):[[:digit:]]+$#\1#')
-ssh -i ~/.ssh/fedora-mbp mwh@${IP}   
-----
-****
-
-Let's use the `minikube ssh` command to simulate a connection to the kubernetes node.  (There is only one node running in minikube)
-
-[.console-input]
-[source,bash]
-----
-minikube ssh
-----
-
-[.console-output]
-[source,bash,subs="+macros,+attributes"]
-----
-Last login: Tue Jul 13 08:26:18 2021 from 192.168.49.1
-docker@devnation:~$
-----
-
-Now that we're there, let's watch the `/mnt/data` directory that the pod has mounted as `/tmp/demo`
-
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-watch -n1 -- eval "ls -al /mnt/data && echo $(cat /mnt/data/greeting.txt)"
-----
-
+--
 ====
 
 [tabs]
@@ -416,35 +352,9 @@ watch -n1 -- eval "ls -al /mnt/data && echo $(cat /mnt/data/greeting.txt)"
 Terminal 1::
 +
 --
-[.console-input]
-[source,bash]
-----
-kubectl exec -ti myboot-demo /bin/bash
-----
 
-and generate some content to `/tmp/demo` directory.
+include::partial$create-greeting-file.adoc[]
 
-[.console-input]
-[source,bash]
-----
-curl localhost:8080/appendgreetingfile
-----
-
-And then show the file exists and its content: 
-
-[.console-input]
-[source,bash]
-----
-ls -l /tmp/demo && echo $(cat /tmp/demo/greeting.txt) 
-----
-
-[.console-output]
-[source,bash]
-----
-total 4
--rw-r--r--. 1 root root 5 Jul 13 08:11 greeting.txt
-Jambo
-----
 --
 ====
 
@@ -668,6 +578,32 @@ Volumes:
 
 Notice that now the description of the pod shows that the volume is not set directly but through a persistence volume claim.
 
+Let's watch the path on the node that the _PV_ maps to
+
+[tabs]
+====
+Terminal 2::
++
+--
+:mount-dir: /mnt/persistent-volume
+include::partial$watch-node-directory.adoc[]
+--
+
+====
+
+While the watch is going in Terminal 2 run the following commands in Terminal 1
+
+[tabs]
+====
+Terminal 1::
++
+--
+
+include::partial$create-greeting-file.adoc[]
+
+--
+====
+
 [.console-input]
 [source,bash]
 ----
@@ -686,6 +622,8 @@ myboot-volumeclaim   Bound    my-persistent-volume   100Mi      RWO            p
 ----
 
 ==== Clean Up
+
+include::partial$terminal-cleanup.adoc[]
 
 [.console-input]
 [source,bash]
@@ -763,6 +701,9 @@ spec:
 
 Since we've not specified any _storage class_ but there is one defined as the default, the _PVC_ implicitly refers to that one.
 
+.Difference between static and dynamic PVC (with static PV)
+image::pv-static-vs-dynamic.png[]
+
 [.console-input]
 [source,bash]
 ----
@@ -771,12 +712,29 @@ kubectl apply -f apps/kubefiles/demo-dynamic-persistent.yaml
 kubectl get pvc
 ----
 
+[tabs]
+====
+Minikube::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myboot-volumeclaim   Bound    pvc-09be221f-7036-4626-b2ee-831fdc0af558   10Mi       RWO            standard       6s
+----
+--
+OpenShift::
++
+--
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
 NAME                 STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 myboot-volumeclaim   Pending                                      gp2            46sç
 ----
+--
+====
 
 Notice that the _PVC_ is in _Pending_ STATUS, because remember that we are creating dynamic storage and it means that until the _pod_ doesn't request the volume, the _PVC_ will remain in pending state and the _PV_ will not be created.
 
@@ -803,12 +761,30 @@ When the pod is in _Running_ status, then you can get _PVC_ and _PV_ parameters.
 kubectl get pvc
 ----
 
+[tabs]
+====
+Minikube::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myboot-volumeclaim   Bound    pvc-170f2e9a-4afc-4869-bd19-f10c86bff34b   10Mi       RWO            standard       5s
+----
+--
+OpenShift::
++
+--
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
 NAME                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 myboot-volumeclaim   Bound    pvc-6de4f27e-bd40-4b58-bb46-91eb08ca5bd7   1Gi        RWO            gp2            116s
 ----
+--
+====
+
 
 Notice that now the volume claim is  _Bound_ to a volume.
 
@@ -820,12 +796,29 @@ Finally, you can check that the _PV_ has been created automatically:
 kubectl get pv
 ----
 
+[tabs]
+====
+Minikube::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                        STORAGECLASS   REASON   AGE
+pvc-170f2e9a-4afc-4869-bd19-f10c86bff34b   10Mi       RWO            Delete           Bound    myspace/myboot-volumeclaim   standard                56s
+----
+--
+OpenShift::
++
+--
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
 NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                        STORAGECLASS   REASON   AGE
 pvc-6de4f27e-bd40-4b58-bb46-91eb08ca5bd7   1Gi        RWO            Delete           Bound    default/myboot-volumeclaim   gp2                     77s
 ----
+--
+====
 
 Notice that the _CLAIM_ field points to the _PVC_ responsible for the creation of the _PV_.
 
