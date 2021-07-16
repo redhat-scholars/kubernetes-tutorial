@@ -609,7 +609,7 @@ kubectl delete -f apps/kubefiles/myboot-node-affinity.yml
 
 === Pod Affinity/Anti-Affinity
 
-Let's deploy a new pod with a Pod Affinity:
+Let's deploy a new pod with a Pod Affinity.  Use kbd:[CMD+p] to quickly open `myboot-pod-affinity.yml`.  Relevant part of that file is:
 
 [source, yaml]
 ----
@@ -629,74 +629,71 @@ spec:
 <1> The node label key. If two nodes are labeled with this key and have identical values, the scheduler treats both nodes as being in the same topology. In this case, `hostname` is a label that is different for each node.
 <2> The affinity is with Pods labeled with `app=myboot`.
 
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-pod-affinity.yml
-
-kubectl get pods
 ----
 
 [.console-output]
 [source,bash]
 ----
-NAME                                                              READY   STATUS    RESTARTS   AGE
-myboot2-784bc58c8d-j2l74                                          0/1     Pending   0          19s
+NAME                      READY  STATUS   AGE    NODE
+myboot2-7c5f46cbc9-hwm2v  0/1    Pending  5h38m  <none>
 ----
+--
+====
 
 The `myboot2` Pod is pending as couldn't find any Pod matching the affinity rule.
-Let's deploy `myboot` application labeled with `app=myboot`.
 
+To address this, let's deploy a  `myboot` application labeled with `app=myboot`.
+
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment.yml
-
-kubectl get pods
 ----
+--
+====
+
+And we'll see that both start up, and run on _the same node_
+
+[tabs]
+====
+Terminal 2::
++
+--
+[.console-output]
+[source,bash,subs="+quotes"]
+----
+NAME                      READY  STATUS             AGE    NODE
+myboot-7cbfbd9b89-267k6   0/1    ContainerCreating  5s     #devnation-m02#
+myboot2-7c5f46cbc9-hwm2v  0/1    ContainerCreating  5h45m  #devnation-m02#
+----
+--
+====
+
+[TIP]
+====
+What you've just seen is a _hard_ rule, you can use a "soft" rules as well in Pod Affinity.
 
 [.console-output]
-[source,bash]
-----
-NAME                                                              READY   STATUS    RESTARTS   AGE
-myboot-7f889dd6d-tr7gr                                            1/1     Running   0          3m27s
-myboot2-64566b697b-snm7p                                          1/1     Running   0          18s
-----
-
-Now both applications are running in the same node:
-
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-kubectl get pod myboot-7f889dd6d-tr7gr -o json | jq '.spec.nodeName'
-----
-
-[.console-output]
-[source,bash]
-----
-"ip-10-0-146-109.eu-central-1.compute.internal"
-----
-
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-kubectl get pod myboot2-64566b697b-snm7p -o json | jq '.spec.nodeName'
-----
-
-[.console-output]
-[source,bash]
-----
-"ip-10-0-146-109.eu-central-1.compute.internal"
-----
-
-What you've seen here is a _hard_ rule, you can use a "soft" rules as well in Pod Affinity.
-
-[source, yaml]
+[source, yaml, subs="+quotes"]
 ----
 spec:
   affinity:
     podAntiAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
+      #preferredDuringSchedulingIgnoredDuringExecution:#
       - weight: 1
         podAffinityTerm:
           topologyKey: kubernetes.io/hostname 
@@ -707,9 +704,13 @@ spec:
               values:
               - myboot   
 ----
+====
 
-Anti-affinity is used to insure that two Pods do NOT run together on the same node.
+*Anti-affinity* is used to insure that two Pods do NOT run together on the same node.
 
+Let's add another pod.  Use kbd:[CMD+p] to quickly open `myboot-pod-antiaffinity.yaml` and focus on the following part
+
+[.console-output]
 [source, yaml]
 ----
 spec:
@@ -725,39 +726,58 @@ spec:
             - myboot
 ----
 
-Deploy a myboot3 with an anti-affinity rule
+This basically says that this pod should not be scheduled on any individual node (`topologyKey: kubernetes.io/hostname`) that has a pod with the `app=myboot` label.
 
+Deploy a myboot3 with the above anti-affinity rule
+
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-pod-antiaffinity.yaml
 ----
+--
+====
 
-And then use the `kubectl get pods -o wide` command to see which pods land on which nodes.
+And then notice what happens in the watch window
 
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-kubectl get pods -o wide
-----
-
+[tabs]
+====
+Terminal 2::
++
+--
 [.console-output]
-[source,bash]
+[source,bash,subs="+macros,+attributes,+quotes"]
 ----
-NAME                       READY   STATUS    RESTARTS   AGE    IP          NODE
-myboot-7f889dd6d-tr7gz     1/1     Running   0          4m27s  10.88.0.9   devnation-m02
-myboot2-64566b697b-snm7p   1/1     Running   0          48s    10.88.0.10  devnation-m02 
-myboot3-78656b637r-suy1t   1/1     Running   0          1s     172.17.0.2  devnation
+NAME                      READY  STATUS             AGE    NODE
+myboot-7cbfbd9b89-267k6   1/1    Running            10m    devnation-m02
+myboot2-7c5f46cbc9-hwm2v  1/1    Running            5h56m  devnation-m02
+myboot3-6f95c866f6-7kvdw  0/1    ContainerCreating  6s     #devnation# 
 ----
+--
+====
 
-`myboot3` Pod is deployed in a different node than the `myboot` Pod
+As you can see from the highlight, the `myboot3` Pod is deployed in a different node than the `myboot` Pod
 
 ==== Clean Up
 
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete -f apps/kubefiles/myboot-pod-affinity.yml
-kubectl delete -f apps/kubefiles/myboot-pod-antiaffinity.yml
+kubectl delete -f apps/kubefiles/myboot-pod-antiaffinity.yaml
 kubectl delete -f apps/kubefiles/myboot-deployment.yml
 ----
+--
+====
+
+At this time, you may also consider terminating your watch window terminal (*Terminal 2*)
