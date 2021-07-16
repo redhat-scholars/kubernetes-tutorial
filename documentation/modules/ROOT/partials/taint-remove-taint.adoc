@@ -1,0 +1,106 @@
+// tag::openshift[]
+:chosen-node: ip-10-0-140-186.eu-central-1.compute.internal
+// end::openshift[]
+// tag::minikube[]
+:chosen-node: devnation-m02 
+// end::minikube[]
+
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl describe pod #<.>
+----
+<.> There is only one pod in this case.  If we wanted to be specific, we could add the name of the pod (e.g. `myboot-7f889dd6d-n5z55`)
+
+// tag::openshift[]
+[.console-output]
+[source,bash,subs="+quotes"]
+----
+Name:           myboot-7f889dd6d-n5z55
+Namespace:      kubetut
+Priority:       0
+Node:           <none>
+Labels:         app=myboot
+                pod-template-hash=7f889dd6d
+Annotations:    openshift.io/scc: restricted
+Status:         Pending
+
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type     Reason            Age        From               Message
+  ----     ------            ----       ----               -------
+  Warning  FailedScheduling  <unknown>  default-scheduler  #0/9 nodes are available: 9 node(s) had taints that the pod didn't tolerate.#
+  Warning  FailedScheduling  <unknown>  default-scheduler  #0/9 nodes are available: 9 node(s) had taints that the pod didn't tolerate.#
+----
+// end::openshift[]
+
+// tag::minikube[]
+[.console-output]
+[source,bash,subs="+quotes"]
+----
+Name:           myboot-7cbfbd9b89-bzhxw
+Namespace:      myspace
+Priority:       0
+Node:           <none>
+Labels:         app=myboot
+                pod-template-hash=7cbfbd9b89
+Annotations:    <none>
+Status:         Pending
+...
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason            Age                From               Message
+  ----     ------            ----               ----               -------
+  Warning  FailedScheduling  13s (x2 over 14s)  default-scheduler  #0/2 nodes are available: 2 node(s) had taint {color: blue}, that the pod didn't tolerate.#
+----
+// end::minikube[]
+
+Let's get the list of nodes in our cluster 
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get nodes
+----
+
+[.console-output]
+[source,bash]
+----
+# tag::openshift[]
+NAME                                            STATUS   ROLES    AGE   VERSION
+ip-10-0-136-107.eu-central-1.compute.internal   Ready    master   20h   v1.16.2
+ip-10-0-140-186.eu-central-1.compute.internal   Ready    worker   20h   v1.16.2
+ip-10-0-141-128.eu-central-1.compute.internal   Ready    worker   18h   v1.16.2
+ip-10-0-146-109.eu-central-1.compute.internal   Ready    worker   18h   v1.16.2
+ip-10-0-150-226.eu-central-1.compute.internal   Ready    worker   20h   v1.16.2
+ip-10-0-155-122.eu-central-1.compute.internal   Ready    master   20h   v1.16.2
+ip-10-0-162-206.eu-central-1.compute.internal   Ready    worker   20h   v1.16.2
+ip-10-0-168-102.eu-central-1.compute.internal   Ready    master   20h   v1.16.2
+ip-10-0-175-64.eu-central-1.compute.internal    Ready    worker   18h   v1.16.2
+# end::openshift[]
+# tag::minikube[]
+NAME            STATUS   ROLES                  AGE     VERSION
+devnation       Ready    control-plane,master   2d22h   v1.21.2
+devnation-m02   Ready    <none>                 40h     v1.21.2
+# end::minikube[]
+----
+
+And pick one node that we will *remove* the taint from:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl taint node {chosen-node} color:NoSchedule- #<.>
+----
+<.> adding the `-` here means to remove the taint in question (the `color` with the action `NoSchedule`)
+
+[.console-output]
+[source,bash,subs="+attributes"]
+----
+node/{chosen-node}  untainted
+----

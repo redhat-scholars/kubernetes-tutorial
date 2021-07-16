@@ -9,7 +9,7 @@ However, in Kubernetes there are two concepts that allow you to further configur
 
 include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/minikube-multinode.adoc[]
 
-== Taints and Tolerations
+== Taints
 
 A Taint is applied to a Kubernetes Node that signals the scheduler to avoid or not schedule certain Pods.
 
@@ -38,9 +38,10 @@ Name:               ip-10-0-150-226.eu-central-1.compute.internal
 Taints:             <none>
 ----
 
+[NOTE]
+====
 Notice that in this case, the `master` node contains a taint which blocks your application Pods from being scheduled there.
-
-=== Taints
+====
 
 Let's add a taint to all nodes:
 
@@ -64,92 +65,105 @@ node/ip-10-0-168-102.eu-central-1.compute.internal tainted
 node/ip-10-0-175-64.eu-central-1.compute.internal tainted
 ----
 
-The color=blue is simply a key=value pair to identify the taint and NoSchedule is the specific effect.
+The color=blue is simply a key=value pair to identify the taint and NoSchedule is the specific effect for pods that can't "tolerate" the taint.  In other words, if a pod does not tolerate "color=blue" then the effect will be "NoSchedule"
 
-Now deploy a new pod.
+So let's try this out.  We'll deploy a new pod that doesn't have any particular tolerations.  First, to be able to observe what's going on, let's open another terminal (*Terminal 2*) and watch what happens to the pods as we change taints on the nodes.
 
+[tabs]
+====
+Terminal 2::
++
+--
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+watch -n 1 -- kubectl get pods -o wide #<.>
+----
+<.> the `-o wide` option allows us to see the node that the pod is schedule to
+
+--
+====
+
+Now deploy a new pod in the main terminal
+
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment.yml
-
-kubectl get pods
 ----
+--
+====
 
-The pod will remain in Pending status as it has no schedulable Node available.
+You'll see the output in the other terminal change
 
+[tabs]
+====
+Terminal 2::
++
+--
 [.console-output]
-[source,bash]
+[source,bash,subs="+quotes"]
 ----
-NAME                     READY   STATUS    RESTARTS   AGE
-myboot-7f889dd6d-n5z55   0/1     Pending   0          55s
+NAME                      READY   STATUS    RESTARTS   AGE     IP       NODE     NOMINATED NODE   READINESS GATES
+myboot-7cbfbd9b89-hqx6h   0/1     #Pending#   0          4m12s   <none>   <none>   <none>           <none>
 ----
+--
+====
 
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-kubectl describe pod myboot-7f889dd6d-n5z55
-----
+The pod will remain in `Pending` status as it has no schedulable Node available.
 
+We can get more insight into this by entering the following
+
+[tabs]
+====
+Terminal 1 - Minikube::
++
+--
+// include untagged regions and any regions tagged with minikube
+// See: https://docs.asciidoctor.org/asciidoc/latest/directives/include-tagged-regions/#tagging-regions
+include::partial$taint-remove-taint.adoc[tags=**;!*;minikube]
+
+--
+Terminal 1 - OpenShift::
++
+--
+// Include all untagged regions and any regions tagged with openshift
+// See: https://docs.asciidoctor.org/asciidoc/latest/directives/include-tagged-regions/#tagging-regions
+include::partial$taint-remove-taint.adoc[tags=**;!*;openshift]
+
+--
+====
+
+Now in *Terminal 2* you should see the Pending pod scheduled to the newly untained node.  
+
+[tabs]
+====
+Terminal 2::
++
+--
 [.console-output]
-[source,bash]
+[source,bash,subs="+quotes"]
 ----
-Name:           myboot-7f889dd6d-n5z55
-Namespace:      kubetut
-Priority:       0
-Node:           <none>
-Labels:         app=myboot
-                pod-template-hash=7f889dd6d
-Annotations:    openshift.io/scc: restricted
-Status:         Pending
+NAME                      READY   STATUS              RESTARTS   AGE   IP       NODE            NOMINATED NODE   READINES
+S GATES
+myboot-7cbfbd9b89-hqx6h   0/1     #ContainerCreating#   0          20m   <none>   #devnation-m02#   <none>           <none>
+----
+--
+====
 
-Node-Selectors:  <none>
-Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
-                 node.kubernetes.io/unreachable:NoExecute for 300s
-Events:
-  Type     Reason            Age        From               Message
-  ----     ------            ----       ----               -------
-  Warning  FailedScheduling  <unknown>  default-scheduler  0/9 nodes are available: 9 node(s) had taints that the pod didn't tolerate.
-  Warning  FailedScheduling  <unknown>  default-scheduler  0/9 nodes are available: 9 node(s) had taints that the pod didn't tolerate.
-----
+Finally, let's take a quick look at the taint status on all the nodes.  
 
-Now let's remove one taint from one node and see what's happening:
-
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-kubectl get nodes
-----
-
-[.console-output]
-[source,bash]
-----
-NAME                                            STATUS   ROLES    AGE   VERSION
-ip-10-0-136-107.eu-central-1.compute.internal   Ready    master   20h   v1.16.2
-ip-10-0-140-186.eu-central-1.compute.internal   Ready    worker   20h   v1.16.2
-ip-10-0-141-128.eu-central-1.compute.internal   Ready    worker   18h   v1.16.2
-ip-10-0-146-109.eu-central-1.compute.internal   Ready    worker   18h   v1.16.2
-ip-10-0-150-226.eu-central-1.compute.internal   Ready    worker   20h   v1.16.2
-ip-10-0-155-122.eu-central-1.compute.internal   Ready    master   20h   v1.16.2
-ip-10-0-162-206.eu-central-1.compute.internal   Ready    worker   20h   v1.16.2
-ip-10-0-168-102.eu-central-1.compute.internal   Ready    master   20h   v1.16.2
-ip-10-0-175-64.eu-central-1.compute.internal    Ready    worker   18h   v1.16.2
-----
-
-Pick one node.
-
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-kubectl taint node ip-10-0-140-186.eu-central-1.compute.internal color:NoSchedule-
-----
-
-[.console-output]
-[source,bash]
-----
-node/ip-10-0-140-186.eu-central-1.compute.internal  untainted
-----
-
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -169,29 +183,48 @@ Name:               ip-10-0-146-109.eu-central-1.compute.internal
 Taints:             color=blue:NoSchedule
 ----
 
-And you should see the Pending pod scheduled to the newly untained node.  
+--
+====
+
+=== Restore Taint
+
+Add the taint back to the node (or in this case all nodes): 
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl get pods
-----
-
-[.console-output]
-[source,bash]
-----
-NAME                     READY   STATUS    RESTARTS   AGE
-myboot-7f889dd6d-n5z55   1/1     Running   0          11m
+kubectl taint nodes --all=true color=blue:NoSchedule --overwrite
 ----
 
 [TIP]
 ====
-You can use `kubectl get pods -o wide` to see the node upon which the pod is scheduled.
+Setting the taint on all nodes is a bit sloppy.  If you'd like you can get the same effect a bit more elegantly by setting the taint only on the node from which it was removed.  For example:
 
+----
+kubectl taint node ip-10-0-140-186.eu-central-1.compute.internal color=blue:NoSchedule
+----
+====
+
+Take a look and notice that the pod is still running despite the change in taint (this is due to scheduling being a one time activity in the lifecycle of a pod)
+
+[tabs]
+====
+Terminal 2::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes,+quotes"]
+----
+NAME                      READY   STATUS    RESTARTS   AGE   IP           NODE            NOMIN
+ATED NODE   READINESS GATES
+myboot-7cbfbd9b89-bzhxw   1/1     #Running#   0          18m   172.17.0.2   devnation-m02   <none>           <none>
+----
+
+--
 ====
 
 
-==== Clean Up
+=== Clean Up
 
 Undeploy the myboot deployment and add again the taint to the node:
 
@@ -199,11 +232,9 @@ Undeploy the myboot deployment and add again the taint to the node:
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete -f apps/kubefiles/myboot-deployment.yml
-
-kubectl taint node ip-10-0-140-186.eu-central-1.compute.internal color=blue:NoSchedule
 ----
 
-=== Tolerations
+== Tolerations
 
 Let's create a Pod but containing a toleration, so it can be scheduled to a tainted node.
 
@@ -220,24 +251,38 @@ spec:
     image: quay.io/rhdevelopers/myboot:v1
 ----
 
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-toleration.yaml
-
-kubectl get pods
 ----
+--
+====
 
+And then we should see before too long in our watch window our pod get scheduled and advance to the run state
+
+[tabs]
+====
+Terminal 2::
++
+--
 [.console-output]
-[source,bash]
+[source,bash,subs="+quotes"]
 ----
 NAME                      READY   STATUS    RESTARTS   AGE
-myboot-84b457458b-mbf9r   1/1     Running   0          3m18s
+myboot-84b457458b-mbf9r   1/1     #Running#   0          3m18s
 ----
+--
+====
 
 Now, although all nodes contain a taint, the Pod is scheduled and run as we defined a tolerance against color=blue taint.
 
-==== Clean Up
+=== Clean Up
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
@@ -245,7 +290,7 @@ Now, although all nodes contain a taint, the Pod is scheduled and run as we defi
 kubectl delete -f apps/kubefiles/myboot-toleration.yaml
 ----
 
-=== NoExecution Taint
+== `NoExecution` Taint
 
 So far, you've seen the `NoSchedule` taint effect which means that newly created Pods will not be scheduled there unless they have an overriding toleration.
 But notice that if we add this taint to a node that already has running/scheduled Pods, this taint will not terminate them.
@@ -254,92 +299,143 @@ Let's change that by using `NoExecution` effect.
 
 First of all, let's remove all previous taints.
 
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl taint nodes --all=true color=blue:NoSchedule-
 ----
+--
+====
+
 
 Then deploy a service:
 
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-deployment.yml
-
-kubectl get pods
 ----
+--
+====
 
+We should see the following in the watch
+
+[tabs]
+====
+Terminal 2::
++
+--
 [.console-output]
 [source,bash]
 ----
-NAME                     READY   STATUS    RESTARTS   AGE
-myboot-7f889dd6d-bkfg5   1/1     Running   0          16s
+NAME                      READY   STATUS    RESTARTS   AGE   IP           NODE            NOMINATED NODE   READINESS GATES
+myboot-7cbfbd9b89-wpddg   1/1     Running   0          47s   172.17.0.2   devnation-m02   <none>           <none>
 ----
 
+--
+====
+
+Now let's taint find the node the pod is running on
+
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
-[source,bash,subs="+macros,+attributes"]
+[source,bash,subs="+macros"]
 ----
-kubectl get pod myboot-7f889dd6d-bkfg5 -o json | jq '.spec.nodeName'
+NODE=$(kubectl get pod -o jsonpath='{.items[0].spec.nodeName}') #<.>
+echo ${NODE}
+
 ----
+<.> the `.items[0]` is because we're asking for all pods, but we know our list will contain only one element
 
 [.console-output]
 [source,bash]
 ----
 "ip-10-0-146-109.eu-central-1.compute.internal"
 ----
+--
+====
 
+
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl taint node ip-10-0-146-109.eu-central-1.compute.internal color=blue:NoExecute
-
-kubectl get pods
+kubectl taint node pass:[${NODE}] color=blue:NoExecute
 ----
+--
+====
+
+As soon as we do this, we should be able to watch this "rescheduling" occur in the Terminal 2 watch
+
+[tabs]
+====
+Terminal 2::
++
+--
 
 [.console-output]
-[source,bash]
+[source,bash,subs="+quotes"]
 ----
-NAME                     READY   STATUS        RESTARTS   AGE
-myboot-7f889dd6d-8fm2v   1/1     Running       0          14s
-myboot-7f889dd6d-bkfg5   1/1     Terminating   0          5m51s
-----
-
-If you have more nodes available then the Pod is terminated and deployed onto another node, if it is not the case, then the Pod will remain in _Pending_ status.
-
-You can watch this "rescheduling" occur with use of  `-o wide`
-
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-watch kubectl get pods -o wide
+NAME                      READY   STATUS              RESTARTS   AGE   IP           NODE     NOMINATED NODE   READINESS GATES
+myboot-7cbfbd9b89-5t24z   0/1     #ContainerCreating#   0          16s   <none>       devnation     <none>           <none>
+myboot-7cbfbd9b89-wpddg   1/1     #Terminating#         0          65m   172.17.0.2   devnation-m02   <none>           <none> 
 ----
 
-[.console-output]
-[source,bash]
-----
-NAME                     READY   STATUS        RESTARTS   AGE     IP           NODE     
-myboot-7f889dd6d-b9tks   1/1     Running       0          6s      10.88.0.5    devnation-m02   
-myboot-7f889dd6d-l897f   1/1     Terminating   0          9m11s   172.17.0.4   devnation       
-----
+--
+====
 
+[NOTE]
+====
+If you have more nodes available then the Pod is terminated and deployed onto another node, if it is not the case, then the Pod will remain in `Pending` status.
+====
 
-==== Clean Up
+=== Clean Up
 
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete -f apps/kubefiles/myboot-deployment.yml
 ----
+--
+====
 
 And remove the NoExecute taint 
 
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl taint node ip-10-0-146-109.eu-central-1.compute.internal color=blue:NoExecute-
+kubectl taint node pass:[${NODE}] color=blue:NoExecute-
 ----
-
+--
+====
 
 == Affinity & Anti-Affinity
 
