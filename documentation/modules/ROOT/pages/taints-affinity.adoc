@@ -78,9 +78,11 @@ Terminal 2::
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-watch -n 1 -- kubectl get pods -o wide #<.>
+watch -n 1 "kubectl get pods -o wide \#<.>
+  | awk '{print \$1 \" \" \$2 \" \" \$3 \" \" \$5 \" \" \$7}' | column -t" #<.>
 ----
 <.> the `-o wide` option allows us to see the node that the pod is schedule to
+<.> to keep the line from getting too long we'll use `awk` and `column` to get and format only the columns we want
 
 --
 ====
@@ -352,14 +354,7 @@ Now let's taint find the node the pod is running on
 Terminal 1::
 +
 --
-[.console-input]
-[source,bash,subs="+macros"]
-----
-NODE=$(kubectl get pod -o jsonpath='{.items[0].spec.nodeName}') #<.>
-echo ${NODE}
-
-----
-<.> the `.items[0]` is because we're asking for all pods, but we know our list will contain only one element
+include::partial$find_node_for_pod.adoc[]
 
 [.console-output]
 [source,bash]
@@ -447,116 +442,153 @@ Reasons such as significant network communication between Pods and you want to a
 
 === Node Affinity
 
-Let's deploy a new pod with a node affinity:
+Let's deploy a new pod with a node affinity.  Use kbd:[CMD+p] to quickly open `myboot-node-affinity.yml` (relevant section shown below)
 
 [source, yaml]
 ----
 spec:
   affinity:
     nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
+      requiredDuringSchedulingIgnoredDuringExecution: #<.>
         nodeSelectorTerms:
         - matchExpressions:
           - key: color
             operator: In
             values:
-            - blue
+            - blue #<.>
       containers:
       - name: myboot
         image: quay.io/rhdevelopers/myboot:v1
 ----
+<.> This key highlights that what's follows must be used during scheduling but not a factor once a pod is executing
+<.> The `matchExpressions` is saying this pod has affinity for any node with a `color` in the value set `blue`
 
+Now let's deploy this
+
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-node-affinity.yml
-
-kubectl get pods
 ----
+--
+====
 
+And we'll see in our watch window the pod in a pending state
+
+[tabs]
+====
+Terminal 2::
++
+--
 [.console-output]
-[source,bash]
+[source,bash,subs="+macros,+attributes,+quotes"]
 ----
-NAME                           READY   STATUS    RESTARTS   AGE
-myboot-54d788fdc8-f6wks        0/1     Pending   0          13s
+NAME                      READY   STATUS    RESTARTS   AGE   IP       NODE     NOMINATED NODE READINESS GATES
+myboot-546d4d9b45-7vgfc   0/1     #Pending#   0          6s    <none>   <none>   <none> <none>
 ----
+--
+====
 
-Let's create a label on a node matching the affinity expression:
+Let's create a *label* on a node matching the affinity expression:
+
+[tabs]
+====
+Terminal 1 - Minikube::
++
+--
+include::partial$affinity_label.adoc[tags=**;!*;minikube]
+--
+Terminal 1 - OpenShift::
++
+--
+include::partial$affinity_label.adoc[tags=**;!*;openshift]
+--
+====
+
+And then in the watch window the output should change to:
+
+[tabs]
+====
+Terminal 2::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes,+quotes"]
+----
+NAME                      READY   STATUS              RESTARTS   AGE   IP       NODE NOMINATED NODE   READINESS GATES
+myboot-546d4d9b45-7vgfc   0/1     #ContainerCreating#   0          15m   <none>   devnation-m02 <none>           <none>
+----
+--
+====
+
+
+Let's delete the label from the node that the pod is running on
+
+[tabs]
+====
+Terminal 1::
++
+--
+First find the node the pod is running on
+
+include::partial$find_node_for_pod.adoc[]
+
+and then remove the color label from it
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl get nodes
+kubectl label nodes pass:[${NODE}] color-
 ----
+--
+====
 
+And notice the that watch output is *unchanged* and if running, the pod will continue to run
+
+[tabs]
+====
+Terminal 2::
++
+--
 [.console-output]
 [source,bash]
 ----
-NAME                                            STATUS   ROLES    AGE   VERSION
-ip-10-0-136-107.eu-central-1.compute.internal   Ready    master   26h   v1.16.2
-ip-10-0-140-186.eu-central-1.compute.internal   Ready    worker   26h   v1.16.2
-ip-10-0-141-128.eu-central-1.compute.internal   Ready    worker   25h   v1.16.2
-ip-10-0-146-109.eu-central-1.compute.internal   Ready    worker   25h   v1.16.2
-ip-10-0-150-226.eu-central-1.compute.internal   Ready    worker   26h   v1.16.2
-ip-10-0-155-122.eu-central-1.compute.internal   Ready    master   26h   v1.16.2
-ip-10-0-162-206.eu-central-1.compute.internal   Ready    worker   26h   v1.16.2
-ip-10-0-168-102.eu-central-1.compute.internal   Ready    master   26h   v1.16.2
-ip-10-0-175-64.eu-central-1.compute.internal    Ready    worker   25h   v1.16.2
+NAME                      READY   STATUS    RESTARTS   AGE   IP           NODE            NOMINATED NODE   READINESS GATES
+myboot-546d4d9b45-7vgfc   1/1     Running   0          22m   172.17.0.2   devnation-m02   <none>           <none>
 ----
+--
+====
 
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-kubectl label nodes ip-10-0-175-64.eu-central-1.compute.internal color=blue
-----
+Since we used the `requiredDuringSchedulingIgnoredDuringExecution` in the deployment spec for our pod, we got our affinity to work like taints (in the previous section) worked, namely, that the rule is set during the scheduling phase but ignore after that (i.e. once executing).  Therefore the Pod is not removed in our case.
 
-[.console-output]
-[source,bash]
-----
-node/ip-10-0-175-64.eu-central-1.compute.internal labeled
-----
+This is an example of a _hard_ rule:
 
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-kubectl get pods
-----
+.Hard Rule
+****
+If the Kubernetes scheduler does not find any node with the required label then the Pod reminds in _Pending_ state.
+****
+
+There is also a way to create a _soft_ rule:
+
+.Soft Rule
+****
+The Kubernetes scheduler attempts to match the rules but if it can.  However, if it can't then the Pod is scheduled to any node.  
+****
+
+Consider the example below:
 
 [.console-output]
-[source,bash]
-----
-NAME                          READY   STATUS    RESTARTS   AGE
-myboot-54d788fdc8-f6wks       1/1     Running   0          7m57s
-----
-
-Let's delete the label from the node:
-
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-kubectl label nodes ip-10-0-175-64.eu-central-1.compute.internal color-
-
-kubectl get pods
-----
-
-[.console-output]
-[source,bash]
-----
-NAME                         READY   STATUS    RESTARTS   AGE
-myboot-54d788fdc8-f6wks      1/1     Running   0          7m57s
-----
-
-As with taints, the rule is set during the scheduling phase, therefore, the Pod is not removed.
-
-This is an example of a _hard_ rule, if the Kubernetes scheduler does not find any node with the required label then the Pod reminds in _Pending_ state.
-There is also a way to create a _soft_ rule, where the Kubernetes scheduler attempts to match the rules but if it can not then the Pod is scheduled to any node.  In the example below, you can see the use of the word _preferred_ vs _required_.
-
-[source, yaml]
+[source,yaml,subs="+macros,+attributes,+quotes"]
 ----
 spec:
   affinity:
     nodeAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
+      preferredDuringSchedulingIgnoredDuringExecution: #<.>
       - weight: 1
         preference:
           matchExpressions:
@@ -565,6 +597,7 @@ spec:
             values:
             - blue
 ----
+<.> You can see the use of the word _preferred_ vs _required_.
 
 ==== Clean Up
 
