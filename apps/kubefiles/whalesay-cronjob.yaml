@@ -1,12 +1,15 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: whale-say-cronjob
 spec:
-  schedule: "*/1 * * * *"
+  schedule: "*/1 * * * *" #<.>
   jobTemplate:                   
     spec:                        
-      template:                  
+      template:    
+        metadata:
+          labels:
+            job-type: whale #<.>              
         spec:
           containers:
           - name: whale-say-container
