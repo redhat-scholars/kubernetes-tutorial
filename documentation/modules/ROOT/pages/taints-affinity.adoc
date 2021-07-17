@@ -1,5 +1,6 @@
 = Taints and Affinity
 include::_attributes.adoc[]
+:watch-terminal: Terminal 2
 
 So far, when we deployed any Pod in the Kubernetes cluster, it was run on any node that met the requirements (ie memory requirements, CPU requirements, ...)
 
@@ -7,7 +8,15 @@ However, in Kubernetes there are two concepts that allow you to further configur
 
 == Preparation
 
+=== Minikube Multinode
+
 include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/minikube-multinode.adoc[]
+
+=== Watch Nodes
+
+To be able to observe what's going on, let's open another terminal (*{watch-terminal}*) and `watch` what happens to the pods as we change taints on the nodes.
+
+include::partial$start_watch.adoc[]
 
 == Taints
 
@@ -67,27 +76,7 @@ node/ip-10-0-175-64.eu-central-1.compute.internal tainted
 
 The color=blue is simply a key=value pair to identify the taint and NoSchedule is the specific effect for pods that can't "tolerate" the taint.  In other words, if a pod does not tolerate "color=blue" then the effect will be "NoSchedule"
 
-So let's try this out.  We'll deploy a new pod that doesn't have any particular tolerations.  First, to be able to observe what's going on, let's open another terminal (*Terminal 2*) and watch what happens to the pods as we change taints on the nodes.
-
-[tabs]
-====
-Terminal 2::
-+
---
-
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-watch -n 1 "kubectl get pods -o wide \#<.>
-  | awk '{print \$1 \" \" \$2 \" \" \$3 \" \" \$5 \" \" \$7}' | column -t" #<.>
-----
-<.> the `-o wide` option allows us to see the node that the pod is schedule to
-<.> to keep the line from getting too long we'll use `awk` and `column` to get and format only the columns we want
-
---
-====
-
-Now deploy a new pod in the main terminal
+So let's try this out.  From the main terminal, we'll deploy a new pod that doesn't have any particular tolerations:
 
 [tabs]
 ====
@@ -106,7 +95,7 @@ You'll see the output in the other terminal change
 
 [tabs]
 ====
-Terminal 2::
+{watch-terminal}::
 +
 --
 [.console-output]
@@ -142,11 +131,11 @@ include::partial$taint-remove-taint.adoc[tags=**;!*;openshift]
 --
 ====
 
-Now in *Terminal 2* you should see the Pending pod scheduled to the newly untained node.  
+Now in *{watch-terminal}* you should see the Pending pod scheduled to the newly untained node.  
 
 [tabs]
 ====
-Terminal 2::
+{watch-terminal}::
 +
 --
 [.console-output]
@@ -211,7 +200,7 @@ Take a look and notice that the pod is still running despite the change in taint
 
 [tabs]
 ====
-Terminal 2::
+{watch-terminal}::
 +
 --
 [.console-output]
@@ -270,7 +259,7 @@ And then we should see before too long in our watch window our pod get scheduled
 
 [tabs]
 ====
-Terminal 2::
+{watch-terminal}::
 +
 --
 [.console-output]
@@ -334,7 +323,7 @@ We should see the following in the watch
 
 [tabs]
 ====
-Terminal 2::
+{watch-terminal}::
 +
 --
 [.console-output]
@@ -378,11 +367,11 @@ kubectl taint node pass:[${NODE}] color=blue:NoExecute
 --
 ====
 
-As soon as we do this, we should be able to watch this "rescheduling" occur in the Terminal 2 watch
+As soon as we do this, we should be able to watch this "rescheduling" occur in the {watch-terminal} watch
 
 [tabs]
 ====
-Terminal 2::
+{watch-terminal}::
 +
 --
 
@@ -482,7 +471,7 @@ And we'll see in our watch window the pod in a pending state
 
 [tabs]
 ====
-Terminal 2::
+{watch-terminal}::
 +
 --
 [.console-output]
@@ -514,7 +503,7 @@ And then in the watch window the output should change to:
 
 [tabs]
 ====
-Terminal 2::
+{watch-terminal}::
 +
 --
 [.console-output]
@@ -552,7 +541,7 @@ And notice the that watch output is *unchanged* and if running, the pod will con
 
 [tabs]
 ====
-Terminal 2::
+{watch-terminal}::
 +
 --
 [.console-output]
@@ -670,7 +659,7 @@ And we'll see that both start up, and run on _the same node_
 
 [tabs]
 ====
-Terminal 2::
+{watch-terminal}::
 +
 --
 [.console-output]
@@ -747,7 +736,7 @@ And then notice what happens in the watch window
 
 [tabs]
 ====
-Terminal 2::
+{watch-terminal}::
 +
 --
 [.console-output]
@@ -780,4 +769,4 @@ kubectl delete -f apps/kubefiles/myboot-deployment.yml
 --
 ====
 
-At this time, you may also consider terminating your watch window terminal (*Terminal 2*)
+At this time, you may also consider terminating your watch window terminal (*{watch-terminal}*)

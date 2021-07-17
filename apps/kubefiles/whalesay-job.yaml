@@ -4,6 +4,9 @@ metadata:
   name: whale-say-job
 spec:
   template:
+    metadata:
+      labels:
+        job-type: whale #<.>
     spec:
       containers:
       - name: whale-say-container

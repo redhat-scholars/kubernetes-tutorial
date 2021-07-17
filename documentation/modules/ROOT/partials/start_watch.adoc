@@ -1,0 +1,17 @@
+[tabs]
+====
+{watch-terminal}::
++
+--
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+watch -n 1 "kubectl get pods -o wide \#<.>
+  | awk '{print \$1 \" \" \$2 \" \" \$3 \" \" \$5 \" \" \$7}' | column -t" #<.>
+----
+<.> the `-o wide` option allows us to see the node that the pod is schedule to
+<.> to keep the line from getting too long we'll use `awk` and `column` to get and format only the columns we want
+
+--
+====
