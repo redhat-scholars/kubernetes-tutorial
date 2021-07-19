@@ -27,7 +27,7 @@ public class PizzaResourceWatcher {
 
     void onStartup(@Observes StartupEvent event) {
         System.out.println("Startup");
-        crClient.watch(new Watcher<PizzaResource>() {
+        crClient.watch(new Watcher<PizzaResource>() { //<.>
             @Override
             public void eventReceived(Action action, PizzaResource resource) {
                 System.out.println("Event " + action.name());
