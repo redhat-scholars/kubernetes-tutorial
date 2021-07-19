@@ -31,6 +31,7 @@
 	],
 	"postStartCommand": "rsync -a .devcontainer/workspace-setup/ ${containerWorkspaceFolder}/.vscode/ --ignore-existing",
 	"settings":{
+		"terminal.integrated.shell.linux": "/bin/zsh",
 		"editor.tabCompletion": "on",
 		"java.home": "/usr/lib/jvm/java-11-openjdk",
 		"workbench.colorTheme": "Solarized Light",
