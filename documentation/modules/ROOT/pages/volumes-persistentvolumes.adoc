@@ -1,4 +1,6 @@
 = Volumes & Persistent Volumes
+include::_attributes.adoc[]
+:watch-terminal: Terminal 2
 
 Containers are ephemeral by definition, which means that anything that it is stored at running time, it is lost when the container is stopped.
 This might cause problems with containers that need to persist its data like database containers.
@@ -16,11 +18,11 @@ Some of the volume types are:
 * empty dir
 * host path
 
-Let's start with two examples of `Volumes`.
+== Preparation
 
-== Volumes
+=== Namespace
 
-:section-k8s: resource
+:section-k8s: volumes
 :set-namespace: myspace
 
 Make sure the proper namespace `{set-namespace}` is created and context is set to point to it.
@@ -28,6 +30,17 @@ Make sure the proper namespace `{set-namespace}` is created and context is set t
 include::partial$namespace-setup-tip.adoc[]
 
 include::partial$set-context.adoc[]
+
+=== Watch
+
+If it's not open already, you'll want to have a terminal open (call it *{watch-terminal}*) to watch what's going on with the pods in our current namespace
+
+:section-k8s: volumes
+include::partial$watching-pods-with-nodes.adoc[]
+
+== Volumes
+
+Let's start with two examples of `Volumes`.
 
 === EmptyDir
 
@@ -42,6 +55,9 @@ Let's deploy a service that exposes two endpoints, one to write content to a fil
 ----
 include::example$myboot-pod-volume.yml[]
 ----
+<.> Notice that this is a `Pod` and not a `Deployment`
+<.> This is where this mount point will appear in the pod.  See below 
+<.> This must match the name of a volume that we define, in this case it is defined right at the bottom of the file
 
 In `volumes` section, you are defining the volume, and in `volumeMounts` section, how the volume is mounted inside the container.
 
@@ -49,33 +65,47 @@ In `volumes` section, you are defining the volume, and in `volumeMounts` section
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-pod-volume.yml
-
-kubectl get pods
 ----
 
+Then in our watch window we should see something like
+
+[tabs]
+====
+{watch-terminal}::
++
+--
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
-NAME          READY   STATUS    RESTARTS   AGE
-myboot-demo   1/1     Running   0          83s
+NAME         READY  STATUS             AGE  NODE
+myboot-demo  0/1    ContainerCreating  9s   devnation
 ----
+--
+====
 
-Let's access into the container:
+Once the pod is running, let's exec into the container:
 
 [.console-input]
 [source,bash]
 ----
-kubectl exec -ti myboot-demo /bin/bash
+kubectl exec -ti myboot-demo -- /bin/bash
 ----
 
 And once `exec` 'd into the container, run the following commands: 
 
+[tabs]
+====
+Container::
++
+--
 [.console-input]
 [source,bash]
 ----
 curl localhost:8080/appendgreetingfile
 curl localhost:8080/readgreetingfile
 ----
+
+Which should return
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
@@ -96,16 +126,25 @@ ls /tmp/demo
 ----
 greeting.txt
 ----
+--
+====
 
 ==== EmptyDir Ephemerality
 
-Exit the container's shell:
+If you haven't already, close the container's shell:
 
+[tabs]
+====
+Container::
++
+--
 [.console-input]
 [source,bash]
 ----
 exit
 ----
+--
+====
 
 And delete the pod:
 
@@ -115,6 +154,11 @@ And delete the pod:
 kubectl delete pod myboot-demo
 ----
 
+[IMPORTANT]
+====
+You need to wait until the pod is completely deleted before trying to deploy it again
+====
+
 Then if you deploy again the same service: 
 
 [.console-input]
@@ -123,15 +167,21 @@ Then if you deploy again the same service:
 kubectl apply -f apps/kubefiles/myboot-pod-volume.yml
 ----
 
-And `exec` into the pod: 
+And once in the `Running` state `exec` into the pod: 
 
 [.console-input]
 [source,bash]
 ----
-kubectl exec -ti myboot-demo /bin/bash
+kubectl exec -ti myboot-demo -- /bin/bash
 ----
 
-You'll notice that the directory content is empty.
+[tabs]
+====
+Container::
++
+--
+
+Let's list the contents of our mount point in our new pod
 
 [.console-input]
 [source,bash]
@@ -139,13 +189,26 @@ You'll notice that the directory content is empty.
 ls /tmp/demo
 ----
 
+You'll notice that the directory content is empty, meaning that the file we created with the last pod was destroyed when the pod was deleted
+
 [.console-output]
 [source,bash]
 ----
 root@myboot-demo:/app# 
 ----
 
-Delete the pod.
+Exit the pod
+
+[.console-input]
+[source,bash]
+----
+exit
+----
+
+--
+====
+
+Now delete the pod.
 
 [.console-input]
 [source,bash]
@@ -164,6 +227,11 @@ Use kbd:[CMD+p] to open `myboot-pods-volume.yml` quickly:
 ----
 include::example$myboot-pods-volume.yml[]
 ----
+<.> The first container in the pod is called myboot-demo-1 and mounts `demo-volume` at `/tmp/demo`
+<.> The second container in the pod is called `myboot-demo-2` and mounts `demo-volume` at the same `/tmp/demo` point
+<.> Both containers use the same exact image
+<.> Notice that the second container needs to listen on a different port from the first since the containers share ports on the pod.  The `env` directive at this level only applies to the `myboot-demo-2` container
+<.> The volume is defined only once but referenced by each container in the pod
 
 Now let's create that deployment in the `{set-namespace}` namespace
 
@@ -171,16 +239,26 @@ Now let's create that deployment in the `{set-namespace}` namespace
 [source,bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-pods-volume.yml
-
-kubectl get pods
 ----
 
+And in our pod watch we should see
+
+[tabs]
+====
+{watch-terminal}::
++
+--
 [.console-output]
-[source,bash,subs="+macros,+attributes"]
+[source,bash,subs="+macros,+attributes,+quotes"]
 ----
 NAME          READY   STATUS    RESTARTS   AGE
-myboot-demo   2/2     Running   0          4s
+myboot-demo   #2/2#    Running   0          4s
 ----
+
+Notice the `2/2` ready status.  This represents the 2 containers in the pod definition
+--
+====
+
 
 Let's access into the *first* container in one terminal
 
@@ -192,7 +270,7 @@ Terminal 1::
 [.console-input]
 [source,bash]
 ----
-kubectl exec -ti myboot-demo -c myboot-demo-1 /bin/bash
+kubectl exec -ti myboot-demo -c myboot-demo-1 -- /bin/bash
 ----
 
 and generate some content to `/tmp/demo` directory.
@@ -226,7 +304,7 @@ And then in another terminal `exec` into the other container in the pod to run t
 
 [tabs]
 ====
-Terminal 2::
+Terminal 3::
 +
 --
 
@@ -235,7 +313,7 @@ include::partial$open-terminal-in-editor-inset.adoc[]
 [.console-input]
 [source,bash]
 ----
-kubectl exec -it myboot-demo -c myboot-demo-2 bash 
+kubectl exec -it myboot-demo -c myboot-demo-2 -- bash 
 ----
 
 And then from inside the `myboot-demo-2` container in the pod, run the following command (similar to the one we ran in the other `myboot-demo-1` container): 
@@ -261,6 +339,8 @@ Now exit out of the `exec` to the pod
 ----
 exit
 ----
+--
+====
 
 You can get the volume information from a Pod by running:
 
@@ -280,8 +360,6 @@ Volumes:
     SizeLimit:  <unset>
 ----
 
---
-====
 
 ==== Clean Up
 
