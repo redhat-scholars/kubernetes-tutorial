@@ -225,6 +225,7 @@ kubectl apply -f apps/kubefiles/myboot-service.yml
 
 And watch your Pods:
 
+:section-k8s: resources
 include::partial$watching-pods.adoc[]
 
 In another Terminal, loop and curl that service!
