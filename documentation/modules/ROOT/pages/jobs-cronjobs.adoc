@@ -27,7 +27,7 @@ include::partial$set-context.adoc[]
 
 To be able to observe what's going on, let's open another terminal (*{watch-terminal}*) and `watch` what happens as we run our different jobs
 
-include::partial$start_watch.adoc[]
+include::partial$watching-pods-with-nodes.adoc[]
 
 == Jobs
 

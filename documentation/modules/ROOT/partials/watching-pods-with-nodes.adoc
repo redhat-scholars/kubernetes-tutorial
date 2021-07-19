@@ -1,9 +1,9 @@
+[#{section-k8s}-kubectl-watch-pods]
 [tabs]
 ====
 {watch-terminal}::
 +
 --
-
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----

@@ -16,7 +16,7 @@ include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-c
 
 To be able to observe what's going on, let's open another terminal (*{watch-terminal}*) and `watch` what happens to the pods as we change taints on the nodes.
 
-include::partial$start_watch.adoc[]
+include::partial$watching-pods-with-nodes.adoc[]
 
 == Taints
 
