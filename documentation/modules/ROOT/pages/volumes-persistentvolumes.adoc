@@ -230,10 +230,7 @@ Terminal 2::
 +
 --
 
-.Open Terminal in Editor
-****
-You may be running out of real estate in VSCode at this point.  You might consider opening a new terminal in the editor pane by using kbd:[CMD+SHIFT+p] to run the `Terminal: Create Terminal in Editor Area` command
-****
+include::partial$open-terminal-in-editor-inset.adoc[]
 
 [.console-input]
 [source,bash]
