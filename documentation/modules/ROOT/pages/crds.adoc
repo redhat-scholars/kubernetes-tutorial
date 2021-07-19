@@ -1,4 +1,59 @@
 = Operators
+include::_attributes.adoc[]
+:watch-terminal: Terminal 2
+:log-terminal: Terminal 3
+:section-namespace: pizzahat
+
+Operators are a way of extending the functionality of our Kubernetes cluster by installing automated controllers to manage extensions we provide to the underlying Kubernetes API.  
+
+In this section we'll take a deeper look at how operators interact with the Kubernetes API to do this
+
+.Operators in the Real World
+****
+When demonstrating this tutorial in a master class, it can be good to show the Kafka Operator in Openshift (as roughly outlined <<Kafka for OpenShift,here>>).  Key Points when showing on an OpenShift cluster: 
+
+. Use OperatorHub to show how many different Operators there are.  
+. Install the `AMQStreams` or `Strimzi` Operator to add Kafka support (i.e. CRDs as we'll see) to the cluster 
+. Once the operator is installed, pick a namespace to install a `Kafka` CR in
+. Show in the Developer Perspective the Kafka being created by the operator
+
+In this section of the tutorial we'll be demonstrating these aspects of operators with a home grown toy "Pizza Operator"
+****
+
+== Preparation
+
+=== Namespace
+
+We'll need a namespace where we're house our operator deployment and our `CustomResources` upon which the operator will operate
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl create namespace {section-namespace}
+kubectl config set-context --current --namespace={section-namespace}
+----
+
+=== Watch
+
+If it's not open already, you'll want to have a terminal open (call it *{watch-terminal}*) to watch what's going on with the pods in our current namespace
+
+:section-k8s: crd
+include::partial$watching-pods-with-nodes.adoc[]
+
+=== Logs
+
+We'll want to open a third terminal (call it *{log-terminal}*) where we'll use a tool called `stern` to watch the output of certain pods
+
+include::partial$open-terminal-in-editor-inset.adoc[]
+
+:stern-namespace: {section-namespace}
+:stern-pattern: p-pod
+:section-k8s: crd
+
+include::partial$stern-watch.adoc[]
+
+
+== CRDs
 
 Custom Resources extend the API
 
@@ -10,53 +65,117 @@ https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-r
 
 Custom Resource Definitions (CRDs) in version 1.7
 
-== CRDs
+CRDs extend the Kubernetes API.  We can see these api resources readily: 
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl api-resources
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                              SHORTNAMES   APIVERSION                             NAMESPACED   KIND
+bindings                                       v1                                     true         Binding
+componentstatuses                 cs           v1                                     false        ComponentStatus
+configmaps                        cm           v1                                     true         ConfigMap
+endpoints                         ep           v1                                     true         Endpoint
+... #<.>
+----
+<.> This list is truncated
+
+In the list you will find some of the resources we've already learned about, like `Deployments`
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl api-resources | grep Deployment
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+deployments                       deploy       apps/v1                                true         Deployment
+----
+
+`CustomResourceDefinition` s are a sub-set of the Kubernetes `api-resources`.  Let's see if there are any CRDs already installed in our cluster
 
 [#get-crds]
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get crds --all-namespaces
-kubectl api-resources
 ----
+
+[tabs]
+====
+Minikube::
++
+--
+If you are using something like minikube, you will find that there are no CRDs installed yet
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+No resources found
+----
+--
+OpenShift::
++
+--
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                                                              CREATED AT
+alertmanagerconfigs.monitoring.coreos.com                         2021-07-12T01:37:49Z
+alertmanagers.monitoring.coreos.com                               2021-07-12T01:37:53Z
+apiservers.config.openshift.io                                    2021-07-12T01:37:06Z
+authentications.config.openshift.io                               2021-07-12T01:37:06Z
+authentications.operator.openshift.io                             2021-07-12T01:37:53Z
+baremetalhosts.metal3.io                                          2021-07-12T01:38:25Z
+builds.config.openshift.io                                        2021-07-12T01:37:06Z
+catalogsources.operators.coreos.com                               2021-07-12T01:37:49Z
+cloudcredentials.operator.openshift.io                            2021-07-12T01:37:10Z
+... #<.>
+----
+<.> This list has been truncated
+
+
+OpenShift is at its heart Kubernetes.  One of the main ways OpenShift extends Kubernetes is via CRDs, which explains why you find so many of them installed even on the back of a fresh installation.
+
+--
+====
+
 
 === Example CRD
 
+Let's go ahead and create our own Custom Resource Definition.  Later on, this Custom Resources created from this definition will be something that our operator will operate upon.  Use kbd:[CMD+p] to open `pizza-crd.yaml` quickly
+
 [source, yaml]
 ----
-apiVersion: apiextensions.k8s.io/v1beta1
-kind: CustomResourceDefinition
-metadata:
-  name: pizzas.mykubernetes.acme.org
-  labels:
-    app: pizzamaker
-    mylabel: stuff
-spec:
-  group: mykubernetes.acme.org
-  scope: Namespaced
-  version: v1beta2
-  names:
-    kind: Pizza
-    listKind: PizzaList
-    plural: pizzas
-    singular: pizza
-    shortNames:
-    - pz
+include::example$pizza-crd.yaml[]
 ----
+<.> This is a description that will be shown when somebody attempts to describe the CRD
+<.> This describes one of the values our `CustomResource` will have, namely, the (`array`) list of (`string`) toppings
+<.> This describes the second field our `CustomResource` can define in its spec, the (`string`) name of the sauce to use
+<.> This is the name that our CustomResources will have.  Sort of like `Deployment` or `Pod`
 
-=== Add Pizzas
+[IMPORTANT]
+====
+Many CRDs include metadata about the fields that are exposed so that the CR can be validated by the Kubernetes API.  Prior to API version `v1` this was not enforced, after Kubernetes v1.22 all `CustomResources` will need to be `v1` and thus will need to define their object schema
+====
 
-[#add-pizzas]
+Now let's go ahead ad add this CRD to our cluster so that we can create `Pizza` Custom Resources.
+
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl create namespace pizzahat
-kubectl config set-context --current --namespace=pizzahat
-
 kubectl apply -f apps/pizzas/pizza-crd.yaml
 ----
 
-=== Now part of the API
+We should now be able to see that our CRD is part of our API
 
 [#get-pizzas-crds]
 [.console-input]
@@ -74,6 +193,8 @@ NAME                           CREATED AT
 pizzas.mykubernetes.acme.org   2020-07-01T08:12:00Z
 ----
 
+And since CRDs are a subset of all `api-resources`, we should now see `pizzas` as extending our cluster's api-resources: 
+
 [#get-api-pizzas-crds]
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
@@ -81,7 +202,7 @@ pizzas.mykubernetes.acme.org   2020-07-01T08:12:00Z
 kubectl api-resources | grep pizzas
 ----
 
-Results:
+Yields:
 
 [.console-output]
 [source,bash]
@@ -89,26 +210,102 @@ Results:
 pizzas                            pz           mykubernetes.acme.org          true         Pizza
 ----
 
+Finally, since we defined the schema for our `CustomResourceDefinition` we've made it easier for people to consume our api.  CRDs hook into the `kubectl describe` functionality
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl explain pizza
+----
+
+Gives us this helpful output
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+KIND:     Pizza
+VERSION:  mykubernetes.acme.org/v1
+
+DESCRIPTION:
+     A custom resource for making yummy pizzas #<.>
+
+FIELDS:
+   apiVersion   <string>
+     APIVersion defines the versioned schema of this representation of an
+     object. Servers should convert recognized schemas to the latest internal
+     value, and may reject unrecognized values. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+
+   kind <string>
+     Kind is a string value representing the REST resource this object
+     represents. Servers may infer this from the endpoint the client submits
+     requests to. Cannot be updated. In CamelCase. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+
+   metadata     <Object>
+     Standard object's metadata. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+
+   sauce        <string>
+     The name of the sauce to use on our pizza
+
+   toppings     <[]string>
+     List of toppings for our pizza'
+----
+<.> Notice that this matches our overall description of the pizza
+<.> This is from the Schema section of the CRD for sauce.  It says that it's a string.  The description comes from the description field
+<.> This is from the Schema section of the CRD for toppings.  It says that it's an array of strings.  The description comes from the description field
+
 === Deploying the Operator
+
+Our CRD is not limited to a particular namespace, but we do need a namespace to put our operator that is going to operate on our `pizza` CRs.  
+
+At its heart, an operator is just an application, like the `myboot` application that we deployed previously.  The difference is that the operator knows to to interact with the Kubernetes API and watch for resources that it cares about.
+
+The Pizza operator that we're about to deploy was written in link:https://quarkus.io/[Quarkus^] using the link:https://github.com/java-operator-sdk/java-operator-sdk[java operator sdk^].  The code for this operator is present in this repo.  Use kbd:[CMD+p] to quickly open `PizzaResourceWatcher.java` which is one of the key classes in the operator controller
+
+[.console-output]
+[source,java,subs="+macros,+attributes"]
+----
+include::example$PizzaResourceWatcher.java[]
+----
+<.> Notice that it's watching for our custom resource of `Pizza`
+
+[TIP]
+====
+The creation of an operator controller is outside the scope of this tutorial.  If you'd like to learn more about creating operators with Quarkus, watch link:https://bit.ly/3kwJmcd[this 20 minute tutorial^]
+====
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/pizzas/pizza-deployment.yaml
-
-kubectl get pods
 ----
 
+Soon in your watch window (*{watch-terminal}*) you should see something like this
+
+[tabs]
+====
+{watch-terminal}::
++
+--
 [.console-output]
-[source,bash]
+[source,bash,subs="+macros,+attributes"]
 ----
 NAME                                        READY   STATUS    RESTARTS   AGE
 quarkus-operator-example-5f5bf777bc-glfg9   1/1     Running   0          58s
 ----
+--
+====
+
+[IMPORTANT]
+====
+Wait until the deployment `STATUS` of the operator is `Running` before moving on to the next section
+====
 
 === Make some Pizzas
 
-Our operator will be on the lookout for information in our `Pizza` Custom Resources and use it to (pretend) make some pizzas by spinning up a pod configurated with information from the Custom Resource instance.
+Once our operator is running, it will be on the lookout for information in our `Pizza` Custom Resources and use it to (pretend to) make some pizzas by spinning up a pod configurated with information from the Custom Resource instance.
 
 For example, consider this instance of the Pizza `CustomResourceDefinition`:
 
@@ -147,60 +344,64 @@ kubectl describe pizza cheesep
 ----
 
 [.console-output]
-[source,bash]
+[source,bash,subs="+attributes"]
 ----
 Name:         cheesep
-Namespace:    pizzahat
+Namespace:    {section-namespace}
 Labels:       <none>
 Annotations:  kubectl.kubernetes.io/last-applied-configuration:
-                {"apiVersion":"mykubernetes.acme.org/v1beta2","kind":"Pizza","metadata":{"annotations":{},"name":"cheesep","namespace":"pizzahat"},"spec":...
+                {"apiVersion":"mykubernetes.acme.org/v1beta2","kind":"Pizza","metadata":{"annotations":{},"name":"cheesep","namespace":"{section-namespace}"},"spec":...
 API Version:  mykubernetes.acme.org/v1beta2
 Kind:         Pizza
 ...
 ----
 
-And now let's see how the Operator responds...
+And in our *{watch-terminal}* we should see how the Operator responds...
 
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-kubectl get pods
-----
-
+[tabs]
+====
+{watch-terminal}::
++
+--
 [.console-output]
-[source,bash]
+[source,bash,subs="+macros,+attributes"]
 ----
 NAME                                        READY   STATUS      RESTARTS   AGE
 cheesep-pod                                 0/1     Completed   0          3s
 quarkus-operator-example-5f5bf777bc-glfg9   1/1     Running     0          44m
 ----
 
-...by checking the logs of the cheese Pod:
+--
+====
 
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-kubectl logs cheesep-pod
-----
+And once the `cheesep-pod` completes we should see the following in *{log-terminal}*
 
+[tabs]
+====
+{log-terminal}::
++
+--
 [.console-output]
-[source,bash,subs="+macros,+quotes"]
+[source,bash,subs="+quotes,+macros"]
 ----
-pass:[__  ____  __  _____   ___  __ ____  ______]
-pass:[ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/]
-pass:[ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \ ]
-pass:[--\___\_\____/_/ |_/_/|_/_/|_|\____/___/]
-2020-07-01 09:03:11,537 INFO  [io.quarkus] (main) pizza-maker 1.0-SNAPSHOT (powered by Quarkus 1.4.0.CR1) started in 0.006s.
-2020-07-01 09:03:11,537 INFO  [io.quarkus] (main) Profile prod activated.
-2020-07-01 09:03:11,537 INFO  [io.quarkus] (main) Installed features: [cdi]
-Doing The Base
-Adding Sauce #regular#
-Adding Toppings #[mozzarella]#
-Baking
-Baked
-Ready For Delivery
-2020-07-01 09:03:12,038 INFO  [io.quarkus] (main) pizza-maker stopped in 0.000s
++ cheesep-pod › pizza-maker
+pass:[cheesep-pod pizza-maker __  ____  __  _____   ___  __ ____  ______ ]
+pass:[cheesep-pod pizza-maker  --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ ]
+pass:[cheesep-pod pizza-maker  -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   ]
+pass:[cheesep-pod pizza-maker --\___\_\____/_/ |_/_/|_/_/|_|\____/___/   ]
+cheesep-pod pizza-maker 2021-07-19 08:16:26,113 INFO  [io.quarkus] (main) pizza-maker 1.0-SNAPSHOT (powered by Quarkus 1.4.0.CR1) started in 1.063s. 
+cheesep-pod pizza-maker 2021-07-19 08:16:26,114 INFO  [io.quarkus] (main) Profile prod activated. 
+cheesep-pod pizza-maker 2021-07-19 08:16:26,114 INFO  [io.quarkus] (main) Installed features: [cdi]
+cheesep-pod pizza-maker Doing The Base
+cheesep-pod pizza-maker Adding Sauce #regular#
+cheesep-pod pizza-maker Adding Toppings #[mozzarella]#
+cheesep-pod pizza-maker Baking
+cheesep-pod pizza-maker Baked
+cheesep-pod pizza-maker Ready For Delivery
+cheesep-pod pizza-maker 2021-07-19 08:16:26,615 INFO  [io.quarkus] (main) pizza-maker stopped in 0.000s
 ----
+--
+====
 
 Notice that *Sauce* and *Toppings* matches what was specified in the `pizza` CustomResource
 
@@ -215,14 +416,6 @@ Use kbd:[CMD+p] (on Mac OSX) to quickly open both `meat-pizza.yaml` and `veggie-
 include::example$meat-pizza.yaml[]
 ----
 
-Just prior to the next command, in a separate visible terminal, run `stern` to capture log output
-
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-stern p-pod
-----
-
 Now make the pizzas
 
 [#create-more-pizzas-crds]
@@ -234,21 +427,111 @@ kubectl apply -f apps/pizzas/veggie-lovers.yaml
 kubectl get pizzas --all-namespaces
 ----
 
-=== Eat all Pizzas
+Pod watch in the *{watch-terminal}* should show
+
+[tabs]
+====
+{watch-terminal}::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                                      READY  STATUS             AGE    NODE
+cheesep-pod                               0/1    Completed          8m46s  devnation
+meatsp-pod                                0/1    ContainerCreating  8s     devnation
+quarkus-operator-example-fdb76c946-cwmnq  1/1    Running            14m    devnation
+veggiep-pod                               0/1    ContainerCreating  6s     devnation
+----
+--
+====
+
+And this notice in our log terminal *{log-terminal}*
+
+[tabs]
+====
+{log-terminal}::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes,+quotes"]
+----
++ meatsp-pod › pizza-maker
+pass:[meatsp-pod pizza-maker __  ____  __  _____   ___  __ ____  ______ ]
+pass:[meatsp-pod pizza-maker  --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ ]
+pass:[meatsp-pod pizza-maker  -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   ]
+pass:[meatsp-pod pizza-maker --\___\_\____/_/ |_/_/|_/_/|_|\____/___/   ]
+meatsp-pod pizza-maker 2021-07-19 08:24:48,015 INFO  [io.quarkus] (main) pizza-maker 1.0-SNAPSHOT (powered by Quarkus 1.4.0.CR1) started in 0.817s. 
+meatsp-pod pizza-maker 2021-07-19 08:24:48,016 INFO  [io.quarkus] (main) Profile prod activated. 
+meatsp-pod pizza-maker 2021-07-19 08:24:48,016 INFO  [io.quarkus] (main) Installed features: [cdi]
+meatsp-pod pizza-maker Doing The Base
+meatsp-pod pizza-maker Adding Sauce #extra# #<.>
+meatsp-pod pizza-maker Adding Toppings #[mozzarella,pepperoni,sausage,bacon]#
+meatsp-pod pizza-maker Baking
+meatsp-pod pizza-maker Baked
+meatsp-pod pizza-maker Ready For Delivery
+meatsp-pod pizza-maker 2021-07-19 08:24:48,517 INFO  [io.quarkus] (main) pizza-maker stopped in 0.000s
++ veggiep-pod › pizza-maker
+pass:[veggiep-pod pizza-maker __  ____  __  _____   ___  __ ____  ______ ]
+pass:[veggiep-pod pizza-maker  --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ ]
+pass:[veggiep-pod pizza-maker  -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   ]
+pass:[veggiep-pod pizza-maker --\___\_\____/_/ |_/_/|_/_/|_|\____/___/   ]
+veggiep-pod pizza-maker 2021-07-19 08:24:55,289 INFO  [io.quarkus] (main) pizza-maker 1.0-SNAPSHOT (powered by Quarkus 1.4.0.CR1) started in 0.869s. 
+veggiep-pod pizza-maker 2021-07-19 08:24:55,289 INFO  [io.quarkus] (main) Profile prod activated. 
+veggiep-pod pizza-maker 2021-07-19 08:24:55,289 INFO  [io.quarkus] (main) Installed features: [cdi]
+veggiep-pod pizza-maker Doing The Base
+veggiep-pod pizza-maker Adding Sauce #extra# #<.>
+veggiep-pod pizza-maker Adding Toppings #[mozzarella,black olives]#
+veggiep-pod pizza-maker Baking
+veggiep-pod pizza-maker Baked
+veggiep-pod pizza-maker Ready For Delivery
+veggiep-pod pizza-maker 2021-07-19 08:24:55,790 INFO  [io.quarkus] (main) pizza-maker stopped in 0.000s
+----
+<.> Matches `sauce` and `toppings` on the meat-pizza CR
+<.> Matches `sauce` and `toppings` on the veggie-lovers CR
+--
+====
+
+=== Cleanup
+
+Let's cleanup everything in our namespace
 
 [#delete-pizzas-crds]
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl delete pizzas --all
+kubectl delete all --all #<.>
+kubectl delete ns {section-namespace}
+----
+<.> Whilst namespaces do tend to automatically cleanup the resources within them, it's usually good practice to empty them out first to ensure you don't have any `finalizer` issues
+
+[.console-output]
+[source,bash]
+----
+pizza.mykubernetes.acme.org "cheesep" deleted
+pizza.mykubernetes.acme.org "meatsp" deleted
+pizza.mykubernetes.acme.org "veggiep" deleted
+pod "cheesep-pod" deleted
+pod "meatsp-pod" deleted
+pod "quarkus-operator-example-fdb76c946-cwmnq" deleted
+pod "veggiep-pod" deleted
+deployment.apps "quarkus-operator-example" deleted
+namespace "pizzahat" deleted
 ----
 
-=== Clean Up
+And finally, let's remove our CRD (which was not bound to a specific namespace like `section-namespace`)
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl delete all --all
+kubectl delete crd pizzas.mykubernetes.acme.org #<.>
+----
+<.> When deleting a crd we need to refer to it by its fully qualified name
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+customresourcedefinition.apiextensions.k8s.io "pizzas.mykubernetes.acme.org" deleted
 ----
 
 == Create some Kafka
@@ -348,7 +631,7 @@ my-cluster   3                        3
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl delete namespace pizzahat
+kubectl delete namespace {section-namespace}
 kubectl delete -f apps/pizzas/pizza-crd.yaml
 kubectl delete kafka my-cluster
 kubectl delete namespace franz
