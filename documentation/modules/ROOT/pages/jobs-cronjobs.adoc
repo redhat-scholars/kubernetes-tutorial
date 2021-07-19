@@ -27,6 +27,8 @@ include::partial$set-context.adoc[]
 
 To be able to observe what's going on, let's open another terminal (*{watch-terminal}*) and `watch` what happens as we run our different jobs
 
+:section-k8s: cronjobs
+
 include::partial$watching-pods-with-nodes.adoc[]
 
 == Jobs
@@ -231,7 +233,7 @@ kubectl get cronjobs -w #<.>
 Here is somr representative output after waiting more than 80 seconds (note that the job starts again)
 
 [.console-output]
-[source,bash,subs="+macros,+attributes,+subs"]
+[source,bash,subs="+macros,+attributes,+quotes"]
 ----
 NAME                SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
 whale-say-cronjob   */1 * * * *   False     0        <none>          29s
