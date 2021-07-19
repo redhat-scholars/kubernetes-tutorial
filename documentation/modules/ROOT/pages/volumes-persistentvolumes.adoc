@@ -1,6 +1,7 @@
 = Volumes & Persistent Volumes
 include::_attributes.adoc[]
 :watch-terminal: Terminal 2
+:file-watch-terminal: Terminal 3
 
 Containers are ephemeral by definition, which means that anything that it is stored at running time, it is lost when the container is stopped.
 This might cause problems with containers that need to persist its data like database containers.
@@ -281,7 +282,7 @@ and generate some content to `/tmp/demo` directory.
 curl localhost:8080/appendgreetingfile
 ----
 
-And then show the file exists and its content: 
+And then show that the file exists and what its content is: 
 
 [.console-input]
 [source,bash]
@@ -300,7 +301,7 @@ Jambo
 --
 ====
 
-And then in another terminal `exec` into the other container in the pod to run the `cat` command
+And then in yet another terminal (*Terminal 3*) `exec` into the other container in the pod to run the `cat` command
 
 [tabs]
 ====
@@ -339,10 +340,8 @@ Now exit out of the `exec` to the pod
 ----
 exit
 ----
---
-====
 
-You can get the volume information from a Pod by running:
+Now, back in your terminal can get the volume information from a Pod by running:
 
 [.console-input]
 [source,bash]
@@ -360,10 +359,12 @@ Volumes:
     SizeLimit:  <unset>
 ----
 
+--
+====
 
 ==== Clean Up
 
-include::partial$terminal-cleanup.adoc[]
+include::partial$terminal-cleanup.adoc[tags=**;!*;term3;term-exec]
 
 === HostPath
 
@@ -375,14 +376,10 @@ Use kbd:[CMD+p] to quickly open `myboot-pod-volume-hostpath.yml`
 ----
 include::example$myboot-pod-volume-hostpath.yaml[]
 ----
+<.> We're mounting the same location as before, but you can see that we define the volume as `hostPath` here instead of `emptyDir`
+<.> `/mnt/data` is a location on the kubernetes `node` to which this pod gets assigned
 
 In this case, you are defining the host/node directory where the contents are going to be stored.
-
-[tabs]
-====
-Terminal 1::
-+
---
 
 [.console-input]
 [source,bash]
@@ -407,14 +404,17 @@ Volumes:
     Path:          /mnt/data
     HostPathType:
 ----
---
-====
+
 
 [tabs]
 ====
-Terminal 2::
+{file-watch-terminal}::
 +
 --
+Let's open a terminal where we can watch the directory on the 'host' or the 'node'
+
+include::partial$open-terminal-in-editor-inset.adoc[]
+
 
 :mount-dir: /mnt/data
 include::partial$watch-node-directory.adoc[]
@@ -433,11 +433,11 @@ include::partial$create-greeting-file.adoc[]
 --
 ====
 
-Meanwhile in the other terminal you should at the same time see the watch output change
+Meanwhile in the other terminal (*{file-watch-terminal}*) you should at the same time see the watch output change
 
 [tabs]
 ====
-Terminal 2::
+{file-watch-terminal}::
 +
 --
 [.console-output]
@@ -455,6 +455,7 @@ Jambo
 ====
 
 Notice that now the content stored in `/tmp/demo` inside the Pod is stored at host path `/mnt/data`, so if the Pod dies, the content is not lost.
+
 But this might not solve all the problems as if Pod goes down and it is rescheduled in another node, then the data will not be in this other node.
 
 Let's see another example, in this case for an Amazon EBS Volume:
@@ -476,58 +477,11 @@ spec:
 
 What we want you to notice from the previous snippet is that you are mixing things from your application (ie the container, probes, ports, ...) things that are more in the _dev_ side with things more related to the cloud (ie physical storage), which falls more in the _ops_ side.
 
-To avoid this mix of concepts, Kubernetes offers some layer of abstractions, so developers just ask for space to store data (-persistent volume claim_), and operations team offers physical storage configuration.
+To avoid this mix of concepts, Kubernetes offers some layer of abstractions, so developers just ask for space to store data (_persistent volume claim_), and operations team offers physical storage configuration.
 
 ==== Clean Up
 
-[tabs]
-====
-Terminal 2::
-+
---
-Hit kbd:[CTRL+c] to exit out of the `watch`
-
-And then in the `ssh` shell type
-
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-exit
-----
-
-.Remote Minikube
-****
-If you had to first `ssh` to the minikube host, then you'll need to exit one more time
-
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-exit
-----
-****
-
---
-Terminal 1::
-+
---
-Exit out of the `exec`
-
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-exit
-----
-
---
-====
-
-Now from the main terminal you should be able to delete the pods
-
-[.console-input]
-[source,bash]
-----
-kubectl delete pod myboot-demo
-----
+include::partial$terminal-cleanup.adoc[tags=**;!*;term-exec]
 
 == Persistent Volume & Persistent Volume Claim
 
@@ -566,7 +520,7 @@ Now, the `volume` information is not in the pod anymore but in the _persistent v
 ----
 kubectl apply -f apps/kubefiles/demo-persistent-volume-hostpath.yaml 
 
-kubectl get pv
+kubectl get pv -w
 ----
 
 [.console-output]
@@ -575,6 +529,24 @@ kubectl get pv
 NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM                                           STORAGECLASS   REASON   AGE
 my-persistent-volume                       100Mi      RWO            Retain           Available                                                   pv-demo                 5s
 ----
+
+:mount-dir: /mnt/persistent-volume
+
+Once the volume is established, let's update our file watch terminal to look in the volume's new location: `{mount-dir}`
+
+[tabs]
+====
+{file-watch-terminal}::
++
+--
+
+Hit kbd:[CTRL+c] to exit out of the current watch
+
+Then start a new watch
+
+include::partial$file-watch-command.adoc[]
+--
+====
 
 Then from the dev side, we need to claim what we need from the _PV_.
 In the following example, we are requesting for 10Mi space.
@@ -600,7 +572,7 @@ spec:
 ----
 kubectl apply -f apps/kubefiles/myboot-persistent-volume-claim.yaml
 
-kubectl get pvc
+kubectl get pvc -w
 ----
 
 [.console-output]
@@ -653,41 +625,42 @@ Volumes:
 
 Notice that now the description of the pod shows that the volume is not set directly but through a persistence volume claim.
 
-Let's watch the path on the node that the _PV_ maps to
-
-[tabs]
-====
-Terminal 2::
-+
---
-:mount-dir: /mnt/persistent-volume
-include::partial$watch-node-directory.adoc[]
---
-
-====
-
-While the watch is going in Terminal 2 run the following commands in Terminal 1
-
-[tabs]
-====
-Terminal 1::
-+
---
-
 include::partial$create-greeting-file.adoc[]
 
+And as soon as we've done that we'll expect to see the following on the path on the node that the `PersistentVolume` maps to: 
+
+[tabs]
+====
+{file-watch-terminal}::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Every 1.0s: ls -al {mount-dir} && eval c...  devnation: Mon Jul 19 14:07:53 2021
+
+total 4
+drwxr-xr-x. 1 root root 24 Jul 19 14:06 .
+drwxr-xr-x. 1 root root 42 Jul 13 09:21 ..
+-rw-r--r--. 1 root root  5 Jul 19 14:06 greeting.txt
+Jambo
+----
 --
 ====
 
-[.console-input]
-[source,bash]
-----
-kubectl delete pod myboot-demo
+==== Clean Up
 
+include::partial$terminal-cleanup.adoc[tags=**;!*;term-exec;term3-ssh]
+
+Once all is cleaned, run the following: 
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
 kubectl get pvc
 ----
 
-Even though the pod has been deleted, the PVC (and the PV) are still there and need to be deleted manually.
+Results in:
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
@@ -696,9 +669,7 @@ NAME                 STATUS   VOLUME                 CAPACITY   ACCESS MODES   S
 myboot-volumeclaim   Bound    my-persistent-volume   100Mi      RWO            pv-demo        14m
 ----
 
-==== Clean Up
-
-include::partial$terminal-cleanup.adoc[]
+Even though the pod has been deleted, the PVC (and the PV) are still there and need to be deleted manually.
 
 [.console-input]
 [source,bash]
@@ -795,8 +766,8 @@ Minikube::
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
-NAME                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-myboot-volumeclaim   Bound    pvc-09be221f-7036-4626-b2ee-831fdc0af558   10Mi       RWO            standard       6s
+NAME                 STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myboot-volumeclaim   Pending                                      standard       2s
 ----
 --
 OpenShift::
@@ -817,16 +788,21 @@ Notice that the _PVC_ is in _Pending_ STATUS, because remember that we are creat
 [source,bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-pod-volume-pvc.yaml
-
-kubectl get pods
 ----
 
+[tabs]
+====
+{watch-terminal}::
++
+--
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
 NAME          READY   STATUS    RESTARTS   AGE
 myboot-demo   1/1     Running   0          2m36s
 ----
+--
+====
 
 When the pod is in _Running_ status, then you can get _PVC_ and _PV_ parameters.
 

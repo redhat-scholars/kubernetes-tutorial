@@ -1,8 +1,32 @@
 [tabs]
 ====
+Terminal 1::
++
+--
+// tag::term-exec[]
+Exit the `exec` command
+
+[.console-input]
+[source,bash]
+----
+exit
+----
+// end::term-exec[]
+
+Now delete the pod
+
+[.console-input]
+[source,bash]
+----
+kubectl delete pod myboot-demo
+----
+
+--
+// tag::term2[]
 Terminal 2::
 +
 --
+
 [.console-input]
 [source,bash]
 ----
@@ -11,10 +35,13 @@ exit
 
 This should close out the terminal
 --
-Terminal 1::
+// end::term2[]
+// tag::term3[]
+Terminal 3::
 +
 --
-Exit the `exec` command
+
+Close out the terminal window by typing the following in it
 
 [.console-input]
 [source,bash]
@@ -22,13 +49,32 @@ Exit the `exec` command
 exit
 ----
 
-Now delete the deployment
+--
+// end::term3[]
+// tag::term3-ssh[]
+Terminal 3::
++
+--
+Hit kbd:[CTRL+c] to exit out of the `watch`
+
+And then in the `ssh` shell type
 
 [.console-input]
-[source,bash]
+[source,bash,subs="+macros,+attributes"]
 ----
-kubectl delete -f apps/kubefiles/myboot-pods-volume.yml
+exit
 ----
 
+.Remote Minikube
+****
+If you had to first `ssh` to the minikube host, then you'll need to exit one more time
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+exit
+----
+****
 --
+// end::term3-ssh[]
 ====

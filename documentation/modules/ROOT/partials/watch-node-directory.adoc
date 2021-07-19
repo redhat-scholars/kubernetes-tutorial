@@ -1,3 +1,5 @@
+
+
 .Remote Minikube
 ****
 If you are running minikube remotely you will need to first SSH to the machine that is running minikube.  For example
@@ -27,8 +29,4 @@ docker@devnation:~$
 
 Now that we're there, let's watch the `{mount-dir}` directory that the pod has mounted as `/tmp/demo`
 
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-watch -n1 -- eval "ls -al {mount-dir} && echo $(cat {mount-dir}/greeting.txt)"
-----
+include::partial$file-watch-command.adoc[]
