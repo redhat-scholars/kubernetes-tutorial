@@ -305,7 +305,7 @@ kubectl taint nodes --all=true color=blue:NoSchedule-
 ====
 
 
-Then deploy a service:
+Then deploy another instance of myboot (with no Tolerations):
 
 [tabs]
 ====
@@ -769,5 +769,3 @@ kubectl delete -f apps/kubefiles/myboot-deployment.yml
 ----
 --
 ====
-
-At this time, you may also consider terminating your watch window terminal (*{watch-terminal}*)
