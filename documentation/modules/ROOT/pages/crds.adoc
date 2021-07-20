@@ -246,10 +246,10 @@ FIELDS:
      Standard object's metadata. More info:
      https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
 
-   sauce        <string>
+   sauce        <string> #<.>
      The name of the sauce to use on our pizza
 
-   toppings     <[]string>
+   toppings     <[]string> #<.>
      List of toppings for our pizza'
 ----
 <.> Notice that this matches our overall description of the pizza
