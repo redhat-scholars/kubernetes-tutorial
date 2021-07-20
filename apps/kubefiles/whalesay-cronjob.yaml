@@ -9,7 +9,7 @@ spec:
       template:    
         metadata:
           labels:
-            job-type: whale #<.>              
+            job-type: whale-say #<.>              
         spec:
           containers:
           - name: whale-say-container
