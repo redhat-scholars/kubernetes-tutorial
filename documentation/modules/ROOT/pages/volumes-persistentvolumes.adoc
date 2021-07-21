@@ -260,8 +260,43 @@ Notice the `2/2` ready status.  This represents the 2 containers in the pod defi
 --
 ====
 
+First, let's exec into the *second* container in the pod and start a watch on the mount point.  For this we'll open yet another terminal (*{file-watch-terminal}*) `exec` into the other container in the pod to run the `cat` command
 
-Let's access into the *first* container in one terminal
+[tabs]
+====
+{file-watch-terminal}::
++
+--
+
+include::partial$open-terminal-in-editor-inset.adoc[]
+
+[.console-input]
+[source,bash]
+----
+kubectl exec -it myboot-demo -c myboot-demo-2 -- bash 
+----
+
+And then from inside the `myboot-demo-2` container in the pod, run the following command: 
+
+[.console-input]
+[source,bash]
+----
+watch -n1 -- "ls -l /tmp/demo && eval ""cat /tmp/demo/greeting.txt"""
+----
+
+Which will at first return
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+total 0
+cat: /tmp/demo/greeting.txt: No such file or directory
+----
+
+--
+====
+
+Let's access into the *first* container in the main terminal and see if we can get it to create a file that the *second* container can see
 
 [tabs]
 ====
@@ -301,30 +336,13 @@ Jambo
 --
 ====
 
-And then in yet another terminal (*Terminal 3*) `exec` into the other container in the pod to run the `cat` command
+Meanwhile in *{file-watch-terminal}* you should see something like: 
 
 [tabs]
 ====
-Terminal 3::
+{file-watch-terminal}::
 +
 --
-
-include::partial$open-terminal-in-editor-inset.adoc[]
-
-[.console-input]
-[source,bash]
-----
-kubectl exec -it myboot-demo -c myboot-demo-2 -- bash 
-----
-
-And then from inside the `myboot-demo-2` container in the pod, run the following command (similar to the one we ran in the other `myboot-demo-1` container): 
-
-[.console-input]
-[source,bash]
-----
-ls -l /tmp/demo && echo $(cat /tmp/demo/greeting.txt) 
-----
-
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -333,7 +351,7 @@ total 4
 Jambo
 ----
 
-Now exit out of the `exec` to the pod
+Hit kbd:[CTRL+c] to exit the watch and then exit out of the `exec` to the pod
 
 [.console-input]
 [source,bash]
@@ -493,7 +511,7 @@ It can request for specific volume size or for example the access mode.
 
 === Persistent volume/claim with hostPath
 
-Let's use `hostPath` strategy but not configuring it directly as volume, but using persistence volume and persistence volume claim.
+Let's use `hostPath` strategy but not configuring it directly as volume, but using persistence volume and persistence volume claim.  Use kbd:[CMD+p] to open `demo-persistent-volume-hostpath.yaml` quickly:
 
 [source, yaml]
 ----
@@ -549,7 +567,7 @@ include::partial$file-watch-command.adoc[]
 ====
 
 Then from the dev side, we need to claim what we need from the _PV_.
-In the following example, we are requesting for 10Mi space.
+In the following example, we are requesting for *10Mi* space.  Use kbd:[CMD+p] to open `myboot-persistent-volume-claim.yaml` quickly:
 
 [source, yaml]
 ----
@@ -582,7 +600,7 @@ NAME                 STATUS   VOLUME                 CAPACITY   ACCESS MODES   S
 myboot-volumeclaim   Bound    my-persistent-volume   100Mi      RWO            pv-demo        3s
 ----
 
-The big difference is that now in the pod you are just defining in the `volumes` section, not the volume configuration directly, but the _persistent volume claim_ to use.
+The big difference is that now in the pod you are just defining in the `volumes` section, not the volume configuration directly, but the _persistent volume claim_ to use.  Use kbd:[CMD+p] to open `myboot-pod-volume-pvc.yaml` quickly:
 
 [source, yaml]
 ----
@@ -729,7 +747,7 @@ For example in the case of AWS, a default Storage Class is provided pointing out
 --
 ====
 
-Then you can create a Persistent Volume Claim which will create a Persistent Volume automatically.
+Then you can create a Persistent Volume Claim which will create a Persistent Volume automatically.  Use kbd:[CTRL+p] to open `demo-dynamic-persistent.yaml` quickly:
 
 [source, yaml]
 ----
@@ -745,7 +763,7 @@ spec:
       storage: 10Mi
 ----
 
-Since we've not specified any _storage class_ but there is one defined as the default, the _PVC_ implicitly refers to that one.
+Since we've not specified any _storage class_ but there is one defined as the default, the _PVC_ implicitly refers to that one.  (You might consider comparing this pod definition to `myboot-persistent-volume-claim.yaml`)
 
 .Difference between static and dynamic PVC (with static PV)
 image::pv-static-vs-dynamic.png[]
