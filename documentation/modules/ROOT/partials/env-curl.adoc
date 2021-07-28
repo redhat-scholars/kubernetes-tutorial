@@ -12,18 +12,6 @@ IP=$(minikube ip -p devnation)
 PORT=$(kubectl get service/{tmp-service-exposed} -o jsonpath="{.spec.ports[*].nodePort}")
 ----
 --
-Remote Minikube::
-+
---
-:tmp-service-exposed: {service-exposed}
-
-[.console-input]
-[source,bash,subs="+attributes"]
-----
-IP=$(kubectl cluster-info | grep "Kubernetes " | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g' | sed -r 's#^.*https://([^:]+):[[:digit:]]+$#\1#')
-PORT=$(kubectl get service/{tmp-service-exposed} -o jsonpath="{.spec.ports[*].nodePort}")
-----
---
 Hosted::
 +
 --

@@ -64,17 +64,5 @@ And then in the `ssh` shell type
 ----
 exit
 ----
-
-.Remote Minikube
-****
-If you had to first `ssh` to the minikube host, then you'll need to exit one more time
-
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-exit
-----
-****
---
 // end::term3-ssh[]
 ====
