@@ -64,5 +64,6 @@ And then in the `ssh` shell type
 ----
 exit
 ----
+--
 // end::term3-ssh[]
 ====
