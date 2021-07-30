@@ -27,7 +27,8 @@
 	],
 	"remoteEnv": {
 		"SYNC_LOCALHOST_KUBECONFIG": "true",
-		"SYNC_MINIKUBE_PROFILE": "devnation"
+		"SYNC_MINIKUBE_PROFILE": "devnation",
+		"HOST_USER": "${env:USER}"
 	},
 	"extensions": [
 		"vscjava.vscode-java-pack",
