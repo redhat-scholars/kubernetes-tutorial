@@ -15,6 +15,7 @@
 		// mount npm cache locally
 		"-v", "${env:HOME}/.npm:/home/jboss/.npm",
 
+		// This allows us to reach the minikube instance from within the docker container
 		"--network", "host",
 		
 		// override dockerfile DEMO_HOME to whatever folder vscode considers the root folder in the container

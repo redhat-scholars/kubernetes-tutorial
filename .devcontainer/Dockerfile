@@ -5,7 +5,8 @@ USER root
 # Install necessary tools to run antora
 RUN dnf -y install npm && npm i -g @antora/cli@2.3 @antora/site-generator-default@2.3 && npm rm --global npx && npm install --global npx && npm install --global gulp
 
-RUN dnf -y install yum && yum install -y yum-utils sudo && \
+#RUN dnf -y install yum && yum install -y yum-utils sudo && \
+RUN dnf -y install yum && yum install -y yum-utils && \
 # install docker repo
     yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo && \
 # install docker client
@@ -25,7 +26,7 @@ RUN wget https://github.com/mikefarah/yq/releases/download/2.4.1/yq_linux_amd64 
 RUN curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-latest.x86_64.rpm && \
     rpm -Uvh minikube-latest.x86_64.rpm
 
-COPY assets/sudoers /etc/sudoers
+#COPY assets/sudoers /etc/sudoers
 
 USER jboss
 
