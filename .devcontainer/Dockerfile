@@ -5,13 +5,15 @@ USER root
 # Install necessary tools to run antora
 RUN dnf -y install npm && npm i -g @antora/cli@2.3 @antora/site-generator-default@2.3 && npm rm --global npx && npm install --global npx && npm install --global gulp
 
-RUN dnf -y install yum && yum install -y yum-utils && \
+RUN dnf -y install yum && yum install -y yum-utils sudo && \
 # install docker repo
     yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo && \
 # install docker client
     yum install -y docker-ce-cli && \
 # make sure jboss user has rights to run docker
     usermod -aG docker jboss && \
+# and rights to sudo (for the copy-kube-config.sh script)
+    usermod -aG wheel jboss && \
 # cleanup packages and yum
     yum remove -y yum-utils && yum clean all && dnf clean all
 
@@ -23,6 +25,7 @@ RUN wget https://github.com/mikefarah/yq/releases/download/2.4.1/yq_linux_amd64 
 RUN curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-latest.x86_64.rpm && \
     rpm -Uvh minikube-latest.x86_64.rpm
 
+COPY assets/sudoers /etc/sudoers
 
 USER jboss
 
@@ -47,4 +50,4 @@ ENV KUBE_EDITOR="code -w"
 
 # this is done in the base image already (to support the demo shell images too), but for those that make
 # local changes to .zshrc they should not have to rebuild the base
-COPY .zshrc.example $HOME/.zshrc
+COPY assets/.zshrc.example $HOME/.zshrc

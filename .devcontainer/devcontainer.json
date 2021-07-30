@@ -3,8 +3,6 @@
 	"dockerFile": "Dockerfile",
 	"runArgs": [
 		"-v", "/var/run/docker.sock.raw:/var/run/docker.sock",
-		"-v", "${env:HOME}/.minikube:/home/jboss/.minikube",
-		"-v", "${env:HOME}/.kube:/home/jboss/.kube",
 		"-v", "${env:HOME}/.vs-kubernetes:/home/jboss/.vs-kubernetes",
 
 		// use local .oh-my-zsh configuration if it exists (overwriting one in container).
@@ -16,10 +14,20 @@
 		"-v", "${env:HOME}/.m2/:/home/jboss/.m2",
 		// mount npm cache locally
 		"-v", "${env:HOME}/.npm:/home/jboss/.npm",
+
+		"--network", "host",
 		
 		// override dockerfile DEMO_HOME to whatever folder vscode considers the root folder in the container
 		"-e", "DEMO_HOME=${containerWorkspaceFolder}",
 	],
+	"mounts":[
+		"source=${env:HOME}${env:USERPROFILE}/.kube,target=/usr/local/share/kube-localhost,type=bind",
+		"source=${env:HOME}${env:USERPROFILE}/.minikube,target=/usr/local/share/minikube-localhost,type=bind"
+	],
+	"remoteEnv": {
+		"SYNC_LOCALHOST_KUBECONFIG": "true",
+		"SYNC_MINIKUBE_PROFILE": "devnation"
+	},
 	"extensions": [
 		"vscjava.vscode-java-pack",
 		"redhat.vscode-xml",
@@ -29,7 +37,7 @@
 		"asciidoctor.asciidoctor-vscode",
 		"madhavd1.javadoc-tools"
 	],
-	"postStartCommand": "rsync -a .devcontainer/workspace-setup/ ${containerWorkspaceFolder}/.vscode/ --ignore-existing",
+	"postStartCommand": "${containerWorkspaceFolder}/.devcontainer/assets/post-start.sh ${containerWorkspaceFolder}",
 	"settings":{
 		"terminal.integrated.shell.linux": "/bin/zsh",
 		"editor.tabCompletion": "on",
