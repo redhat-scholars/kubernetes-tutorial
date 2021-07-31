@@ -1,0 +1,5 @@
+[fedora]
+name = Fedora
+baseurl = https://mirror.aarnet.edu.au/pub/fedora/linux/releases/34/Everything/x86_64/os/
+gpgcheck=0
+enabled=0
