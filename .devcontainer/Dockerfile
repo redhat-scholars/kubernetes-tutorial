@@ -12,7 +12,7 @@ USER root
 # ubi8 repos
 COPY assets/fedora.repo /etc/yum.repos.d/fedora.repo
 
-RUN dnf update -y --allowerasing --nobest --skip-broken \
+RUN microdnf install dnf \
 # install a smattering of useful packages (some of which are used later in dockerfile such as wget, zsh, and git)
     && dnf install -y skopeo wget jq iputils vi procps git \
 # Install packages from fedora (outside unsubscribed ubi8)
