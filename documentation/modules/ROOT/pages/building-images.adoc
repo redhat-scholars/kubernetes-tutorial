@@ -12,10 +12,8 @@ IMPORTANT: To make it work correctly, you need to run this section in a new term
 
 First let's take a quick look at the application we're looking to build
 
-[TIP]
-====
-If you're running this from within VSCode you can use kbd:[CTRL+p] (or kbd:[CMD+p] on Mac OSX) to quickly open `MyRESTController.java`
-====
+:quick-open-file: MyRESTController.java
+include::partial$tip_vscode_quick_open.adoc[]
 
 image::hello-world-app.png[]
 

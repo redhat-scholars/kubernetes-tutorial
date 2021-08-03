@@ -151,9 +151,14 @@ OpenShift is at its heart Kubernetes.  One of the main ways OpenShift extends Ku
 
 === Example CRD
 
-Let's go ahead and create our own Custom Resource Definition.  Later on, this Custom Resources created from this definition will be something that our operator will operate upon.  Use kbd:[CMD+p] to open `pizza-crd.yaml` quickly
+:quick-open-file: pizza-crd.yaml
+
+Let's go ahead and create our own Custom Resource Definition.  Later on, this Custom Resources created from this definition will be something that our operator will operate upon.  Take a look at `{quick-open-file}` to see what the CRD we'll be creating looks like
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
 include::example$pizza-crd.yaml[]
 ----
@@ -262,10 +267,15 @@ Our CRD is not limited to a particular namespace, but we do need a namespace to 
 
 At its heart, an operator is just an application, like the `myboot` application that we deployed previously.  The difference is that the operator knows to to interact with the Kubernetes API and watch for resources that it cares about.
 
-The Pizza operator that we're about to deploy was written in link:https://quarkus.io/[Quarkus^] using the link:https://github.com/java-operator-sdk/java-operator-sdk[java operator sdk^].  The code for this operator is present in this repo.  Use kbd:[CMD+p] to quickly open `PizzaResourceWatcher.java` which is one of the key classes in the operator controller
+:quick-open-file: PizzaResourceWatcher.java
+
+The Pizza operator that we're about to deploy was written in link:https://quarkus.io/[Quarkus^] using the link:https://github.com/java-operator-sdk/java-operator-sdk[java operator sdk^].  The code for this operator is present in this repo.  See the `{quick-open-file}` which is one of the key classes in the operator controller:
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [.console-output]
 [source,java,subs="+macros,+attributes"]
+.{quick-open-file}
 ----
 include::example$PizzaResourceWatcher.java[]
 ----
@@ -407,11 +417,15 @@ Notice that *Sauce* and *Toppings* matches what was specified in the `pizza` Cus
 
 === Make more Pizzas
 
-Use kbd:[CMD+p] (on Mac OSX) to quickly open both `meat-pizza.yaml` and `veggie-lovers.yaml` to show the sauce and toppings options there
+:quick-open-file: meat-pizza.yaml
 
-.Meat Pizza Example
+Take a look at `{quick-open-file}` and `veggie-lovers.yaml` to show the sauce and toppings options there
+
+include::partial$tip_vscode_quick_open.adoc[]
+
 [.console-output]
 [source,yaml,subs="+macros,+attributes"]
+.{quick-open-file}
 ----
 include::example$meat-pizza.yaml[]
 ----

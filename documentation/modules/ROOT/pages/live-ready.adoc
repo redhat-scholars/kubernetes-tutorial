@@ -22,10 +22,15 @@ kubectl get all
 No resources found in myspace namespace.
 ----
 
-Now we're going to deploy our application with a Liveness and Readiness probe set.  Use kbd:[CTRL+p] (or kbd:[CMD+p] on Mac OS) to quickly open `myboot-deployment-live-ready.yml` which should look like the following: 
+:quick-open-file: myboot-deployment-live-ready.yml
+
+Now we're going to deploy our application with a Liveness and Readiness probe set.  Take a look at `{quick-open-file}`
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [.console-output]
 [source,yaml]
+.{quick-open-file}
 ----
 include::example$myboot-deployment-live-ready.yml[]
 ----
@@ -340,10 +345,15 @@ Some applications require an additional startup time on their first initializati
 
 It might be tricky to fit this scenario into liveness/readiness probe as you need to configure them for their normal behaviour to detect abnormalities during the running time and moreover covering the long start up time.
 
-For instance, what if we had an application that might deadlock and we want to catch such issues immediately, we might have liveness and readiness probes that look like this (use kbd:[CTRL+p] or kbd:[CMD+p] to quickly open `apps/kubefiles/myboot-deployment-live-ready-aggressive.yml`
+:quick-open-file: myboot-deployment-live-ready-aggressive.yml
+
+For instance, what if we had an application that might deadlock and we want to catch such issues immediately, we might have liveness and readiness probes that look like in `apps/kubefiles/{quick-open-file}`
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [.console-output]
 [source,yaml]
+.{quick-open-file}
 ----
 include::example$myboot-deployment-live-ready-aggressive.yml[]
 ----
@@ -384,10 +394,15 @@ Events:
 
 *Startup probes* fixes this problem, as once the startup probe has succeeded, the rest of the probes takes over but until the startup probe passes, neither the liveness nor readiness probes can run. 
 
-Here is a deployment with just such a probe (use kbd:[CTRL+p] or kbd:[CMD+p] to quickly open `myboot-deployment-startup-live-ready.yml`)
+:quick-open-file: myboot-deployment-startup-live-ready.yml
+
+`{quick-open-file}` is an example of a deployment with just such a probe
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [.console-output]
 [source,yaml]
+.{quick-open-file}
 ----
 include::example$myboot-deployment-startup-live-ready.yml[]
 ----

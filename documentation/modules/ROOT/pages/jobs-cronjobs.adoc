@@ -33,9 +33,14 @@ include::partial$watching-pods-with-nodes.adoc[]
 
 == Jobs
 
-A Job is created using the Kubernetes `Job` resource.  To examine one, use kbd:[CMD+p] to quickly open the `whalesay-job.yaml`.  Here are the interesting aspects of this file:
+:quick-open-file: whalesay-job.yaml
+
+A Job is created using the Kubernetes `Job` resource.  To examine one, open the `{quick-open-file}`.  Here are the interesting aspects of this file:
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
 include::example$whalesay-job.yaml[]
 ----
@@ -156,9 +161,14 @@ kubectl delete -f apps/kubefiles/whalesay-job.yaml
 
 == CronJobs
 
-A CronJob is defined using the Kubernetes `CronJob` resource.  The name `cronjob` comes from Linux and represents some sort of batch process that is scheduled to run once or repeatedly.  This concept has been translated into Kubernetes.  Let's examine one by using kbd:[CMD+p] to quickly open the `whalesay-cronjob.yaml` file: 
+:quick-open-file: whalesay-cronjob.yaml
+
+A CronJob is defined using the Kubernetes `CronJob` resource.  The name `cronjob` comes from Linux and represents some sort of batch process that is scheduled to run once or repeatedly.  This concept has been translated into Kubernetes as we can see in the `{quick-open-file}` file: 
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
 include::example$whalesay-cronjob.yaml[]
 ----

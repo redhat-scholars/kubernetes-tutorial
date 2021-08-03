@@ -50,9 +50,14 @@ As the name says, it is initially empty.
 All Containers in the same Pod can read and write in the same `emptyDir` volume.
 When a Pod is restarted or removed, the data in the` emptyDir` is lost forever.
 
-Let's deploy a service that exposes two endpoints, one to write content to a file and another one to retrieve the content from that file.  Use kbd:[CMD+p] to quickly open `myboot-pod-volume.yml`
+:quick-open-file: myboot-pod-volume.yml
+
+Let's deploy a service that exposes two endpoints, one to write content to a file and another one to retrieve the content from that file.  Open `{quick-open-file}`
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
 include::example$myboot-pod-volume.yml[]
 ----
@@ -221,10 +226,14 @@ kubectl delete pod myboot-demo
 
 `emptyDir` is shared between containers of the same Pod.  Let's take a look at a deployment that creates two containers in the same pod that mount the same `emptyDir` volume.
 
-Use kbd:[CMD+p] to open `myboot-pods-volume.yml` quickly: 
+:quick-open-file: myboot-pods-volume.yml
+include::partial$tip_vscode_quick_open.adoc[]
+
+Consider `{quick-open-file}`: 
 
 [.console-output]
 [source,yaml]
+.{quick-open-file}
 ----
 include::example$myboot-pods-volume.yml[]
 ----
@@ -386,11 +395,14 @@ include::partial$terminal-cleanup.adoc[tags=**;!*;term3;term-exec]
 
 === HostPath
 
-A `hostPath` volume mounts a file or directory from the node's filesystem into the Pod.
+:quick-open-file: myboot-pod-volume-hostpath.yml
 
-Use kbd:[CMD+p] to quickly open `myboot-pod-volume-hostpath.yml`
+A `hostPath` volume mounts a file or directory from the node's filesystem into the Pod.  Take a look at `{quick-open-file}`
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
 include::example$myboot-pod-volume-hostpath.yaml[]
 ----
@@ -511,9 +523,14 @@ It can request for specific volume size or for example the access mode.
 
 === Persistent volume/claim with hostPath
 
-Let's use `hostPath` strategy but not configuring it directly as volume, but using persistence volume and persistence volume claim.  Use kbd:[CMD+p] to open `demo-persistent-volume-hostpath.yaml` quickly:
+:quick-open-file: demo-persistent-volume-hostpath.yaml
+
+Let's use `hostPath` strategy but not configuring it directly as volume, but using persistence volume and persistence volume claim. Check out `{quick-open-file}`:
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
 kind: PersistentVolume
 apiVersion: v1
@@ -566,10 +583,15 @@ include::partial$file-watch-command.adoc[]
 --
 ====
 
+:quick-open-file: myboot-persistent-volume-claim.yaml
+
 Then from the dev side, we need to claim what we need from the _PV_.
-In the following example, we are requesting for *10Mi* space.  Use kbd:[CMD+p] to open `myboot-persistent-volume-claim.yaml` quickly:
+In the following example, we are requesting for *10Mi* space.  See `{quick-open-file}`:
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -600,9 +622,14 @@ NAME                 STATUS   VOLUME                 CAPACITY   ACCESS MODES   S
 myboot-volumeclaim   Bound    my-persistent-volume   100Mi      RWO            pv-demo        3s
 ----
 
-The big difference is that now in the pod you are just defining in the `volumes` section, not the volume configuration directly, but the _persistent volume claim_ to use.  Use kbd:[CMD+p] to open `myboot-pod-volume-pvc.yaml` quickly:
+:quick-open-file: myboot-pod-volume-pvc.yaml
+
+The big difference is that now in the pod you are just defining in the `volumes` section, not the volume configuration directly, but the _persistent volume claim_ to use.  See `{quick-open-file}`:
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
 apiVersion: v1
 kind: Pod

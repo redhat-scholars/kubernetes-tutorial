@@ -269,10 +269,15 @@ Labels:       app=quarkus-statefulset
 Annotations:  <none>
 ----
 
-We can use this label as a selector for a service that targets this specific pod.  Use kbd:[CMD+p] to open `quarkus-statefulset-external-svc.yaml` quickly: 
+:quick-open-file: quarkus-statefulset-external-svc.yaml
+
+We can use this label as a selector for a service that targets this specific pod.  Take a look at `{quick-open-file}`: 
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [.console-output]
-[source,bash,subs="+macros,+attributes"]
+[source,yaml,subs="+macros,+attributes"]
+.{quick-open-file}
 ----
 include::example$quarkus-statefulset-external-svc.yaml[]
 ----

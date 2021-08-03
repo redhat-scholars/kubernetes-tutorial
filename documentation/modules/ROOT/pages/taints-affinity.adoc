@@ -432,9 +432,14 @@ Reasons such as significant network communication between Pods and you want to a
 
 === Node Affinity
 
-Let's deploy a new pod with a node affinity.  Use kbd:[CMD+p] to quickly open `myboot-node-affinity.yml` (relevant section shown below)
+:quick-open-file: myboot-node-affinity.yml
+
+Let's deploy a new pod with a node affinity.  Take a look at `{quick-open-file}` (relevant section shown below)
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
 spec:
   affinity:
@@ -599,9 +604,14 @@ kubectl delete -f apps/kubefiles/myboot-node-affinity.yml
 
 === Pod Affinity/Anti-Affinity
 
-Let's deploy a new pod with a Pod Affinity.  Use kbd:[CMD+p] to quickly open `myboot-pod-affinity.yml`.  Relevant part of that file is:
+:quick-open-file: myboot-pod-affinity.yml
+
+Let's deploy a new pod with a Pod Affinity.  See this relevant part of `{quick-open-file}`.  
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
 spec:
   affinity:
@@ -698,10 +708,15 @@ spec:
 
 *Anti-affinity* is used to insure that two Pods do NOT run together on the same node.
 
-Let's add another pod.  Use kbd:[CMD+p] to quickly open `myboot-pod-antiaffinity.yaml` and focus on the following part
+:quick-open-file: myboot-pod-antiaffinity.yaml
+
+Let's add another pod.  Open `{quick-open-file}` and focus on the following part
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [.console-output]
 [source, yaml]
+.{quick-open-file}
 ----
 spec:
   affinity:
