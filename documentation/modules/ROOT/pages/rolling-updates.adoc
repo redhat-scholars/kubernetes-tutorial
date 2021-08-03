@@ -45,6 +45,8 @@ Describe (or `kubectl edit`) the Deployment:
 
 include::partial$describe-deployment.adoc[]
 
+// The .no-query-replace tells the course ui to not attempt to replace tokens between % %
+[.no-query-replace]
 [.console-output]
 [source,bash]
 ----
