@@ -64,11 +64,12 @@ RollingUpdateStrategy:  25% max unavailable, 25% max surge
 
 Change the replicas:
 
+include::partial$tip_vscode_kube_editor.adoc[]
+
 [#edit-deployment-replicas-rolling]
 [.console-input]
 [source, bash]
 ----
-export KUBE_EDITOR="code -w"
 kubectl edit deployment myboot
 ----
 

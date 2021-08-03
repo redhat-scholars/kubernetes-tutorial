@@ -226,16 +226,18 @@ Amour
 Events:  <none>
 ----
 
-[NOTE]
-====
-If it's easier to show, you can also use the VSCode editor to show what's in the config map by running (assuming you already have your `KUBE_EDITOR` environment variable set)
+.Using `kubectl edit` to view resources
+****
+For large files you might find using `kubectl edit` is more convenient for viewing resources on the cluster.  In our case, we can view the config map by running the following (and aborting any changes!):
+
+include::partial$tip_vscode_kube_editor.adoc[]
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl edit cm my-config
 ----
-====
+****
 
 Now deploy the app with its request for the `ConfigMap`:
 

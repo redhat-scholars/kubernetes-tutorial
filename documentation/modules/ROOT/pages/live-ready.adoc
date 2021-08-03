@@ -220,12 +220,12 @@ Jambo from Spring Boot! 71 on myboot-56659c9d69-6sglj
 
 Edit the Deployment to point to the /alive URL:
 
+include::partial$tip_vscode_kube_editor.adoc[]
+
 [#change-liveness-v3-live-ready]
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-export KUBE_EDITOR="code -w"
-
 kubectl edit deployment myboot
 ----
 
