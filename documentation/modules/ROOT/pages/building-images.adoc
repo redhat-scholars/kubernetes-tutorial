@@ -1,6 +1,6 @@
 = Building Images
 
-:docker-host: localhost
+// See antora yaml (such as github-pages.yml) to change what attribute docker-host is set to
 
 == Prerequisite
 
