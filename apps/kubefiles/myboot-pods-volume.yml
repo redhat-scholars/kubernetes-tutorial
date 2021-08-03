@@ -4,17 +4,17 @@ metadata:
   name: myboot-demo
 spec:
   containers:
-  - name: myboot-demo-1
+  - name: myboot-demo-1 #<.>
     image: quay.io/rhdevelopers/myboot:v4
     volumeMounts:
     - mountPath: /tmp/demo
       name: demo-volume
 
-  - name: myboot-demo-2
-    image: quay.io/rhdevelopers/myboot:v4
+  - name: myboot-demo-2 #<.>
+    image: quay.io/rhdevelopers/myboot:v4 #<.>
 
     env:
-    - name: SERVER_PORT
+    - name: SERVER_PORT #<.>
       value: "8090"
 
     volumeMounts:
@@ -22,5 +22,5 @@ spec:
       name: demo-volume
 
   volumes:
-  - name: demo-volume
+  - name: demo-volume #<.>
     emptyDir: {}

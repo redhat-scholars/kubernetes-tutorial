@@ -1,0 +1,4 @@
+.VSCode: Open Terminal in Editor
+****
+If you're doing this tutorial from within VSCode you may be running out of space to put your terminals at this point!  If you have a recent release of VSCode, you might consider opening a new terminal in the editor pane by using kbd:[CTRL+SHIFT+p] (or kbd:[CMD+SHIFT+p] on Mac OSX) to run the `Terminal: Create Terminal in Editor Area` command
+****

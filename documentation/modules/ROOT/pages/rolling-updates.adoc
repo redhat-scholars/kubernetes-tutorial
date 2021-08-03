@@ -6,6 +6,10 @@ Make sure you are in the correct namespace
 :set-namespace: myspace
 include::partial$set-context.adoc[]
 
+.TIP
+****
+If you just came from xref::resources.adoc[the Resources and Limits section, window=_blank] then you should already have the pods and deployments active that you need.  If not, you will need run the following commands to deploy the needed elements into {set-namespace}
+
 Deploy the Spring Boot app if needed:
 
 [#deploy-myboot-rolling]
@@ -16,11 +20,11 @@ kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
 kubectl apply -f apps/kubefiles/myboot-service.yml
 ----
 
-Terminal 1: watch the Pods.
+*Terminal 1*: watch the Pods.
 
 include::partial$watching-pods.adoc[]
 
-Terminal 2: curl loop the service.
+*Terminal 2*: curl loop the service.
 
 :service-exposed: myboot
 
@@ -30,15 +34,19 @@ And run loop script:
 
 include::partial$loop.adoc[]
 
-Terminal 3: Run commands.
+****
 
-Describe the Deployment:
+*Terminal 3*: Run commands.
+
+Describe (or `kubectl edit`) the Deployment:
 
 :describe-deployment-name: myboot
 :section-k8s: rolling-init
 
 include::partial$describe-deployment.adoc[]
 
+// The .no-query-replace tells the course ui to not attempt to replace tokens between % %
+[.no-query-replace]
 [.console-output]
 [source,bash]
 ----
@@ -58,11 +66,12 @@ RollingUpdateStrategy:  25% max unavailable, 25% max surge
 
 Change the replicas:
 
+include::partial$tip_vscode_kube_editor.adoc[]
+
 [#edit-deployment-replicas-rolling]
 [.console-input]
 [source, bash]
 ----
-export KUBE_EDITOR="code -w"
 kubectl edit deployment myboot
 ----
 
@@ -94,7 +103,7 @@ spec:
       app: myboot
 ----
 
-Save and close the VS Code window and a new pod will come to life:
+Save and close your editor and a new pod will come to life:
 
 [#edit-deployment-replicas-get-pod-rolling]
 [.console-input]

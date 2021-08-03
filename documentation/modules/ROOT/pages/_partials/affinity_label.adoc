@@ -1,0 +1,50 @@
+// tag::openshift[]
+:chosen-node: ip-10-0-175-64.eu-central-1.compute.internal
+// end::openshift[]
+// tag::minikube[]
+:chosen-node: devnation-m02
+// end::minikube[]
+
+Get a list of nodes:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get nodes
+----
+
+[.console-output]
+[source,bash,subs="+attributes,+quotes"]
+----
+NAME                                            STATUS   ROLES    AGE   VERSION
+# tag::openshift[]
+ip-10-0-136-107.eu-central-1.compute.internal   Ready    master   26h   v1.16.2
+ip-10-0-140-186.eu-central-1.compute.internal   Ready    worker   26h   v1.16.2
+ip-10-0-141-128.eu-central-1.compute.internal   Ready    worker   25h   v1.16.2
+ip-10-0-146-109.eu-central-1.compute.internal   Ready    worker   25h   v1.16.2
+ip-10-0-150-226.eu-central-1.compute.internal   Ready    worker   26h   v1.16.2
+ip-10-0-155-122.eu-central-1.compute.internal   Ready    master   26h   v1.16.2
+ip-10-0-162-206.eu-central-1.compute.internal   Ready    worker   26h   v1.16.2
+ip-10-0-168-102.eu-central-1.compute.internal   Ready    master   26h   v1.16.2
+#{chosen-node}#    Ready    worker   25h   v1.16.2
+# end::openshift[]
+# tag::minikube[]
+devnation       Ready    control-plane,master   3d    v1.21.2
+#{chosen-node}#   Ready    <none>                 42h   v1.21.2
+# end::minikube[]
+----
+
+Then pick a node in the list to label (such as the one highlighted)
+
+[.console-input]
+[source,bash,subs="+macros,+attributes,+quotes"]
+----
+kubectl label nodes {chosen-node} #color=blue# #<.>
+----
+<.> Notice that this matches the affinity in the pod
+
+[.console-output]
+[source,bash,subs="+attributes"]
+----
+node/{chosen-node} labeled
+----

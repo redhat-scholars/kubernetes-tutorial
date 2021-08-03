@@ -1,0 +1,13 @@
+[.console-input]
+[source,bash]
+----
+kubectl exec -ti myboot-demo -- /bin/bash
+----
+
+and then from within the pod, generate some content to `/tmp/demo` directory.
+
+[.console-input]
+[source,bash]
+----
+curl localhost:8080/appendgreetingfile
+----

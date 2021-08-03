@@ -23,6 +23,8 @@ spec:
           requests: 
             memory: "300Mi" 
             cpu: "250m" # 1/4 core
+          # NOTE: These are the same limits we tested our Docker Container with earlier
+          # -m matches limits.memory and --cpus matches limits.cpu
           limits:
             memory: "400Mi"
             cpu: "1000m" # 1 core

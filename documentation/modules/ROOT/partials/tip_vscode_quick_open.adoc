@@ -1,0 +1,4 @@
+[TIP]
+====
+If you're running this from within VSCode you can use kbd:[CTRL+p] (or kbd:[CMD+p] on Mac OSX) to quickly open `{quick-open-file}`
+====

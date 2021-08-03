@@ -1,0 +1,81 @@
+{
+  "Add Tabs": {
+    "prefix": "tabs",
+    "body": [
+      "[tabs]",
+      "====",
+      "${1:tab1}::",
+      "+",
+      "--",
+      "--",
+      "${2:tab2}::",
+      "+",
+      "--",
+      "--",
+      "===="
+    ],
+    "description": "Add Tabs macro"
+  },
+  "Add Navigation": {
+    "prefix": "nav",
+    "body": [
+      "${1|*,**,***|} xref:${2:page.adoc}[${3:Nav Title}]"
+    ],
+    "description": "Add new navigation"
+  },
+  "Console Input": {
+    "prefix": "input",
+    "body": [
+      "[.console-input]",
+      "[source,${1:bash},subs=\"${2:+macros,+attributes}\"]",
+      "----",
+      "${3:echo \"Hello World\"}",
+      "----"
+    ],
+    "description": "Adds Console Input source fragment"
+  },
+  "Console Output": {
+    "prefix": "output",
+    "body": [
+      "[.console-output]",
+      "[source,${1:bash},subs=\"${2:+macros,+attributes}\"]",
+      "----",
+      "${3:\"Hello World\"}",
+      "----"
+    ],
+    "description": "Adds Console Output source fragment"
+  },
+  "Asciidoc Tag": {
+    "prefix": "atag",
+    "body": [
+      "// tag::${1:tag_name}[]",
+      "${2:body}",
+      "// end::${1:tag_name}[]"
+    ]
+  },
+  "Partial Tag Include": {
+    "prefix": "tinclude",
+    "body": [
+      "include::partial$${1:include_name}.adoc[tags=**;!*;${2:tags_to_include}]"
+    ],
+    "description": "Include a partial with tags"
+  },
+  "Add Console Tab": {
+    "prefix": "tconsole",
+    "body": [
+      "[tabs]",
+      "====",
+      "${1:tab1}::",
+      "+",
+      "--",
+      "[.console-${2:input}]",
+      "[source,${3:bash},subs=\"${4:+macros,+attributes}\"]",
+      "----",
+      "${5:echo \"Hello World\"}",
+      "----",
+      "--",
+      "===="
+    ],
+    "description": "Add Tabs macro"
+  },
+}

@@ -1,5 +1,7 @@
 = Building Images
 
+// See antora yaml (such as github-pages.yml) to change what attribute docker-host is set to
+
 == Prerequisite
 
 In this section, we are assuming you are running Docker in your local machine (either using Docker Tools or native Docker).
@@ -8,11 +10,19 @@ IMPORTANT: To make it work correctly, you need to run this section in a new term
 
 == Build your application artifact
 
+First let's take a quick look at the application we're looking to build
+
+:quick-open-file: MyRESTController.java
+include::partial$tip_vscode_quick_open.adoc[]
+
+.MyRESTController.java
+image::hello-world-app.png[]
+
 Compile, build and test the Spring Boot Java project:
 
 [#build-building-images]
 [.console-input]
-[source, bash]
+[source, bash, subs="+attributes"]
 ----
 cd apps/helloworld/springboot
 mvn clean package
@@ -37,19 +47,19 @@ Aloha from Spring Boot! 1 on unknown
 
 == Build container image
 
-NOTE: Change `quay.io` for your registry (e.g. `docker.io`) and `myrepo` to your organization.  This next step does assume you have a working installation of Docker for Mac/Windows/Linux.
+NOTE: Change `quay.io` for your registry (e.g. `docker.io`) and `{myrepo}` to your organization.  This next step does assume you have a working installation of Docker for Mac/Windows/Linux.
 
 [#build-container--building-images]
 [.console-input]
-[source, bash]
+[source, bash, subs="+attributes"]
 ----
-docker build -t quay.io/myrepo/myapp:v1 .
+docker build -t quay.io/{myrepo}/myapp:v1 .
 ----
 
 Results:
 
 [.console-output]
-[source,bash]
+[source,bash, subs="+attributes"]
 ----
 Sending build context to Docker daemon  14.47MB
 Step 1/6 : FROM openjdk:8u151
@@ -71,7 +81,7 @@ Step 6/6 : CMD java $JAVA_OPTIONS -jar $JAVA_APP_JAR
 Removing intermediate container 46bcab555de7
  ---> 85b78b9b70b1
 Successfully built 85b78b9b70b1
-Successfully tagged quay.io/myrepo/myapp:v1
+Successfully tagged quay.io/{myrepo}/myapp:v1
 ----
 
 == Run the container image
@@ -80,16 +90,16 @@ Run and Test your newly created Docker container:
 
 [#run-container-building-images]
 [.console-input]
-[source, bash]
+[source, bash, subs="+attributes"]
 ----
-docker run --rm -it -p 8080:8080 --name myapp quay.io/myrepo/myapp:v1
+docker run --rm -it -p 8080:8080 --name myapp quay.io/{myrepo}/myapp:v1
 ----
 
 [#curl-container-building-images]
 [.console-input]
-[source, bash]
+[source, bash, subs="+attributes"]
 ----
-curl localhost:8080
+curl {docker-host}:8080
 ----
 
 [.console-output]
@@ -100,9 +110,9 @@ Aloha from Spring Boot! 1 on 76851270a3e7
 
 [#curl-sys-container-building-images]
 [.console-input]
-[source, bash]
+[source, bash, subs="+attributes"]
 ----
-curl localhost:8080/sysresources
+curl {docker-host}:8080/sysresources
 ----
 
 [.console-output]
@@ -113,13 +123,14 @@ Memory: 1268 Cores: 3
 
 These numbers are based on the memory and CPUs allocated to the Docker daemon as seen in the image below:
 
+.Docker settings
 image::docker-settings.png[Docker Settings]
 
 [#curl-consume-container-building-images]
 [.console-input]
-[source, bash]
+[source, bash, subs="+attributes"]
 ----
-curl localhost:8080/consume
+curl {docker-host}:8080/consume
 ----
 
 [.console-output]
@@ -140,18 +151,18 @@ Now, constrain the resources associated with this Linux container
 
 [#run-container-constrained-building-images]
 [.console-input]
-[source, bash]
+[source, bash, subs="+attributes"]
 ----
-docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myapp quay.io/myrepo/myapp:v1
+docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myapp quay.io/{myrepo}/myapp:v1
 ----
 
 Ask for the container's resources:
 
 [#curl-sys-constrained-container-building-images]
 [.console-input]
-[source, bash]
+[source, bash, subs="+attributes"]
 ----
-curl localhost:8080/sysresources
+curl {docker-host}:8080/sysresources
 ----
 
 [.console-output]
@@ -164,9 +175,9 @@ Crash it:
 
 [#curl-consume-crash-container-building-images]
 [.console-input]
-[source, bash]
+[source, bash, subs="+attributes"]
 ----
-curl localhost:8080/consume
+curl {docker-host}:8080/consume
 ----
 
 == Fix memory problems
@@ -175,27 +186,27 @@ To correct this behavior use a different Dockerfile:
 
 [#build-mem-container-building-images]
 [.console-input]
-[source, bash]
+[source, bash, subs="+attributes"]
 ----
-docker build -t quay.io/myrepo/myapp:v1 -f Dockerfile_Memory .
+docker build -t quay.io/{myrepo}/myapp:v1 -f Dockerfile_Memory .
 ----
 
 Now docker run it:
 
 [#run-sys-constrained-fix-container-building-images]
 [.console-input]
-[source, bash]
+[source, bash, subs="+attributes"]
 ----
-docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myapp quay.io/myrepo/myapp:v1
+docker run --rm -it -p 8080:8080 -m 400m --cpus="1" --name myapp quay.io/{myrepo}/myapp:v1
 ----
 
 And `curl` it:
 
 [#curl-sys-constrained-fix-container-building-images]
 [.console-input]
-[source, bash]
+[source, bash, subs="+attributes"]
 ----
-curl localhost:8080/sysresources
+curl {docker-host}:8080/sysresources
 ----
 
 [.console-output]
@@ -208,9 +219,9 @@ And try to crash it:
 
 [#curl-consume-fix-container-building-images]
 [.console-input]
-[source, bash]
+[source, bash, subs="+attributes"]
 ----
-curl localhost:8080/consume
+curl {docker-host}:8080/consume
 ----
 
 [.console-output]
@@ -223,10 +234,10 @@ Once you are happy with your container image, push it up to your favorite regist
 
 [#push-container-building-images]
 [.console-input]
-[source, bash]
+[source, bash, subs="+attributes"]
 ----
 docker login quay.io
-docker push quay.io/myrepo/myapp:v1
+docker push quay.io/{myrepo}/myapp:v1
 ----
 
 [.console-output]
