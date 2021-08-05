@@ -368,7 +368,7 @@ kubectl logs \
 
 .NOTE
 ****
-It would less specific but we could find out whale job logs without a custom label by instead not looking to match the value on the label like this: 
+It would less specific but we _could_ find out whale job logs without a custom label _by instead not looking to match the value on the label_ like this: 
 
 [.console-input]
 [source,bash,subs="+macros,+attributes,+quotes"]
