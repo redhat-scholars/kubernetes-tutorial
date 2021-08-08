@@ -172,8 +172,8 @@ include::partial$tip_vscode_quick_open.adoc[]
 ----
 include::example$whalesay-cronjob.yaml[]
 ----
-<.> This string represents a job is executed every minute.
-<.> Here we specify our own additional label we'd like applied to `jobs` and `pods` created by the `cronjob`.  Even though the `job-name` label will still exist, it will contain a guid on every indication meaning we can't predict what the value is a priori
+<.> This string represents a job that is executed every minute.
+<.> Here we specify our own additional label we'd like applied to `jobs` and `pods` created by the `cronjob`.  Even though the `job-name` label will still exist, it will contain a guid on every invocation meaning we can't predict what the value is a priori
 
 [tabs]
 ====
