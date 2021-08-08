@@ -28,12 +28,9 @@ asciidoc:
     
 ui:
   bundle:
-    url: https://github.com/hatmarch/course-ui/releases/download/v0.1.12/ui-bundle.zip
-  supplemental_files:
-    - path: ./supplemental-ui
-    - path: .nojekyll
-    - path: ui.yml
-      contents: "static_files: [ .nojekyll ]"
+    url: https://github.com/redhat-scholars/course-ui/releases/download/v0.1.12/ui-bundle.zip
+    snapshot: true
+  supplemental_files: ./supplemental-ui
 
 output:
   dir: ./gh-pages
