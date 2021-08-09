@@ -3,7 +3,7 @@ runtime:
 
 site:
   title: Kubernetes Tutorial
-  url: https://redhat-developer-demos.github.io/kubernetes-tutorial
+  url: https://redhat-scholars.github.io/kubernetes-tutorial/
   start_page: kubernetes-tutorial::index.adoc
 
 content:
@@ -15,6 +15,10 @@ content:
 asciidoc:
   attributes:
     release-version: master
+    # This attribute enables creating footer based navigation to move to the next or prev page as defined in nav.adoc
+    page-pagination: true
+    # Set this to true to hide the versions component that appears at the bottom of the side nav
+    page-hide-versions-component: true
     # Set myrepo to the organization in the image registry you want to reference in the tutorial
     myrepo: your-repo
     # Set the docker-host attribute to the hostname that should be used to refer to target of curl commands in a container
@@ -28,12 +32,9 @@ asciidoc:
     
 ui:
   bundle:
-    url: https://github.com/hatmarch/course-ui/releases/download/v0.1.12/ui-bundle.zip
-  supplemental_files:
-    - path: ./supplemental-ui
-    - path: .nojekyll
-    - path: ui.yml
-      contents: "static_files: [ .nojekyll ]"
+    url: https://github.com/redhat-scholars/course-ui/releases/download/v0.1.12/ui-bundle.zip
+    snapshot: true
+  supplemental_files: ./supplemental-ui
 
 output:
   dir: ./gh-pages

@@ -102,8 +102,8 @@ You'll see the output in the other terminal change
 [.console-output]
 [source,bash,subs="+quotes"]
 ----
-NAME                      READY   STATUS    RESTARTS   AGE     IP       NODE     NOMINATED NODE   READINESS GATES
-myboot-7cbfbd9b89-hqx6h   0/1     #Pending#   0          4m12s   <none>   <none>   <none>           <none>
+NAME                      READY   STATUS    AGE     NODE
+myboot-7cbfbd9b89-hqx6h   0/1     #Pending#   4m12s   devnation
 ----
 --
 ====
@@ -142,9 +142,8 @@ Now in *{watch-terminal}* you should see the Pending pod scheduled to the newly 
 [.console-output]
 [source,bash,subs="+quotes"]
 ----
-NAME                      READY   STATUS              RESTARTS   AGE   IP       NODE            NOMINATED NODE   READINES
-S GATES
-myboot-7cbfbd9b89-hqx6h   0/1     #ContainerCreating#   0          20m   <none>   #devnation-m02#   <none>           <none>
+NAME                      READY   STATUS              AGE       NODE
+myboot-7cbfbd9b89-hqx6h   0/1     #ContainerCreating#   20m   #devnation-m02#
 ----
 --
 ====
@@ -207,9 +206,8 @@ Take a look and notice that the pod is still running despite the change in taint
 [.console-output]
 [source,bash,subs="+macros,+attributes,+quotes"]
 ----
-NAME                      READY   STATUS    RESTARTS   AGE   IP           NODE            NOMIN
-ATED NODE   READINESS GATES
-myboot-7cbfbd9b89-bzhxw   1/1     #Running#   0          18m   172.17.0.2   devnation-m02   <none>           <none>
+NAME                      READY   STATUS    AGE   NODE
+myboot-7cbfbd9b89-bzhxw   1/1     #Running#   18m   devnation-m02
 ----
 
 --
@@ -266,8 +264,8 @@ And then we should see before too long in our watch window our pod get scheduled
 [.console-output]
 [source,bash,subs="+quotes"]
 ----
-NAME                      READY   STATUS    RESTARTS   AGE
-myboot-84b457458b-mbf9r   1/1     #Running#   0          3m18s
+NAME                      READY   STATUS    AGE     NODE
+myboot-84b457458b-mbf9r   1/1     #Running#   3m18s   devnation-m02
 ----
 --
 ====
@@ -330,8 +328,8 @@ We should see the following in the watch
 [.console-output]
 [source,bash]
 ----
-NAME                      READY   STATUS    RESTARTS   AGE   IP           NODE            NOMINATED NODE   READINESS GATES
-myboot-7cbfbd9b89-wpddg   1/1     Running   0          47s   172.17.0.2   devnation-m02   <none>           <none>
+NAME                      READY   STATUS    AGE   NODE
+myboot-7cbfbd9b89-wpddg   1/1     Running   47s   devnation-m02
 ----
 
 --
@@ -379,9 +377,9 @@ As soon as we do this, we should be able to watch this "rescheduling" occur in t
 [.console-output]
 [source,bash,subs="+quotes"]
 ----
-NAME                      READY   STATUS              RESTARTS   AGE   IP           NODE     NOMINATED NODE   READINESS GATES
-myboot-7cbfbd9b89-5t24z   0/1     #ContainerCreating#   0          16s   <none>       devnation     <none>           <none>
-myboot-7cbfbd9b89-wpddg   1/1     #Terminating#         0          65m   172.17.0.2   devnation-m02   <none>           <none> 
+NAME                      READY   STATUS              AGE   NODE
+myboot-7cbfbd9b89-5t24z   0/1     #ContainerCreating#   16s   devnation
+myboot-7cbfbd9b89-wpddg   1/1     #Terminating#         65m   devnation-m02
 ----
 
 --
@@ -483,8 +481,8 @@ And we'll see in our watch window the pod in a pending state
 [.console-output]
 [source,bash,subs="+macros,+attributes,+quotes"]
 ----
-NAME                      READY   STATUS    RESTARTS   AGE   IP       NODE     NOMINATED NODE READINESS GATES
-myboot-546d4d9b45-7vgfc   0/1     #Pending#   0          6s    <none>   <none>   <none> <none>
+NAME                      READY   STATUS    AGE   NODE
+myboot-546d4d9b45-7vgfc   0/1     #Pending#   6s    <none>
 ----
 --
 ====
@@ -515,8 +513,8 @@ And then in the watch window the output should change to:
 [.console-output]
 [source,bash,subs="+macros,+attributes,+quotes"]
 ----
-NAME                      READY   STATUS              RESTARTS   AGE   IP       NODE NOMINATED NODE   READINESS GATES
-myboot-546d4d9b45-7vgfc   0/1     #ContainerCreating#   0          15m   <none>   devnation-m02 <none>           <none>
+NAME                      READY   STATUS              AGE   NODE
+myboot-546d4d9b45-7vgfc   0/1     #ContainerCreating#   15m   devnation-m02
 ----
 --
 ====
@@ -553,8 +551,8 @@ And notice the that watch output is *unchanged* and if running, the pod will con
 [.console-output]
 [source,bash]
 ----
-NAME                      READY   STATUS    RESTARTS   AGE   IP           NODE            NOMINATED NODE   READINESS GATES
-myboot-546d4d9b45-7vgfc   1/1     Running   0          22m   172.17.0.2   devnation-m02   <none>           <none>
+NAME                      READY   STATUS    AGE   NODE
+myboot-546d4d9b45-7vgfc   1/1     Running   22m   devnation-m02
 ----
 --
 ====
