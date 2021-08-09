@@ -3,7 +3,7 @@ runtime:
 
 site:
   title: Kubernetes Tutorial
-  url: https://redhat-developer-demos.github.io/kubernetes-tutorial
+  url: https://redhat-scholars.github.io/kubernetes-tutorial/
   start_page: kubernetes-tutorial::index.adoc
 
 content:
