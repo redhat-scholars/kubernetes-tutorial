@@ -15,6 +15,8 @@ content:
 asciidoc:
   attributes:
     release-version: master
+    # This attribute enables creating footer based navigation to move to the next or prev page as defined in nav.adoc
+    page-pagination: true
     # Set myrepo to the organization in the image registry you want to reference in the tutorial
     myrepo: your-repo
     # Set the docker-host attribute to the hostname that should be used to refer to target of curl commands in a container
