@@ -1,0 +1,10 @@
+[TIP]
+====
+If you're running this tutorial from within VSCode or would like to use VSCode to edit the resource targeted, make sure you set the following environment variable before issuing the `kubectl edit`: 
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+export KUBE_EDITOR="code -w"
+---- 
+====

@@ -1,4 +1,7 @@
 = Volumes & Persistent Volumes
+include::_attributes.adoc[]
+:watch-terminal: Terminal 2
+:file-watch-terminal: Terminal 3
 
 Containers are ephemeral by definition, which means that anything that it is stored at running time, it is lost when the container is stopped.
 This might cause problems with containers that need to persist its data like database containers.
@@ -16,9 +19,29 @@ Some of the volume types are:
 * empty dir
 * host path
 
-Let's start with two examples of `Volumes`.
+== Preparation
+
+=== Namespace
+
+:section-k8s: volumes
+:set-namespace: myspace
+
+Make sure the proper namespace `{set-namespace}` is created and context is set to point to it.
+
+include::partial$namespace-setup-tip.adoc[]
+
+include::partial$set-context.adoc[]
+
+=== Watch
+
+If it's not open already, you'll want to have a terminal open (call it *{watch-terminal}*) to watch what's going on with the pods in our current namespace
+
+:section-k8s: volumes
+include::partial$watching-pods-with-nodes.adoc[]
 
 == Volumes
+
+Let's start with two examples of `Volumes`.
 
 === EmptyDir
 
@@ -27,27 +50,20 @@ As the name says, it is initially empty.
 All Containers in the same Pod can read and write in the same `emptyDir` volume.
 When a Pod is restarted or removed, the data in the` emptyDir` is lost forever.
 
-Let's deploy a service that exposes two endpoints, one to write content to a file and another one to retrieve the content from that file.
+:quick-open-file: myboot-pod-volume.yml
+
+Let's deploy a service that exposes two endpoints, one to write content to a file and another one to retrieve the content from that file.  Open `{quick-open-file}`
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: myboot-demo
-spec:
-  containers:
-  - name: myboot-demo
-    image: quay.io/rhdevelopers/myboot:v4
-    
-    volumeMounts:
-    - mountPath: /tmp/demo
-      name: demo-volume
-
-  volumes:
-  - name: demo-volume
-    emptyDir: {}
+include::example$myboot-pod-volume.yml[]
 ----
+<.> Notice that this is a `Pod` and not a `Deployment`
+<.> This is where this mount point will appear in the pod.  See below 
+<.> This must match the name of a volume that we define, in this case it is defined right at the bottom of the file
 
 In `volumes` section, you are defining the volume, and in `volumeMounts` section, how the volume is mounted inside the container.
 
@@ -55,27 +71,47 @@ In `volumes` section, you are defining the volume, and in `volumeMounts` section
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/myboot-pod-volume.yml
-
-kubectl get pods
 ----
 
+Then in our watch window we should see something like
+
+[tabs]
+====
+{watch-terminal}::
++
+--
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
-NAME          READY   STATUS    RESTARTS   AGE
-myboot-demo   1/1     Running   0          83s
+NAME         READY  STATUS             AGE  NODE
+myboot-demo  0/1    ContainerCreating  9s   devnation
 ----
+--
+====
 
-Let's access into the container and run these methods:
+Once the pod is running, let's exec into the container:
 
 [.console-input]
 [source,bash]
 ----
-kubectl exec -ti myboot-demo /bin/bash
+kubectl exec -ti myboot-demo -- /bin/bash
+----
 
+And once `exec` 'd into the container, run the following commands: 
+
+[tabs]
+====
+Container::
++
+--
+[.console-input]
+[source,bash]
+----
 curl localhost:8080/appendgreetingfile
 curl localhost:8080/readgreetingfile
 ----
+
+Which should return
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
@@ -96,16 +132,27 @@ ls /tmp/demo
 ----
 greeting.txt
 ----
+--
+====
 
-Exit the container's shell:
+==== EmptyDir Ephemerality
 
+If you haven't already, close the container's shell:
+
+[tabs]
+====
+Container::
++
+--
 [.console-input]
 [source,bash]
 ----
 exit
 ----
+--
+====
 
-And delete the pod.
+And delete the pod:
 
 [.console-input]
 [source,bash]
@@ -113,18 +160,61 @@ And delete the pod.
 kubectl delete pod myboot-demo
 ----
 
-Then if you deploy again the same service you'll notice that the directory content is empty.
+[IMPORTANT]
+====
+You need to wait until the pod is completely deleted before trying to deploy it again
+====
+
+Then if you deploy again the same service: 
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/myboot-pod-volume.yml
+----
+
+And once in the `Running` state `exec` into the pod: 
 
 [.console-input]
 [source,bash]
 ----
-kubectl exec -ti myboot-demo /bin/bash
+kubectl exec -ti myboot-demo -- /bin/bash
+----
 
+[tabs]
+====
+Container::
++
+--
+
+Let's list the contents of our mount point in our new pod
+
+[.console-input]
+[source,bash]
+----
 ls /tmp/demo
+----
+
+You'll notice that the directory content is empty, meaning that the file we created with the last pod was destroyed when the pod was deleted
+
+[.console-output]
+[source,bash]
+----
+root@myboot-demo:/app# 
+----
+
+Exit the pod
+
+[.console-input]
+[source,bash]
+----
 exit
 ----
 
-Delete the pod.
+--
+====
+
+Now delete the pod.
 
 [.console-input]
 [source,bash]
@@ -132,51 +222,153 @@ Delete the pod.
 kubectl delete pod myboot-demo
 ----
 
-`emptyDir` is shared between containers of the same Pod.
-The following deployment creates one pod with two containers mounting the same volume:
+==== EmptyDir Sharing in Pod
+
+`emptyDir` is shared between containers of the same Pod.  Let's take a look at a deployment that creates two containers in the same pod that mount the same `emptyDir` volume.
+
+:quick-open-file: myboot-pods-volume.yml
+include::partial$tip_vscode_quick_open.adoc[]
+
+Consider `{quick-open-file}`: 
+
+[.console-output]
+[source,yaml]
+.{quick-open-file}
+----
+include::example$myboot-pods-volume.yml[]
+----
+<.> The first container in the pod is called myboot-demo-1 and mounts `demo-volume` at `/tmp/demo`
+<.> The second container in the pod is called `myboot-demo-2` and mounts `demo-volume` at the same `/tmp/demo` point
+<.> Both containers use the same exact image
+<.> Notice that the second container needs to listen on a different port from the first since the containers share ports on the pod.  The `env` directive at this level only applies to the `myboot-demo-2` container
+<.> The volume is defined only once but referenced by each container in the pod
+
+Now let's create that deployment in the `{set-namespace}` namespace
 
 [.console-input]
 [source,bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-pods-volume.yml
-
-kubectl get pods
 ----
 
+And in our pod watch we should see
+
+[tabs]
+====
+{watch-terminal}::
++
+--
 [.console-output]
-[source,bash,subs="+macros,+attributes"]
+[source,bash,subs="+macros,+attributes,+quotes"]
 ----
 NAME          READY   STATUS    RESTARTS   AGE
-myboot-demo   2/2     Running   0          4s
+myboot-demo   #2/2#    Running   0          4s
 ----
 
-Let's access into the first container and generate some content to `/tmp/demo` directory.
+Notice the `2/2` ready status.  This represents the 2 containers in the pod definition
+--
+====
+
+First, let's exec into the *second* container in the pod and start a watch on the mount point.  For this we'll open yet another terminal (*{file-watch-terminal}*) `exec` into the other container in the pod to run the `cat` command
+
+[tabs]
+====
+{file-watch-terminal}::
++
+--
+
+include::partial$open-terminal-in-editor-inset.adoc[]
 
 [.console-input]
 [source,bash]
 ----
-kubectl exec -ti myboot-demo -c myboot-demo-1 /bin/bash
-
-curl localhost:8080/appendgreetingfile
-
-exit
+kubectl exec -it myboot-demo -c myboot-demo-2 -- bash 
 ----
 
-And read the file contents from the other container:
+And then from inside the `myboot-demo-2` container in the pod, run the following command: 
 
 [.console-input]
 [source,bash]
 ----
-kubectl exec myboot-demo -c myboot-demo-2 "cat /tmp/demo/greeting.txt"
+watch -n1 -- "ls -l /tmp/demo && eval ""cat /tmp/demo/greeting.txt"""
 ----
+
+Which will at first return
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
+total 0
+cat: /tmp/demo/greeting.txt: No such file or directory
+----
+
+--
+====
+
+Let's access into the *first* container in the main terminal and see if we can get it to create a file that the *second* container can see
+
+[tabs]
+====
+Terminal 1::
++
+--
+[.console-input]
+[source,bash]
+----
+kubectl exec -ti myboot-demo -c myboot-demo-1 -- /bin/bash
+----
+
+and generate some content to `/tmp/demo` directory.
+
+[.console-input]
+[source,bash]
+----
+curl localhost:8080/appendgreetingfile
+----
+
+And then show that the file exists and what its content is: 
+
+[.console-input]
+[source,bash]
+----
+ls -l /tmp/demo && echo $(cat /tmp/demo/greeting.txt) 
+----
+
+[.console-output]
+[source,bash]
+----
+total 4
+-rw-r--r--. 1 root root 5 Jul 13 08:11 greeting.txt
 Jambo
 ----
 
-You can get the volume information from a Pod by running:
+--
+====
+
+Meanwhile in *{file-watch-terminal}* you should see something like: 
+
+[tabs]
+====
+{file-watch-terminal}::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+total 4
+-rw-r--r--. 1 root root 5 Jul 13 08:11 greeting.txt
+Jambo
+----
+
+Hit kbd:[CTRL+c] to exit the watch and then exit out of the `exec` to the pod
+
+[.console-input]
+[source,bash]
+----
+exit
+----
+
+Now, back in your terminal can get the volume information from a Pod by running:
 
 [.console-input]
 [source,bash]
@@ -194,38 +386,28 @@ Volumes:
     SizeLimit:  <unset>
 ----
 
+--
+====
+
 ==== Clean Up
 
-[.console-input]
-[source,bash]
-----
-kubectl delete -f apps/kubefiles/myboot-pods-volume.yml
-----
+include::partial$terminal-cleanup.adoc[tags=**;!*;term3;term-exec]
 
 === HostPath
 
-A `hostPath` volume mounts a file or directory from the node's filesystem into the Pod.
+:quick-open-file: myboot-pod-volume-hostpath.yml
+
+A `hostPath` volume mounts a file or directory from the node's filesystem into the Pod.  Take a look at `{quick-open-file}`
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: myboot-demo
-spec:
-  containers:
-  - name: myboot-demo
-    image: quay.io/rhdevelopers/myboot:v4
-    
-    volumeMounts:
-    - mountPath: /tmp/demo
-      name: demo-volume
-
-  volumes:
-  - name: demo-volume
-    hostPath:
-      path: "/mnt/data"
+include::example$myboot-pod-volume-hostpath.yaml[]
 ----
+<.> We're mounting the same location as before, but you can see that we define the volume as `hostPath` here instead of `emptyDir`
+<.> `/mnt/data` is a location on the kubernetes `node` to which this pod gets assigned
 
 In this case, you are defining the host/node directory where the contents are going to be stored.
 
@@ -253,7 +435,57 @@ Volumes:
     HostPathType:
 ----
 
+
+[tabs]
+====
+{file-watch-terminal}::
++
+--
+Let's open a terminal where we can watch the directory on the 'host' or the 'node'
+
+include::partial$open-terminal-in-editor-inset.adoc[]
+
+
+:mount-dir: /mnt/data
+include::partial$watch-node-directory.adoc[]
+
+--
+====
+
+[tabs]
+====
+Terminal 1::
++
+--
+
+include::partial$create-greeting-file.adoc[]
+
+--
+====
+
+Meanwhile in the other terminal (*{file-watch-terminal}*) you should at the same time see the watch output change
+
+[tabs]
+====
+{file-watch-terminal}::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Every 1.0s: eval ls -al /mnt/da...  devnation: Tue Jul 13 09:14:28 2021
+
+total 4
+drwxr-xr-x. 1 root root 24 Jul 13 09:13 .
+drwxr-xr-x. 1 root root  8 Jul 13 08:24 ..
+-rw-r--r--. 1 root root  5 Jul 13 09:13 greeting.txt
+Jambo
+----
+--
+====
+
 Notice that now the content stored in `/tmp/demo` inside the Pod is stored at host path `/mnt/data`, so if the Pod dies, the content is not lost.
+
 But this might not solve all the problems as if Pod goes down and it is rescheduled in another node, then the data will not be in this other node.
 
 Let's see another example, in this case for an Amazon EBS Volume:
@@ -275,15 +507,11 @@ spec:
 
 What we want you to notice from the previous snippet is that you are mixing things from your application (ie the container, probes, ports, ...) things that are more in the _dev_ side with things more related to the cloud (ie physical storage), which falls more in the _ops_ side.
 
-To avoid this mix of concepts, Kubernetes offers some layer of abstractions, so developers just ask for space to store data (-persistent volume claim_), and operations team offers physical storage configuration.
+To avoid this mix of concepts, Kubernetes offers some layer of abstractions, so developers just ask for space to store data (_persistent volume claim_), and operations team offers physical storage configuration.
 
 ==== Clean Up
 
-[.console-input]
-[source,bash]
-----
-kubectl delete pod myboot-demo
-----
+include::partial$terminal-cleanup.adoc[tags=**;!*;term-exec]
 
 == Persistent Volume & Persistent Volume Claim
 
@@ -295,9 +523,14 @@ It can request for specific volume size or for example the access mode.
 
 === Persistent volume/claim with hostPath
 
-Let's use `hostPath` strategy but not configuring it directly as volume, but using persistence volume and persistence volume claim.
+:quick-open-file: demo-persistent-volume-hostpath.yaml
+
+Let's use `hostPath` strategy but not configuring it directly as volume, but using persistence volume and persistence volume claim. Check out `{quick-open-file}`:
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
 kind: PersistentVolume
 apiVersion: v1
@@ -322,7 +555,7 @@ Now, the `volume` information is not in the pod anymore but in the _persistent v
 ----
 kubectl apply -f apps/kubefiles/demo-persistent-volume-hostpath.yaml 
 
-kubectl get pv
+kubectl get pv -w
 ----
 
 [.console-output]
@@ -332,10 +565,33 @@ NAME                                       CAPACITY   ACCESS MODES   RECLAIM POL
 my-persistent-volume                       100Mi      RWO            Retain           Available                                                   pv-demo                 5s
 ----
 
+:mount-dir: /mnt/persistent-volume
+
+Once the volume is established, let's update our file watch terminal to look in the volume's new location: `{mount-dir}`
+
+[tabs]
+====
+{file-watch-terminal}::
++
+--
+
+Hit kbd:[CTRL+c] to exit out of the current watch
+
+Then start a new watch
+
+include::partial$file-watch-command.adoc[]
+--
+====
+
+:quick-open-file: myboot-persistent-volume-claim.yaml
+
 Then from the dev side, we need to claim what we need from the _PV_.
-In the following example, we are requesting for 10Mi space.
+In the following example, we are requesting for *10Mi* space.  See `{quick-open-file}`:
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -356,7 +612,7 @@ spec:
 ----
 kubectl apply -f apps/kubefiles/myboot-persistent-volume-claim.yaml
 
-kubectl get pvc
+kubectl get pvc -w
 ----
 
 [.console-output]
@@ -366,9 +622,14 @@ NAME                 STATUS   VOLUME                 CAPACITY   ACCESS MODES   S
 myboot-volumeclaim   Bound    my-persistent-volume   100Mi      RWO            pv-demo        3s
 ----
 
-The big difference is that now in the pod you are just defining in the `volumes` section, not the volume configuration directly, but the _persistent volume claim_ to use.
+:quick-open-file: myboot-pod-volume-pvc.yaml
+
+The big difference is that now in the pod you are just defining in the `volumes` section, not the volume configuration directly, but the _persistent volume claim_ to use.  See `{quick-open-file}`:
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
 apiVersion: v1
 kind: Pod
@@ -409,15 +670,42 @@ Volumes:
 
 Notice that now the description of the pod shows that the volume is not set directly but through a persistence volume claim.
 
-[.console-input]
-[source,bash]
-----
-kubectl delete pod myboot-demo
+include::partial$create-greeting-file.adoc[]
 
+And as soon as we've done that we'll expect to see the following on the path on the node that the `PersistentVolume` maps to: 
+
+[tabs]
+====
+{file-watch-terminal}::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Every 1.0s: ls -al {mount-dir} && eval c...  devnation: Mon Jul 19 14:07:53 2021
+
+total 4
+drwxr-xr-x. 1 root root 24 Jul 19 14:06 .
+drwxr-xr-x. 1 root root 42 Jul 13 09:21 ..
+-rw-r--r--. 1 root root  5 Jul 19 14:06 greeting.txt
+Jambo
+----
+--
+====
+
+==== Clean Up
+
+include::partial$terminal-cleanup.adoc[tags=**;!*;term-exec;term3-ssh]
+
+Once all is cleaned, run the following: 
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
 kubectl get pvc
 ----
 
-Even though the pod has been deleted, the PVC (and the PV) are still there and need to be deleted manually.
+Results in:
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
@@ -426,7 +714,7 @@ NAME                 STATUS   VOLUME                 CAPACITY   ACCESS MODES   S
 myboot-volumeclaim   Bound    my-persistent-volume   100Mi      RWO            pv-demo        14m
 ----
 
-==== Clean Up
+Even though the pod has been deleted, the PVC (and the PV) are still there and need to be deleted manually.
 
 [.console-input]
 [source,bash]
@@ -486,7 +774,7 @@ For example in the case of AWS, a default Storage Class is provided pointing out
 --
 ====
 
-Then you can create a Persistent Volume Claim which will create a Persistent Volume automatically.
+Then you can create a Persistent Volume Claim which will create a Persistent Volume automatically.  Use kbd:[CTRL+p] to open `demo-dynamic-persistent.yaml` quickly:
 
 [source, yaml]
 ----
@@ -502,7 +790,10 @@ spec:
       storage: 10Mi
 ----
 
-Since we've not specified any _storage class_ but there is one defined as the default, the _PVC_ implicitly refers to that one.
+Since we've not specified any _storage class_ but there is one defined as the default, the _PVC_ implicitly refers to that one.  (You might consider comparing this pod definition to `myboot-persistent-volume-claim.yaml`)
+
+.Difference between static and dynamic PVC (with static PV)
+image::pv-static-vs-dynamic.png[]
 
 [.console-input]
 [source,bash]
@@ -512,12 +803,29 @@ kubectl apply -f apps/kubefiles/demo-dynamic-persistent.yaml
 kubectl get pvc
 ----
 
+[tabs]
+====
+Minikube::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                 STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myboot-volumeclaim   Pending                                      standard       2s
+----
+--
+OpenShift::
++
+--
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
 NAME                 STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 myboot-volumeclaim   Pending                                      gp2            46sç
 ----
+--
+====
 
 Notice that the _PVC_ is in _Pending_ STATUS, because remember that we are creating dynamic storage and it means that until the _pod_ doesn't request the volume, the _PVC_ will remain in pending state and the _PV_ will not be created.
 
@@ -525,16 +833,21 @@ Notice that the _PVC_ is in _Pending_ STATUS, because remember that we are creat
 [source,bash]
 ----
 kubectl apply -f apps/kubefiles/myboot-pod-volume-pvc.yaml
-
-kubectl get pods
 ----
 
+[tabs]
+====
+{watch-terminal}::
++
+--
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
 NAME          READY   STATUS    RESTARTS   AGE
 myboot-demo   1/1     Running   0          2m36s
 ----
+--
+====
 
 When the pod is in _Running_ status, then you can get _PVC_ and _PV_ parameters.
 
@@ -544,12 +857,30 @@ When the pod is in _Running_ status, then you can get _PVC_ and _PV_ parameters.
 kubectl get pvc
 ----
 
+[tabs]
+====
+Minikube::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myboot-volumeclaim   Bound    pvc-170f2e9a-4afc-4869-bd19-f10c86bff34b   10Mi       RWO            standard       5s
+----
+--
+OpenShift::
++
+--
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
 NAME                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 myboot-volumeclaim   Bound    pvc-6de4f27e-bd40-4b58-bb46-91eb08ca5bd7   1Gi        RWO            gp2            116s
 ----
+--
+====
+
 
 Notice that now the volume claim is  _Bound_ to a volume.
 
@@ -561,12 +892,29 @@ Finally, you can check that the _PV_ has been created automatically:
 kubectl get pv
 ----
 
+[tabs]
+====
+Minikube::
++
+--
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                        STORAGECLASS   REASON   AGE
+pvc-170f2e9a-4afc-4869-bd19-f10c86bff34b   10Mi       RWO            Delete           Bound    myspace/myboot-volumeclaim   standard                56s
+----
+--
+OpenShift::
++
+--
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
 NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                        STORAGECLASS   REASON   AGE
 pvc-6de4f27e-bd40-4b58-bb46-91eb08ca5bd7   1Gi        RWO            Delete           Bound    default/myboot-volumeclaim   gp2                     77s
 ----
+--
+====
 
 Notice that the _CLAIM_ field points to the _PVC_ responsible for the creation of the _PV_.
 

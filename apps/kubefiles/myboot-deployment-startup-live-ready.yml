@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: myboot
-        image: quay.io/rhdevelopers/myboot:zoombie
+        image: quay.io/rhdevelopers/myboot:v1
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -29,19 +29,19 @@ spec:
         livenessProbe:
           httpGet:
               port: 8080
-              path: /
-          initialDelaySeconds: 10
-          periodSeconds: 5
+              path: /alive
+          periodSeconds: 2
           timeoutSeconds: 2
+          failureThreshold: 2
         readinessProbe:
           httpGet:
             path: /health
             port: 8080
-          initialDelaySeconds: 10
           periodSeconds: 3
         startupProbe:
           httpGet:
-            path: /health
+            path: /alive
             port: 8080
-          failureThreshold: 12
+          failureThreshold: 6
           periodSeconds: 5
+          timeoutSeconds: 1

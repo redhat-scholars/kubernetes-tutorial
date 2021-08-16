@@ -1,0 +1,5 @@
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+watch -n1 -- "ls -al {mount-dir} && eval ""cat {mount-dir}/greeting.txt"""
+----

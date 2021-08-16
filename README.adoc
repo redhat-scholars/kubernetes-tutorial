@@ -7,6 +7,21 @@ image:https://github.com/redhat-developer-demos/kubernetes-tutorial/workflows/he
 
 You can access the HTML version of this tutorial here: https://redhat-scholars.github.io/kubernetes-tutorial/
 
+## Visual Studio Code Remote Development
+
+If you are using link:https://code.visualstudio.com/[Visual Studio Code] with the link:https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers[Remote Containers Extension], you don't need to install anything locally to be able to contribute or run through this tutorial.
+
+Simply follow these instructions:
+
+1. (Only if running with podman) Set the environment variable `DEVCONTAINER_TARGET_PREFIX=podman`
+2. Open VS Code from the root of the `kubernetes-tutorial` repository and when prompted indicate that you want to "open the folder in a container".
+
+Once the devcontainer is initialized, from the Visual Studio Code terminal you will be able to run all the commands outlined for creating documentation.
+
+### Execute Tutorial with VSCode Remote
+
+You can also run through the tutorial with VSCode Remote.  The only trick is that you will need to be able to access minikube from within your docker container.
+
 ## Building the HTML locally
 
 In the root of your git repository, run:

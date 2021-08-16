@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: whale-say-job
+  name: whale-say-job #<.>
 spec:
   template:
     spec:

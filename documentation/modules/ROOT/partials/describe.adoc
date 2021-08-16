@@ -2,6 +2,6 @@
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-PODNAME=$(kubectl get pod -l {label-describe} -o name)
+PODNAME=$(kubectl get pod -l {label-describe} --field-selector pass:['status.phase!=Terminating'] -o name)
 kubectl describe $PODNAME
 ----

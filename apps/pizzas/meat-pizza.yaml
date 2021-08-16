@@ -1,4 +1,4 @@
-apiVersion: mykubernetes.acme.org/v1beta2
+apiVersion: mykubernetes.acme.org/v1
 kind: Pizza
 metadata:
   name: meatsp

@@ -1,0 +1,2 @@
+NAME                       READY   STATUS    RESTARTS   AGE   IP       NODE     NOMINATED NODE  READINESS GATES
+myboot2-7c5f46cbc9-hwm2v   0/1     Pending   0          31s   <none>   <none>   <none>  <none>

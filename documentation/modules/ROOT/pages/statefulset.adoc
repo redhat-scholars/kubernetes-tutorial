@@ -1,17 +1,54 @@
 = StatefulSets
 include::_attributes.adoc[]
+:watch-terminal: Terminal 2
 
-A `StatefulSet` provides a unique identity to the Pods that are managing.
-It can be used when your application requires a unique network identifier or persistence storage across Pod (re)scheduling or some guarantee about the ordering of deployment and scaling.
+A `StatefulSet` provides a unique identity to the Pods that they manage.
+`StatefulSet` s are particularly useful when your application requires a unique network identifier or persistence storage across Pod (re)scheduling or when your application needs some guarantee about the ordering of deployment and scaling.
 
-One of the most typical examples of using _StatefulSets_ is when you need to deploy a primary/secondary servers (i.e database cluster) where you need to know beforehand the hostname of each of the servers to start the cluster.
+One of the most typical examples of using `StatefulSet` s is when one needs to deploy primary/secondary servers (i.e database cluster) where you need to know beforehand the hostname of each of the servers to start the cluster.
 Also, when you scale up and down you want to do it in a specified order (i.e you want to start the primary node first and then the secondary node).
 
-IMPORTANT: `StatefulSet` requires a Kubernetes _Headless Service_ instead of a standard Kubernetes _service_.
+[IMPORTANT]
+====
+`StatefulSet` requires a Kubernetes _Headless Service_ instead of a standard Kubernetes _service_ in order for it to be accessed.  We will discuss this more below
+====
+
+== Preparation
+
+=== Namespace Setup
+
+Make sure you are in the correct namespace:
+
+:section-k8s: stateful
+:set-namespace: myspace
+
+include::partial$namespace-setup-tip.adoc[]
+
+include::partial$set-context.adoc[]
+
+=== Watch Terminal
+
+To be able to observe what's going on, let's open another terminal (*{watch-terminal}*) and `watch` what happens as we run our different jobs
+
+:section-k8s: stateful
+
+include::partial$watching-pods-with-nodes.adoc[]
+
+=== Multi-node (minikube)
+
+If your cluster is running multiple nodes and you need the stateful service to be assigned to a specific node so that you can connect to the service externally, replace `NODE` with the name of the node you don't want to run the stateful service on
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+NODE=devnation-02 #<.>
+kubectl taint node pass:[${NODE}] app=quarkus-statefulset:NoExecute
+----
+<.> Replace this and/or repeat for all the nodes in your cluster that you don't want the stateful set to be assigned to.  See also xref:taints-affinity.adoc[Taints and Affinity section, window=_blank]
 
 == StatefulSet
 
-StatefulSet is created by using the Kubernetes `StatefulSet` resource with a headless service:
+StatefulSet is created by using the Kubernetes `StatefulSet` resource:
 
 [source, yaml]
 ----
@@ -22,7 +59,7 @@ metadata:
   labels:
     app: quarkus-statefulset
 spec:
-  serviceName: "quarkus" # <1>
+  serviceName: "quarkus" # <.>
   replicas: 2
   template:
     metadata:
@@ -36,46 +73,69 @@ spec:
         - containerPort: 8080
           name: web
 ----
-<1> Sets the `statefulset` name used as a hostname.
+<.> `serviceName` is the name of the (headless) service that governs this `StatefulSet`. This service must exist before the StatefulSet, and is responsible for the network identity of the set
 
-Hostname follows the same pattern in all cases `serviceName` + a number starting from 0 and it is incremented for every replica by one.
+[#hostname-formula]
+We can predict the hostname for any member pod of a `StatefulSet` by using the following "formula":
 
-And a headless service:
+****
+`StatefulSet.name` + `-` + "ordinal index" 
+****
 
-[source, yaml]
+The "ordinal index" is a number starting from `0` for the first pod created by the `StatefulSet` and is incremented by one for each additional replica pod.  So in this instance, the we would expect the first pod of the `StatefulSet` above to have the hostname:
+
+****
+`quarkus-statefulset-0`
+****
+
+Finally, as mentioned above, to be able to route traffic to the pods of our StatefulSet, we also need to create a *headless service*:
+
+[source, yaml,subs="+quotes"]
 ----
 apiVersion: v1
 kind: Service
 metadata:
-  name: quarkus-statefulset
+  name: #quarkus# #<.>
   labels:
     app: quarkus-statefulset
 spec:
   ports:
   - port: 8080
     name: web
-  clusterIP: None # <1>
+  clusterIP: None #<.>
   selector:
     app: quarkus-statefulset
 ----
-<1> Makes service headless.
+<.> Notice that this matches the `serviceName` field of the `StatefulSet`.  This must match to create the dns entry
+<.> Setting `clusterIP` to `None` is what makes the service "headless".
+
+Apply the following `.yaml` to the cluster to create the `StatefulSet` and the corresponding headless service we looked at above:
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/quarkus-statefulset.yaml
-
-kubectl get pods
 ----
 
+You should then see the following in the watch terminal
+
+[tabs]
+====
+{watch-terminal}::
++
+--
 [.console-output]
-[source,bash]
+[source,bash,subs="+quotes"]
 ----
 NAME                     READY   STATUS    RESTARTS   AGE
-quarkus-statefulset-0   1/1     Running   0          12s
+#quarkus-statefulset-0#   1/1     Running   0          12s
 ----
+--
+====
 
-Notice that the Pod name is the `serviceName` with a 0, as it is the first instance.
+Notice that the Pod name is the `serviceName` with a `-0`, as it is the first (`0` th if you will) instance.  This is as we explained <<hostname-formula,above>>
+
+Now let's take a look at the stateful set itself
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
@@ -86,32 +146,41 @@ kubectl get statefulsets
 [.console-output]
 [source,bash]
 ----
-NAME                   READY   AGE
+NAME                  READY   AGE
 quarkus-statefulset   1/1     109s
 ----
 
-Now, let's scale up to 3.
+As with `deployments` we can scale `statefulsets`
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl scale statefulset quarkus-statefulset --replicas=3
-
-kubectl get pods
+kubectl scale sts \#<.>
+  quarkus-statefulset --replicas=3
 ----
+<.> `sts` is the shortname of the `statefulset` api-resource
 
+Then in the watch terminal see
+
+[tabs]
+====
+{watch-terminal}::
++
+--
 [.console-output]
-[source,bash]
+[source,bash,subs="+quotes"]
 ----
-NAME                     READY   STATUS    RESTARTS   AGE
+NAME                    READY   STATUS    RESTARTS   AGE
 quarkus-statefulset-0   1/1     Running   0          95s
-quarkus-statefulset-1   1/1     Running   0          2s
-quarkus-statefulset-2   1/1     Running   0          1s
+#quarkus-statefulset-1#   1/1     Running   0          2s
+#quarkus-statefulset-2#   1/1     Running   0          1s
 ----
+--
+====
 
-Notice that the name of the Pods uses the same nomenclature of `serviceName` + incremental number.
+Notice that the name of the Pods continues to use <<hostname-formula,the same nomenclature that we called out above>>
 
-Also, if you check the order of events in the Kubernetes cluster, you'll notice that the Pod name ending with `-1` is created first and then the one ending with `-2`.
+Also, if you check the order of events in the Kubernetes cluster, you'll notice that the Pod name ending with `-1` is created *before* those with higher ordinal index (e.g. with suffix of `-2`).
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
@@ -133,29 +202,226 @@ kubectl get events --sort-by=.metadata.creationTimestamp
 4m2s        Normal   Started                   pod/quarkus-statefulset-2         Started container quarkus-statefulset
 ----
 
-Finally, if we scale down to two instances, the one that is destroyed is not randomly chosen, but the one started later (`quarkus.statefulset-2`).
+=== Stable Network Identities
+
+The reason we created the *headless service* previously was to ensure that the pods of our stateful set can be found _within_ the cluster (see <<Exposing StatefulSets,Exposing StatefulSets>> for reaching services from outside the cluster).  
+
+As each Pod is created, it gets a matching DNS subdomain, taking the form: `$(podname).$(governing service domain)`, where the governing service is defined by the `serviceName` field on the StatefulSetfootnote:[See also the official Kubernetes documentation link:https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#stable-network-id[here]]
+
+We can test this by creating a pod within the cluster and doing an `nslookup` from within the cluster.  Run the following command to create a pod in the namespace in which we can run cluster local `nslookup` queries
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl scale statefulset quarkus-statefulset --replicas=2
+kubectl run -it --restart=Never --rm --image busybox:1.28 dns-test 
+----
 
-kubectl get pods
+From within the container, run the folllowing command to see if we can find a pod of our StatefulSet
+
+[tabs]
+====
+Container::
++
+--
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+nslookup quarkus-statefulset-0.quarkus
+----
+
+This should yield the following output (though your reported IP address will vary)
+
+[.console-output]
+[source,bash,subs="+macros,+attributes,+quotes"]
+----
+Server:    10.96.0.10
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+
+Name:      quarkus-statefulset-0.quarkus
+Address 1: 172.17.0.3 #quarkus-statefulset-0.quarkus.myspace.svc.cluster.local# #<.>
+----
+<.> Notice that the full address is `$(podname).$(governing service domain).$(namespace)`.svc.cluster.local
+
+You can now exit the pod (causing it to be cleaned up) by issuing the following command:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+exit
+----
+--
+====
+
+So with the help of a headless service we can find any pod of the StatefulSet by using its internal DNS name as formulated by the StatefulSet and the headless service.
+
+== Exposing StatefulSets
+
+Given that our stateful set needed to use a headless service, you'll notice that no external IP is assigned that we can use to access our pods from _outside_ the cluster
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl describe svc quarkus-statefulset
 ----
 
 [.console-output]
-[source,bash]
+[source,bash,subs="+macros,+attributes,+quotes"]
 ----
-NAME                     READY   STATUS        RESTARTS   AGE
+Name:              quarkus-statefulset
+Namespace:         myspace
+Labels:            app=quarkus-statefulset
+Annotations:       <none>
+Selector:          app=quarkus-statefulset
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+#IP:                None#
+#IPs:               None#
+Port:              web  8080/TCP
+TargetPort:        8080/TCP
+Endpoints:         172.17.0.3:8080,172.17.0.4:8080,172.17.0.5:8080
+Session Affinity:  None
+Events:            <none>
+----
+
+Instead, only (internal) endpoints are assigned
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl describe endpoints quarkus-statefulset
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Name:         quarkus-statefulset
+Namespace:    myspace
+Labels:       app=quarkus-statefulset
+              service.kubernetes.io/headless=
+Annotations:  endpoints.kubernetes.io/last-change-trigger-time: 2021-07-20T04:45:21Z
+Subsets:
+  Addresses:          172.17.0.3,172.17.0.4,172.17.0.5
+  NotReadyAddresses:  <none>
+  Ports:
+    Name  Port  Protocol
+    ----  ----  --------
+    web   8080  TCP
+
+Events:  <none>
+----
+
+This kind of makes sense since the whole point of using `StatefulSets` is so that we can reference a specific pod by a predictable name instead of having them abstracted away by a normal (non-headless) `Service`.  To assist with our ability to access pods by name, kubernetes exposes a label on all `StatefulSet` pods that we can use as a selector to our service
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl describe pod quarkus-statefulset-2
+----
+
+And the abbreviated output shows our label (highlighted)
+
+[.console-output]
+[source,bash,subs="+macros,+attributes,+quotes"]
+----
+Name:         quarkus-statefulset-2
+Namespace:    myspace
+Priority:     0
+Node:         devnation/192.168.49.2
+Start Time:   Tue, 20 Jul 2021 04:45:04 +0000
+Labels:       app=quarkus-statefulset
+              controller-revision-hash=quarkus-statefulset-6bf5d59699
+              #statefulset.kubernetes.io/pod-name=quarkus-statefulset-2#
+Annotations:  <none>
+----
+
+:quick-open-file: quarkus-statefulset-external-svc.yaml
+
+We can use this label as a selector for a service that targets this specific pod.  Take a look at `{quick-open-file}`: 
+
+include::partial$tip_vscode_quick_open.adoc[]
+
+[.console-output]
+[source,yaml,subs="+macros,+attributes"]
+.{quick-open-file}
+----
+include::example$quarkus-statefulset-external-svc.yaml[]
+----
+<.> Indicate that this service should be exposed via LoadBalancer
+<.> Prevent excessive hops by routing traffic directly to the node
+<.> A selector that leverages the label provided automatically by the Kubernetes StatefulSet functionality
+
+Having reviewed the service we can now create it:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/quarkus-statefulset-external-svc.yaml
+----
+
+Meanwhile, in the main terminal, send a request:
+
+:service-exposed: quarkus-statefulset-2
+include::partial$env-curl.adoc[]
+
+You should receive the following back
+
+[.console-output]
+[source,bash,subs="+macros,+attributes,+quotes"]
+----
+Supersonic Subatomic Java with Quarkus quarkus-statefulset-2:1 #<.>
+----
+<.> Notice the hostname of `quarkus-statefulset-2`.  This is part of why we used stateful sets in the first place, so that pods would get predictable hostnames
+
+== Scale Down and Cleanup
+
+Finally, if we scale down to two instances, the one that is destroyed is not randomly chosen, but the one started later (`quarkus-statefulset-2`).
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl scale sts quarkus-statefulset --replicas=2
+----
+
+[tabs]
+====
+{watch-terminal}::
++
+--
+[.console-output]
+[source,bash,subs="+quotes"]
+----
+NAME                    READY   STATUS        RESTARTS   AGE
 quarkus-statefulset-0   1/1     Running       0          9m22s
 quarkus-statefulset-1   1/1     Running       0          7m49s
-quarkus-statefulset-2   0/1     Terminating   0          7m48s
+#quarkus-statefulset-2   0/1     Terminating   0          7m48s#
+----
+--
+====
+
+Beware when using stateful sets and services that this could break things.  Remember that the service we created above referenced that exact pod in the stateful set.  If you try to reach it now
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+curl pass:[${IP}:${PORT}]
+----
+
+You'll get an error (perhaps like this one)
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+curl: (7) Failed to connect to 192.168.86.58 port 31834: Connection refused
 ----
 
 === Clean Up
+
+You've now reached the end of this section.  You can clean up all aspects of the statefulset by deleting the yaml that spawned it (as well as the external service)
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete -f apps/kubefiles/quarkus-statefulset.yaml
+kubectl delete -f apps/kubefiles/quarkus-statefulset-external-svc.yaml
 ----

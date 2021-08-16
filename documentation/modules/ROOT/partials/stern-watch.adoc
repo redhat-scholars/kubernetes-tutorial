@@ -1,0 +1,21 @@
+[#{section-k8s}-kubectl-watch-logs]
+
+// FIXME: the attributes inside the code block in the tab don't get filled in 
+// if they are not first used outside the tab block
+We are going to have stern watch the {stern-namespace} namespace for {stern-pattern}
+
+[tabs]
+====
+{log-terminal} ::
++
+--
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+stern -n {stern-namespace} {stern-pattern}
+----
+
+--
+====
+

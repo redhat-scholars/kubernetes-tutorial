@@ -5,6 +5,33 @@ Make sure you are in the correct namespace:
 :section-k8s: resource
 :set-namespace: myspace
 
+[TIP]
+====
+You will need to create the `{set-namespace}` if you haven't already.  Check for the existence of the namespace with
+
+[.console-input]
+[source, bash, subs="+attributes"]
+----
+kubectl get ns {set-namespace}
+----
+
+If the response is: 
+
+[.console-output]
+[source,bash, subs="+attributes"]
+----
+Error from server (NotFound): namespaces "{set-namespace}" not found
+----
+
+Then you can create the namespace with: 
+
+[.console-input]
+[source, bash, subs="+attributes"]
+----
+kubectl create ns {set-namespace}
+----
+====
+
 include::partial$set-context.adoc[]
 
 Make sure nothing is running in your namespace:
@@ -157,7 +184,7 @@ kubectl get events --sort-by=.metadata.creationTimestamp
 
 The "resource requests" of the pod specification require that at least one worker node have N cores and X memory available.  If there is no worker node that meets the requires, you recieve "PENDING" and the appropriate notations in the events listing.
 
-You can also use `kubectl describe` on the pod to find more informatoin about the failure.
+You can also use `kubectl describe` on the pod to find more information about the failure.
 
 :section-k8s: resource-limit
 :label-describe: app=myboot
@@ -198,9 +225,10 @@ kubectl apply -f apps/kubefiles/myboot-service.yml
 
 And watch your Pods:
 
+:section-k8s: resources
 include::partial$watching-pods.adoc[]
 
-In another Terminal, loop and curl that service
+In another Terminal, loop and curl that service!
 
 :section-k8s: resource-soft-limit
 :service-exposed: myboot

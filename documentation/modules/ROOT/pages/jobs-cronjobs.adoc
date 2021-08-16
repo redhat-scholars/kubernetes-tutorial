@@ -1,4 +1,6 @@
 = Jobs & CronJobs
+include::_attributes.adoc[]
+:watch-terminal: Terminal 2
 
 Most of the time, you are using Kubernetes as a platform to run "long" processes where their purpose is to serve responses for a given incoming request.
 
@@ -8,49 +10,93 @@ Kubernetes Jobs are tasks that execute some logic once.
 
 Kubernetes CronJobs are Jobs that are repeated following a Cron pattern.
 
+== Preparation
+
+=== Namespace Setup
+
+Make sure you are in the correct namespace:
+
+:section-k8s: resource
+:set-namespace: myspace
+
+include::partial$namespace-setup-tip.adoc[]
+
+include::partial$set-context.adoc[]
+
+=== Watch Terminal
+
+To be able to observe what's going on, let's open another terminal (*{watch-terminal}*) and `watch` what happens as we run our different jobs
+
+:section-k8s: cronjobs
+
+include::partial$watching-pods-with-nodes.adoc[]
+
 == Jobs
 
-A Job is created using the Kubernetes `Job` resource:
+:quick-open-file: whalesay-job.yaml
+
+A Job is created using the Kubernetes `Job` resource.  To examine one, open the `{quick-open-file}`.  Here are the interesting aspects of this file:
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: whale-say-job
-spec:
-  template:
-    spec:
-      containers:
-      - name: whale-say-container
-        image: docker/whalesay
-        command: ["cowsay","Hello DevNation"]
-      restartPolicy: Never
+include::example$whalesay-job.yaml[]
 ----
+<.> The name of the job will be used as the value of a label `job-name` on any pods that are spawned by this job definition.
 
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/whalesay-job.yaml
+----
+--
+====
 
-watch kubectl get pods
+This should yield the following output (in successive refreshes) in *{watch-terminal}*
+
+[tabs]
+====
+{watch-terminal}::
++
+--
+[.console-output]
+[source,bash]
+----
+NAME                 READY  STATUS             AGE  NODE
+whale-say-job-m8vxt  0/1    ContainerCreating  14s  devnation-m02
 ----
 
 [.console-output]
 [source,bash]
 ----
-NAME                  READY   STATUS              RESTARTS   AGE
-whale-say-job-lp4n5   0/1     ContainerCreating   0          9s
-
-NAME                  READY   STATUS    RESTARTS   AGE
-whale-say-job-lp4n5   1/1     Running   0          19s
-
-NAME                  READY   STATUS      RESTARTS   AGE
-whale-say-job-lp4n5   0/1     Completed   0          25s
+NAME                 READY  STATUS     AGE  NODE
+whale-say-job-m8vxt  1/1    Running    80s  devnation-m02
 ----
 
-You can get Jobs as any other Kubernetes resource:
+[.console-output]
+[source,bash]
+----
+NAME                 READY  STATUS     AGE  NODE
+whale-say-job-m8vxt  0/1    Completed  85s  devnation-m02
+----
+--
+====
 
+
+You can get `jobs` as any other Kubernetes resource:
+
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -63,14 +109,20 @@ kubectl get jobs
 NAME            COMPLETIONS   DURATION   AGE
 whale-say-job   1/1           20s        36s
 ----
+--
+====
 
-To get the output of the Job execution:
+Since the job is run by a pod, to get the output of the `job` execution, we need only to get the output of the pod's logs:
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl logs whale-say-job-lp4n5
+kubectl logs \
+  -l job-name=whale-say-job \#<.>
+  --tail=-1 #<.>
 ----
+<.> This is allowing us to look for any pod labeled with `job-name` (see above) set to `whale-say-job`
+<.> `--tail` tells the log command how many lines from the end of the (pod's) log to return.  So that we can see all the whimsy in this job pod's message, we set this to `-1` to see all the linesfootnote:[Normally --tail is set to -1 by default, but that's only when requesting logs from a _single specific resource_.  When there is the potential to return multiple resources' logs (as is the case here when we're asking for logs by label) the number of lines returned from each resource's logs are limited to 10 by default]
 
 [.console-output]
 [source,bash]
@@ -93,114 +145,301 @@ kubectl logs whale-say-job-lp4n5
 
 === Clean Up
 
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete -f apps/kubefiles/whalesay-job.yaml
 ----
+--
+====
+
 
 == CronJobs
 
-A CronJob is defined using the Kubernetes `CronJob` resource:
+:quick-open-file: whalesay-cronjob.yaml
+
+A CronJob is defined using the Kubernetes `CronJob` resource.  The name `cronjob` comes from Linux and represents some sort of batch process that is scheduled to run once or repeatedly.  This concept has been translated into Kubernetes as we can see in the `{quick-open-file}` file: 
+
+include::partial$tip_vscode_quick_open.adoc[]
 
 [source, yaml]
+.{quick-open-file}
 ----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: whale-say-cronjob
-spec:
-  schedule: "*/1 * * * *" # <1>
-  jobTemplate:                   
-    spec:                        
-      template:                  
-        spec:
-          containers:
-          - name: whale-say-container
-            image: docker/whalesay
-            command: ["cowsay","Hello DevNation"]
-          restartPolicy: Never
+include::example$whalesay-cronjob.yaml[]
 ----
-<1> Job is executed every minute.
+<.> This string represents a job is executed every minute.
+<.> Here we specify our own additional label we'd like applied to `jobs` and `pods` created by the `cronjob`.  Even though the `job-name` label will still exist, it will contain a guid on every indication meaning we can't predict what the value is a priori
 
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl apply -f apps/kubefiles/whalesay-cronjob.yaml
-
-kubectl get pods
 ----
+--
+====
 
+But then if we look to our watch window in *{watch-terminal}*
+
+[tabs]
+====
+{watch-terminal}::
++
+--
 [.console-output]
 [source,bash]
 ----
 NAME                  READY   STATUS      RESTARTS   AGE
 ----
 
-No Pod is running as CronJob is executed after 1 minute.
+--
+====
 
+No Pod is running as CronJob is setting up (and is checked only once every 10 seconds or so, see warning below)
+
+While we're waiting for our cronjob to run, we can use *Terminal 1* to watch how the `cronjob` is changing:
+
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl get cronjobs
+kubectl get cronjobs -w #<.>
 ----
+<.> the `-w` flag says to watch the output (sort of like what we're doing in the *{watch-terminal}*) but only post back when the state of the observed resource's (in this case the `cronjob`) state changes.
+
+Here is some representative output after waiting almost 3 minutes (notice the job restarts)
 
 [.console-output]
-[source,bash]
+[source,bash,subs="+macros,+attributes,+quotes"]
 ----
 NAME                SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
-whale-say-cronjob   */1 * * * *   False     0        <none>          34s
+whale-say-cronjob   */1 * * * *   False     #1#        0s              #20s# #<.>
+whale-say-cronjob   */1 * * * *   False     0        31s             51s
+whale-say-cronjob   */1 * * * *   False     #1#        0s              #80s# #<.>
+whale-say-cronjob   */1 * * * *   False     0        23s             103s
+whale-say-cronjob   */1 * * * *   False     #1#        1s              #2m21s#
 ----
+<.> The first invocation took a while to start, this was not a function of the `cronjob` schedule
+<.> Notice that the next time the job is active is about 60s after the first job was active (by AGE).  And the job after that has an age of ~60s after that
+--
+====
 
-Wait one minute:
+You'll notice that every time the cronjob moves to ACTIVE (see highlight above),you should see the following in *{watch-terminal}*; 
+
+[tabs]
+====
+{watch-terminal}::
++
+--
+[.console-output]
+[source,bash]
+----
+NAME                              READY  STATUS     AGE  NODE
+whale-say-cronjob-27108480-2ws6k  0/1    Completed  46s  devnation-m02
+----
+--
+====
+
+[WARNING]
+====
+Per the link:https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/[official Kubernetes documentation]: A cron job creates a job object about once per execution time of its schedule. We say "about" because there are certain circumstances where two jobs might be created, or no job might be created. We attempt to make these rare, but do not completely prevent them. Therefore, jobs should be idempotent.
+====
+
+Let's examine our cronjob by using the `describe` subcommand.  Use kbd:[CTRL+c] to cancel the `kubectl get cronjobs -w` command and replace with the following:
+
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl get pods
+kubectl describe cronjobs
 ----
+
+You should then see something like this
 
 [.console-output]
-[source,bash]
+[source,bash,subs="+quotes"]
 ----
-NAME                                 READY   STATUS      RESTARTS   AGE
-whale-say-cronjob-1593436740-z9tf2   0/1     Completed   0          23s
+Name:                          whale-say-cronjob
+Namespace:                     myspace
+Labels:                        <none>
+Annotations:                   <none>
+Schedule:                      */1 * * * *
+Concurrency Policy:            Allow
+Suspend:                       False
+#Successful Job History Limit:  3# #<.>
+Failed Job History Limit:      1
+Starting Deadline Seconds:     <unset>
+Selector:                      <unset>
+Parallelism:                   <unset>
+Completions:                   <unset>
+Pod Template:
+  Labels:  #job-type=whale-say#
+  Containers:
+   whale-say-container:
+    Image:      docker/whalesay
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      cowsay
+      Hello DevNation
+    Environment:     <none>
+    Mounts:          <none>
+  Volumes:           <none>
+#Last Schedule Time:  Sat, 17 Jul 2021 08:06:00 +0000# #<.>
+Active Jobs:         whale-say-cronjob-27108486
+Events:
+  Type    Reason            Age    From                Message
+  ----    ------            ----   ----                -------
+  Normal  SuccessfulCreate  6m21s  cronjob-controller  Created job whale-say-cronjob-27108480
+  Normal  SawCompletedJob   6m1s   cronjob-controller  Saw completed job: whale-say-cronjob-27108480, status: Complete
+  Normal  SuccessfulCreate  5m21s  cronjob-controller  Created job whale-say-cronjob-27108481
+  Normal  SawCompletedJob   4m56s  cronjob-controller  Saw completed job: whale-say-cronjob-27108481, status: Complete
+  Normal  SuccessfulCreate  4m21s  cronjob-controller  Created job whale-say-cronjob-27108482
+  Normal  SawCompletedJob   3m56s  cronjob-controller  Saw completed job: whale-say-cronjob-27108482, status: Complete
+  Normal  SuccessfulCreate  3m21s  cronjob-controller  Created job whale-say-cronjob-27108483
+  Normal  SawCompletedJob   2m48s  cronjob-controller  Saw completed job: whale-say-cronjob-27108483, status: Complete
+  Normal  SuccessfulDelete  2m46s  cronjob-controller  Deleted job whale-say-cronjob-27108480
+  Normal  SuccessfulCreate  2m20s  cronjob-controller  Created job whale-say-cronjob-27108484
+  Normal  SawCompletedJob   104s   cronjob-controller  Saw completed job: whale-say-cronjob-27108484, status: Complete
+  Normal  SuccessfulDelete  101s   cronjob-controller  Deleted job whale-say-cronjob-27108481
+  Normal  SuccessfulCreate  81s    cronjob-controller  Created job whale-say-cronjob-27108485
+  Normal  SawCompletedJob   54s    cronjob-controller  Saw completed job: whale-say-cronjob-27108485, status: Complete
+  Normal  SuccessfulDelete  52s    cronjob-controller  Deleted job whale-say-cronjob-27108482
+  Normal  SuccessfulCreate  21s    cronjob-controller  Created job whale-say-cronjob-27108486
+  Normal  SawCompletedJob   1s     cronjob-controller  Saw completed job: whale-say-cronjob-27108486, status: Complete
 ----
+<.> Kubernetes cleans up jobs after a certain amount of time
+<.> Notice that the _Last Schedule Time_ shows the last time a job was executed.
 
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-kubectl get cronjobs
-----
+It is important to notice that a CronJob creates a `job` (which, in turn, creates pods) whenever the schedule is activated:
 
-[.console-output]
-[source,bash]
-----
-NAME                SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
-whale-say-cronjob   */1 * * * *   False     0        48s             3m41s
-----
-
-Notice that one important field there is the _Last Schedule_ as show us when was the last time a job was executed.
-
-It is important to notice that a CronJob creates a Job:
-
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl get jobs
 ----
 
+With example output after the cronjob has been around for more than 3 minutes:
+
 [.console-output]
 [source,bash]
 ----
-NAME                           COMPLETIONS   DURATION   AGE
-whale-say-cronjob-1593436800   1/1           3s         44s
+NAME                         COMPLETIONS   DURATION   AGE
+whale-say-cronjob-27108487   1/1           19s        2m37s
+whale-say-cronjob-27108488   1/1           20s        97s
+whale-say-cronjob-27108489   1/1           21s        37s
 ----
+--
+====
+
+Finally, we can see the effect of job history by logging for all our jobs
+
+[tabs]
+====
+Terminal 1::
++
+--
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl logs \
+  -l job-type=whale-say \#<.>
+  --tail=-1
+----
+<.> This time we're looking to get the logs on anything created with the label `job-type` (our custom label from above) set to `whale`
+
+.NOTE
+****
+It would less specific but we _could_ find out whale job logs without a custom label _by instead not looking to match the value on the label_ like this: 
+
+[.console-input]
+[source,bash,subs="+macros,+attributes,+quotes"]
+----
+kubectl logs #-l job-name# --tail=-1
+----
+
+This basically states that we should match any pod with a label named `job-name`
+
+****
+
+[.console-output]
+[source,bash]
+----
+ _________________ 
+< Hello DevNation >
+ ----------------- 
+    \
+     \
+      \     
+                    ##        .            
+              ## ## ##       ==            
+           ## ## ## ##      ===            
+       /""""""""""""""""___/ ===        
+  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~   
+       \______ o          __/            
+        \    \        __/             
+          \____\______/   
+ _________________ 
+< Hello DevNation >
+ ----------------- 
+    \
+     \
+      \     
+                    ##        .            
+              ## ## ##       ==            
+           ## ## ## ##      ===            
+       /""""""""""""""""___/ ===        
+  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~   
+       \______ o          __/            
+        \    \        __/             
+          \____\______/   
+ _________________ 
+< Hello DevNation >
+ ----------------- 
+    \
+     \
+      \     
+                    ##        .            
+              ## ## ##       ==            
+           ## ## ## ##      ===            
+       /""""""""""""""""___/ ===        
+  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~   
+       \______ o          __/            
+        \    \        __/             
+          \____\______/   
+----
+--
+====
 
 === Clean Up
 
+[tabs]
+====
+Terminal 1::
++
+--
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete -f apps/kubefiles/whalesay-cronjob.yaml
 ----
+--
+====

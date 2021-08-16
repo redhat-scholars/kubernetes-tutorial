@@ -22,55 +22,26 @@ kubectl get all
 No resources found in myspace namespace.
 ----
 
-Deploy an application with the Live and Ready probe set:
+:quick-open-file: myboot-deployment-live-ready.yml
+
+Now we're going to deploy our application with a Liveness and Readiness probe set.  Take a look at `{quick-open-file}`
+
+include::partial$tip_vscode_quick_open.adoc[]
+
+[.console-output]
+[source,yaml]
+.{quick-open-file}
+----
+include::example$myboot-deployment-live-ready.yml[]
+----
+
+Now apply this deployment with the following command
 
 [#create-app-live-ready]
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-cat <<EOF | kubectl apply -f -
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: myboot
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: myboot
-  template:
-    metadata:
-      labels:
-        app: myboot
-        env: dev
-    spec:
-      containers:
-      - name: myboot
-        image: quay.io/rhdevelopers/myboot:v1
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        resources:
-          requests:
-            memory: "300Mi"
-            cpu: "250m" # 1/4 core
-          limits:
-            memory: "400Mi"
-            cpu: "1000m" # 1 core
-        livenessProbe:
-          httpGet:
-              port: 8080
-              path: /
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          timeoutSeconds: 2
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 3        
-EOF
+kubectl apply -f apps/kubefiles/myboot-deployment-live-ready.yml
 ----
 
 Describe the deployment:
@@ -249,12 +220,12 @@ Jambo from Spring Boot! 71 on myboot-56659c9d69-6sglj
 
 Edit the Deployment to point to the /alive URL:
 
+include::partial$tip_vscode_kube_editor.adoc[]
+
 [#change-liveness-v3-live-ready]
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-export KUBE_EDITOR="code -w"
-
 kubectl edit deployment myboot
 ----
 
@@ -366,7 +337,6 @@ Jambo from Spring Boot! 176 on myboot-558b4f8678-z7f9n
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete deployment myboot
-kubectl delete service myboot
 ----
 
 == Startup Probe
@@ -375,65 +345,91 @@ Some applications require an additional startup time on their first initializati
 
 It might be tricky to fit this scenario into liveness/readiness probe as you need to configure them for their normal behaviour to detect abnormalities during the running time and moreover covering the long start up time.
 
-Startup probes fixes this problem, as once the startup probe has succeeded, the rest of the probes takes over 
+:quick-open-file: myboot-deployment-live-ready-aggressive.yml
+
+For instance, what if we had an application that might deadlock and we want to catch such issues immediately, we might have liveness and readiness probes that look like in `apps/kubefiles/{quick-open-file}`
+
+include::partial$tip_vscode_quick_open.adoc[]
+
+[.console-output]
+[source,yaml]
+.{quick-open-file}
+----
+include::example$myboot-deployment-live-ready-aggressive.yml[]
+----
+
+Then apply that deployment
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-cat <<EOF | kubectl apply -f -
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: myboot
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: myboot
-  template:
-    metadata:
-      labels:
-        app: myboot
-        env: dev
-    spec:
-      containers:
-      - name: myboot
-        image: quay.io/rhdevelopers/myboot:zoombie
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        resources:
-          requests:
-            memory: "300Mi"
-            cpu: "250m" # 1/4 core
-          limits:
-            memory: "400Mi"
-            cpu: "1000m" # 1 core
-        livenessProbe:
-          httpGet:
-              port: 8080
-              path: /
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          timeoutSeconds: 2
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 3
+kubectl apply -f apps/kubefiles/myboot-deployment-live-ready-aggressive.yml
+----
+
+As we'll see from the pod watch, the pods are continually getting restart, sometimes after it successfully boots up (because kubelet schedules for restart)!  And this is due to the startup time of SpringBoot.  
+
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl describe pods
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Events:
+  Type     Reason     Age                 From               Message
+  ----     ------     ----                ----               -------
+  Normal   Scheduled  96s                 default-scheduler  Successfully assigned myspace/myboot-849ccd6948-8vrfq to devnation
+  Normal   Pulled     92s                 kubelet            Successfully pulled image "quay.io/rhdevelopers/myboot:v1" in 3.295180194s
+  Normal   Created    55s (x2 over 92s)   kubelet            Created container myboot
+  Normal   Started    55s (x2 over 92s)   kubelet            Started container myboot
+  Normal   Pulled     55s                 kubelet            Successfully pulled image "quay.io/rhdevelopers/myboot:v1" in 3.289395484s
+  Warning  Unhealthy  52s (x4 over 90s)   kubelet            Liveness probe failed: Get "http://172.17.0.4:8080/alive": dial tcp 172.17.0.4:8080: connect: connection refused
+  Normal   Killing    52s (x2 over 88s)   kubelet            Container myboot failed liveness probe, will be restarted
+  Normal   Pulling    22s (x3 over 95s)   kubelet            Pulling image "quay.io/rhdevelopers/myboot:v1"
+  Warning  Unhealthy  19s (x10 over 88s)  kubelet            Readiness probe failed: Get "http://172.17.0.4:8080/health": dial tcp 172.17.0.4:8080: connect: connection refused
+----
+
+*Startup probes* fixes this problem, as once the startup probe has succeeded, the rest of the probes takes over but until the startup probe passes, neither the liveness nor readiness probes can run. 
+
+:quick-open-file: myboot-deployment-startup-live-ready.yml
+
+`{quick-open-file}` is an example of a deployment with just such a probe
+
+include::partial$tip_vscode_quick_open.adoc[]
+
+[.console-output]
+[source,yaml]
+.{quick-open-file}
+----
+include::example$myboot-deployment-startup-live-ready.yml[]
+----
+
+You'll see the difference is this section
+
+[.console-output]
+[source,yaml]
+----
         startupProbe:
           httpGet:
             path: /alive
             port: 8080
-          failureThreshold: 12
-          periodSeconds: 5        
-EOF
+          failureThreshold: 6
+          periodSeconds: 5
+          timeoutSeconds: 1
 ----
 
-The startup probe waits for one minute (`5 * 12`) to startup the application.
+Then apply that deployment
 
-The current application returns a `503` error in `/alive` endpoint so it will never succeed to boot up and `restartPolicy` is applied.
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl apply -f apps/kubefiles/myboot-deployment-startup-live-ready.yml
+----
+
+The startup probe waits for 30 seconds (`5 * 6`) to startup the application.  Notice too that the delay on the liveness and readiness checks have gone down to 0.
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
@@ -448,39 +444,32 @@ NAME                      READY   STATUS    RESTARTS   AGE
 myboot-579cc5cc47-2bk5p   0/1     Running   0          67s
 ----
 
-Wait for 60 seconds until you see that the pod is restarted.
+Eventually your curl loop should show the pod running
 
-And you will see it restarted:
-
-[.console-output]
-[source.bash]
 ----
-NAME                      READY   STATUS    RESTARTS   AGE
-myboot-579cc5cc47-2bk5p   0/1     Running   1          3m7s
+Aloha from Spring Boot! 18 on myboot-849ccd6948-8vrfq
+Aloha from Spring Boot! 19 on myboot-849ccd6948-8vrfq
+Aloha from Spring Boot! 20 on myboot-849ccd6948-8vrfq
+Aloha from Spring Boot! 21 on myboot-849ccd6948-8vrfq
 ----
 
-To make the pod succeed, `exec` into it and reborn it:
-
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
-----
-kubectl exec -it myboot-579cc5cc47-2bk5p /bin/bash
-----
+Let's show that the liveness probe has taken over
+Now pick one of the pods, `exec` into it and shoot it:
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-curl localhost:8080/reborn
+kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
 ----
 
-And finally it is started:
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+curl localhost:8080/shot
+----
 
-[.console-output]
-[source.bash]
-----
-NAME                      READY   STATUS    RESTARTS   AGE
-myboot-579cc5cc47-2bk5p   1/1     Running   1          3m41s
-----
+And you will see it get restarted
+
 
 Describe the pod to get the statistics of probes:
 
@@ -512,4 +501,5 @@ Mounts:
 [source,bash,subs="+macros,+attributes"]
 ----
 kubectl delete deployment myboot
+kubectl delete svc myboot
 ----

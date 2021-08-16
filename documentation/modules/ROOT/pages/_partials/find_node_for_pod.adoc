@@ -1,0 +1,8 @@
+[.console-input]
+[source,bash,subs="+macros"]
+----
+NODE=$(kubectl get pod -o jsonpath='{.items[0].spec.nodeName}') #<.>
+echo ${NODE}
+
+----
+<.> the `.items[0]` is because we're asking for all pods, but we know our list will contain only one element

@@ -4,3 +4,4 @@
 :openshift-version: 4.3
 :vm-driver: virtualbox
 :profile: devnation
+:curl-loop-sleep-time: .3

@@ -1,0 +1,26 @@
+[TIP]
+====
+You will need to create the `{set-namespace}` if you haven't already.  Check for the existence of the namespace with
+
+[.console-input]
+[source, bash, subs="+attributes"]
+----
+kubectl get ns {set-namespace}
+----
+
+If the response is: 
+
+[.console-output]
+[source,bash, subs="+attributes"]
+----
+Error from server (NotFound): namespaces "{set-namespace}" not found
+----
+
+Then you can create the namespace with: 
+
+[.console-input]
+[source, bash, subs="+attributes"]
+----
+kubectl create ns {set-namespace}
+----
+====

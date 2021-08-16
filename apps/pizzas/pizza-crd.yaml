@@ -1,4 +1,4 @@
-apiVersion: apiextensions.k8s.io/v1beta1
+apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   name: pizzas.mykubernetes.acme.org
@@ -8,9 +8,29 @@ metadata:
 spec:
   group: mykubernetes.acme.org
   scope: Namespaced
-  version: v1beta2
+  versions:
+  - name: v1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        description: "A custom resource for making yummy pizzas" #<.>
+        type: object
+        properties:
+          spec:
+            type: object
+            description: "Information about our pizza"
+            properties:
+              toppings: #<.>
+                type: array
+                items:
+                  type: string
+                description: "List of toppings for our pizza"
+              sauce: #<.>
+                type: string
+                description: "The name of the sauce to use on our pizza"
   names:
-    kind: Pizza
+    kind: Pizza #<.>
     listKind: PizzaList
     plural: pizzas
     singular: pizza
