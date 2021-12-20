@@ -2,7 +2,7 @@
 
 There are various "production-ready" ways to do log gathering and viewing across a Kubernetes/OpenShift cluster. Many folks like some flavor of ELK (ElasticSearch, Logstash, Kibana) or EFK (ElasticSearch, FluentD, Kibana).
 
-The focus here is on things a developer needs to get access to do help understand the behavior of their application running inside of a pod.
+The focus here is on things a developer needs to get access to do in order to help understand the behavior of their application running inside of a pod.
 
 Make sure you have an application (Deployment) running:
 
@@ -128,17 +128,17 @@ spec:
 EOF
 ----
 
-In another Terminal, loop and curl that service
+In another Terminal, loop and curl that service:
 
 :section-k8s: logs
 :service-exposed: the-service
 include::partial$env-curl.adoc[]
 
-Start sending request in a loop:
+Start sending the request in a loop:
 
 include::partial$loop.adoc[]
 
-Then use Stern to view the logs across all pods
+Then use Stern to view the logs across all pods:
 
 [#stern-my-deployment]
 [.console-input]
