@@ -137,7 +137,7 @@ In case of using Minikube follow: https://kubernetes.io/docs/tasks/access-applic
 
 == OpenShift Route
 
-Delete the any manually created Ingress to avoid any naming collisions.  An OpenShift Route leverages ha-proxy for its default Ingress.
+Delete the manually created Ingress to avoid any naming collisions.  An OpenShift Route leverages ha-proxy for its default Ingress.
 
 [#delete-ingress]
 [.console-input]
@@ -184,7 +184,7 @@ Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:
 kubectl get route the-service -o json > myroutes.json
 ----
 
-copy and paste contents into jqplay.org
+Copy and paste contents into jqplay.org
 
 https://www.screencast.com/t/09biZYHNo62
 
