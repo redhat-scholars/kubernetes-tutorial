@@ -1,6 +1,6 @@
 = Liveness & Readiness
 
-Make sure you are in the correct namespace
+Make sure you are in the correct namespace:
 
 :section-k8s: liveready
 :set-namespace: myspace
@@ -120,7 +120,7 @@ Look at the Endpoints to see which pods are part of the Service:
 kubectl get endpoints myboot -o json | jq '.subsets[].addresses[].ip'
 ----
 
-These are the Pod IPs that have passed their readiness probe:
+These are the Pod IPs that have passed their readiness probes:
 
 [.console-output]
 [source.bash]
@@ -253,7 +253,7 @@ And change the liveness probe:
 ...
 ----
 
-Save and close the editor, allowing that change to rollout 
+Save and close the editor, allowing that change to rollout:
 
 [.console-input]
 [source,bash]
@@ -343,7 +343,7 @@ kubectl delete deployment myboot
 
 Some applications require an additional startup time on their first initialization.
 
-It might be tricky to fit this scenario into liveness/readiness probe as you need to configure them for their normal behaviour to detect abnormalities during the running time and moreover covering the long start up time.
+It might be tricky to fit this scenario into the liveness/readiness probes as you need to configure them for their normal behaviour to detect abnormalities during the running time and moreover covering the long start up time.
 
 :quick-open-file: myboot-deployment-live-ready-aggressive.yml
 
@@ -366,7 +366,7 @@ Then apply that deployment
 kubectl apply -f apps/kubefiles/myboot-deployment-live-ready-aggressive.yml
 ----
 
-As we'll see from the pod watch, the pods are continually getting restart, sometimes after it successfully boots up (because kubelet schedules for restart)!  And this is due to the startup time of SpringBoot.  
+As we'll see from the pod watch, the pods are continually getting restarted, sometimes after it successfully boots up (because kubelet schedules for restart) and this is due to the startup time of SpringBoot.
 
 
 [.console-input]
@@ -392,7 +392,7 @@ Events:
   Warning  Unhealthy  19s (x10 over 88s)  kubelet            Readiness probe failed: Get "http://172.17.0.4:8080/health": dial tcp 172.17.0.4:8080: connect: connection refused
 ----
 
-*Startup probes* fixes this problem, as once the startup probe has succeeded, the rest of the probes takes over but until the startup probe passes, neither the liveness nor readiness probes can run. 
+*Startup probes* fix this problem, as once the startup probe has succeeded, the rest of the probes take over, but until the startup probe passes, neither the liveness nor the readiness probes can run. 
 
 :quick-open-file: myboot-deployment-startup-live-ready.yml
 
@@ -429,7 +429,7 @@ Then apply that deployment
 kubectl apply -f apps/kubefiles/myboot-deployment-startup-live-ready.yml
 ----
 
-The startup probe waits for 30 seconds (`5 * 6`) to startup the application.  Notice too that the delay on the liveness and readiness checks have gone down to 0.
+The startup probe waits for 30 seconds (`5 * 6`) to startup the application.  Notice, too, that the delay on the liveness and readiness checks has gone down to 0.
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
@@ -453,7 +453,7 @@ Aloha from Spring Boot! 20 on myboot-849ccd6948-8vrfq
 Aloha from Spring Boot! 21 on myboot-849ccd6948-8vrfq
 ----
 
-Let's show that the liveness probe has taken over
+Let's show that the liveness probe has taken over.
 Now pick one of the pods, `exec` into it and shoot it:
 
 [.console-input]
@@ -468,7 +468,7 @@ kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
 curl localhost:8080/shot
 ----
 
-And you will see it get restarted
+And you will see it get restarted.
 
 
 Describe the pod to get the statistics of probes:
