@@ -3,11 +3,11 @@ include::_attributes.adoc[]
 :watch-terminal: Terminal 2
 :file-watch-terminal: Terminal 3
 
-Containers are ephemeral by definition, which means that anything that it is stored at running time, it is lost when the container is stopped.
-This might cause problems with containers that need to persist its data like database containers.
+Containers are ephemeral by definition, which means that anything that it is stored at running time is lost when the container is stopped.
+This might cause problems with containers that need to persist their data, like database containers.
 
-A Kubernetes volume is just a directory, that is accessible to the Containers in a Pod. 
-The concept is similar to Docker volumes, but in Docker, you are mapping the container to a computer host, in the case of Kubernetes volumes, the medium that backs it, and the contents of it are determined by the particular volume type used.
+A Kubernetes volume is just a directory that is accessible to the Containers in a Pod. 
+The concept is similar to Docker volumes, but in Docker you are mapping the container to a computer host, whereas in the case of Kubernetes volumes, the medium that backs it and the contents of it are determined by the particular volume type used.
 
 Some of the volume types are:
 
@@ -48,7 +48,7 @@ Let's start with two examples of `Volumes`.
 An `emptyDir` volume is first created when a Pod is assigned to a node and exists as long as that Pod is running on that node.
 As the name says, it is initially empty.
 All Containers in the same Pod can read and write in the same `emptyDir` volume.
-When a Pod is restarted or removed, the data in the` emptyDir` is lost forever.
+When a Pod is restarted or removed, the data in the `emptyDir` is lost forever.
 
 :quick-open-file: myboot-pod-volume.yml
 
@@ -165,7 +165,7 @@ kubectl delete pod myboot-demo
 You need to wait until the pod is completely deleted before trying to deploy it again
 ====
 
-Then if you deploy again the same service: 
+Then if you deploy the same service again: 
 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
@@ -368,7 +368,7 @@ Hit kbd:[CTRL+c] to exit the watch and then exit out of the `exec` to the pod
 exit
 ----
 
-Now, back in your terminal can get the volume information from a Pod by running:
+Now, back in your terminal you can get the volume information from a Pod by running:
 
 [.console-input]
 [source,bash]
@@ -486,7 +486,7 @@ Jambo
 
 Notice that now the content stored in `/tmp/demo` inside the Pod is stored at host path `/mnt/data`, so if the Pod dies, the content is not lost.
 
-But this might not solve all the problems as if Pod goes down and it is rescheduled in another node, then the data will not be in this other node.
+But this might not solve all the problems as if the Pod goes down and it is rescheduled in another node, then the data will not be in this other node.
 
 Let's see another example, in this case for an Amazon EBS Volume:
 
@@ -507,7 +507,7 @@ spec:
 
 What we want you to notice from the previous snippet is that you are mixing things from your application (ie the container, probes, ports, ...) things that are more in the _dev_ side with things more related to the cloud (ie physical storage), which falls more in the _ops_ side.
 
-To avoid this mix of concepts, Kubernetes offers some layer of abstractions, so developers just ask for space to store data (_persistent volume claim_), and operations team offers physical storage configuration.
+To avoid this mix of concepts, Kubernetes offers some layer of abstractions, so developers just ask for space to store data (_persistent volume claim_), and the operations team offers the physical storage configuration.
 
 ==== Clean Up
 
@@ -515,17 +515,17 @@ include::partial$terminal-cleanup.adoc[tags=**;!*;term-exec]
 
 == Persistent Volume & Persistent Volume Claim
 
-A `PersistentVolume` (_PV_) is a Kubernetes resource that is created by an administrator or dynamically using `Storage Classes` independently from Pod.
-It captures the details of the implementation of the storage, it can be NFS, Ceph, iSCSI, or a cloud-provider-specific storage system.
+A `PersistentVolume` (_PV_) is a Kubernetes resource that is created by an administrator or dynamically using `Storage Classes` independently from the Pod.
+It captures the details of the implementation of the storage and can be NFS, Ceph, iSCSI, or a cloud-provider-specific storage system.
 
 A `PersistentVolumeClaim` (_PVC_) is a request for storage by a user. 
-It can request for specific volume size or for example the access mode.
+It can request for a specific volume size or, for example, the access mode.
 
 === Persistent volume/claim with hostPath
 
 :quick-open-file: demo-persistent-volume-hostpath.yaml
 
-Let's use `hostPath` strategy but not configuring it directly as volume, but using persistence volume and persistence volume claim. Check out `{quick-open-file}`:
+Let's use `hostPath` strategy, but not configuring it directly as volume, but using persistence volume and persistence volume claim. Check out `{quick-open-file}`:
 
 include::partial$tip_vscode_quick_open.adoc[]
 
@@ -738,8 +738,8 @@ To make it run you need to provide a Storage Class object and a PVC referring to
 After the PVC is created, the storage device and the PV are automatically created for you.
 The main purpose of dynamic provisioning is to work with cloud provider solutions.
 
-Normally, Kubernetes implementation offers a default Storage Class so anyone can get started quickly with dynamic provisioning.
-You can get information from default Storage Class by running:
+Normally, the Kubernetes implementation offers a default Storage Class so anyone can get started quickly with dynamic provisioning.
+You can get information from the default Storage Class by running:
 
 [.console-input]
 [source,bash]
@@ -827,7 +827,7 @@ myboot-volumeclaim   Pending                                      gp2           
 --
 ====
 
-Notice that the _PVC_ is in _Pending_ STATUS, because remember that we are creating dynamic storage and it means that until the _pod_ doesn't request the volume, the _PVC_ will remain in pending state and the _PV_ will not be created.
+Notice that the _PVC_ is in _Pending_ STATUS, because remember that we are creating dynamic storage and it means that while the _pod_ doesn't request the volume, the _PVC_ will remain in a pending state and the _PV_ will not be created.
 
 [.console-input]
 [source,bash]
@@ -932,5 +932,5 @@ kubectl delete -f apps/kubefiles/demo-dynamic-persistent.yaml
 It is important to notice that cloud-providers offer distributed storages so data is always available in all the nodes.
 As you've seen in the last example, this storage class guarantees that all nodes see the same disk content.
 
-If for example, if you are using Kubernetes/OpenShift on-prem or if you don't want to relay to a vendor solution, there is also support for distributed filesystems in Kubernetes.
-If that's the case, we recommend you to use NFS, https://www.gluster.org/[GlusterFS ] or https://ceph.io/[Ceph].
+For example, if you are using Kubernetes/OpenShift on-prem or if you don't want to relay to a vendor solution, there is also support for distributed filesystems in Kubernetes.
+If that's the case, we recommend you use NFS, https://www.gluster.org/[GlusterFS ] or https://ceph.io/[Ceph].
