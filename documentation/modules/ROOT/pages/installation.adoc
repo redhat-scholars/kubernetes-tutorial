@@ -36,7 +36,7 @@ include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-c
 [#start-kubernetes]
 === Start Kubernetes
 
-There are series of commands as steps that allows you get started with minikube. The following section shows how to start minikube with minimal and required configurations:
+There are a series of commands as steps that allow you to get started with minikube. The following section shows how to start minikube with minimal and required configurations:
 
 
 :profile: devnation
