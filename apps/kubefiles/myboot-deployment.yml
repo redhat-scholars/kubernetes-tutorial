@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: myboot
-        image: quay.io/rhdevelopers/myboot:v1
+        image: quay.io/rhdevelopers/myboot:v2
         ports:
           - containerPort: 8080
