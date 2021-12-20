@@ -49,7 +49,7 @@ kubectl get all
 No resources found in myspace namespace.
 ----
 
-First deploy an application without any Requests nor Limits:
+First deploy an application without any Requests or Limits:
 
 [#no-limits-resource]
 [.console-input]
@@ -166,7 +166,7 @@ NAME                      READY   STATUS    RESTARTS   AGE
 myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s
 ----
 
-If you want to get more information of the error:
+If you want to get more information about the error:
 
 [#get-events-resource]
 [.console-input]
@@ -182,7 +182,7 @@ kubectl get events --sort-by=.metadata.creationTimestamp
 <unknown>   Warning   FailedScheduling    pod/myboot-7b7d754c86-kjwlr    0/6 nodes are available: 6 Insufficient cpu.
 ----
 
-The "resource requests" of the pod specification require that at least one worker node have N cores and X memory available.  If there is no worker node that meets the requires, you recieve "PENDING" and the appropriate notations in the events listing.
+The "resource requests" of the pod specification require that at least one worker node has N cores and X memory available.  If there is no worker node that meets the requirements, you receive "PENDING" and the appropriate notations in the events listing.
 
 You can also use `kubectl describe` on the pod to find more information about the failure.
 
@@ -228,7 +228,7 @@ And watch your Pods:
 :section-k8s: resources
 include::partial$watching-pods.adoc[]
 
-In another Terminal, loop and curl that service!
+In another Terminal, loop and curl that service:
 
 :section-k8s: resource-soft-limit
 :service-exposed: myboot
@@ -238,7 +238,7 @@ Execute in loop:
 
 include::partial$loop.adoc[]
 
-In yet another terminal window, curl the /sysresources endpoint
+In yet another terminal window, curl the /sysresources endpoint:
 
 [#sysresources-sane-limit-resource]
 [.console-input]
