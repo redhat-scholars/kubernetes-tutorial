@@ -1,1 +1,12 @@
-/workspaces/kubernetes-tutorial/apps/kubefiles/whalesay-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: whale-say-job #<.>
+spec:
+  template:
+    spec:
+      containers:
+      - name: whale-say-container
+        image: docker/whalesay
+        command: ["cowsay","Hello DevNation"]
+      restartPolicy: Never

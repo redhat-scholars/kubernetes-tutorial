@@ -1,1 +1,16 @@
-/workspaces/kubernetes-tutorial/apps/kubefiles/myboot-pod-volume.yml
+apiVersion: v1
+kind: Pod #<.>
+metadata:
+  name: myboot-demo
+spec:
+  containers:
+  - name: myboot-demo
+    image: quay.io/rhdevelopers/myboot:v4
+    
+    volumeMounts:
+    - mountPath: /tmp/demo #<.>
+      name: demo-volume #<.> 
+
+  volumes:
+  - name: demo-volume
+    emptyDir: {}

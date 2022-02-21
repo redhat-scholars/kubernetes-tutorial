@@ -1,1 +1,18 @@
-/workspaces/kubernetes-tutorial/apps/kubefiles/whalesay-cronjob.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: whale-say-cronjob
+spec:
+  schedule: "*/1 * * * *" #<.>
+  jobTemplate:                   
+    spec:                        
+      template:    
+        metadata:
+          labels:
+            job-type: whale-say #<.>              
+        spec:
+          containers:
+          - name: whale-say-container
+            image: docker/whalesay
+            command: ["cowsay","Hello DevNation"]
+          restartPolicy: Never
