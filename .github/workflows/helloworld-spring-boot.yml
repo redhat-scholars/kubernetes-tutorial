@@ -17,6 +17,7 @@ jobs:
     - name: Setup Java JDK
       uses: actions/setup-java@v2
       with:
+        distribution: "temurin"
         java-version: 11
     - name: Maven build
       working-directory: apps/helloworld/springboot
