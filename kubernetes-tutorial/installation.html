@@ -4,23 +4,42 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Installation &amp; Setup :: Kubernetes Tutorial</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/installation.html">
+    <link rel="canonical" href="https://redhat-scholars.github.io/kubernetes-tutorial/kubernetes-tutorial/installation.html">
+    <link rel="prev" href="index.html">
+    <link rel="next" href="kubectl.html">
     <meta name="generator" content="Antora 2.3.1">
     <link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body class="article">
 <header class="header">
+  <style>
+    /* override master stylesheet properties for this partial here */
+
+    .navbar-item {
+      flex: unset;
+    }
+
+    .doc {
+      max-width: unset;
+    }
+
+
+  </style>
+
   <nav class="navbar">
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/NewRHDFullLogo_4-color_white-wordmark.png" height="40px" alt="Red Hat Developer Program"></a>
-      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-developer-demos.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img
+          src="../_/img/header_logo.png" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-scholars.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
         <span></span>
         <span></span>
       </button>
     </div>
-    <div id="topbar-nav" class="navbar-menu">
+        <div id="topbar-nav" class="navbar-menu">
       <div class="navbar-end">
         <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
         <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
@@ -28,24 +47,24 @@
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link" href="#">More Tutorials</a>
           <div class="navbar-dropdown">
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/outer-loop-guides/" target="_blank">Outer Loop</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/openshift-starter-guides/" target="_blank">OpenShift Starter</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/istio-tutorial/" target="_blank">Istio</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/tekton-tutorial/" target="_blank">Tekton</a>
           </div>
         </div>
       </div>
     </div>
   </nav>
-</header>
-<div class="body">
+</header><div class="body">
 <div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="index.html"></a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -156,7 +175,22 @@
 </ul>
   </nav>
 </div>
-    </div>
+<div class="nav-panel-explore"  style="display: none;"  data-panel="explore">
+  <div class="context">
+    <span class="title">kubernetes-tutorial</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">kubernetes-tutorial</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>    </div>
   </aside>
 </div>
 <main class="article">
@@ -231,7 +265,7 @@ Please have them installed and configured before you get started with any of the
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/wercker/stern">stern</a></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>brew install stern</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/wercker/stern/releases/download/1.6.0/stern_linux_amd64">Download</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64">Download</a></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/wercker/stern/releases/download/1.11.0/stern_windows_amd64.exe">Download</a></p></td>
 </tr>
 <tr>
@@ -313,7 +347,7 @@ Although they are used in the tutorial, you could use others without any problem
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone <a href="https://github.com/redhat-developer-demos/kubernetes-tutorial" class="bare">https://github.com/redhat-developer-demos/kubernetes-tutorial</a> kubernetes-tutorial</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone <a href="https://github.com/redhat-scholars/kubernetes-tutorial" class="bare">https://github.com/redhat-scholars/kubernetes-tutorial</a> kubernetes-tutorial</code></pre>
 </div>
 </div>
 <div class="listingblock console-input">
@@ -496,7 +530,7 @@ set KUBE_EDITOR="code -w"</code></pre>
 <div class="sect2">
 <h3 id="start-kubernetes"><a class="anchor" href="#start-kubernetes"></a>Start Kubernetes</h3>
 <div class="paragraph">
-<p>There are series of commands as steps that allows you get started with minikube. The following section shows how to start minikube with minimal and required configurations:</p>
+<p>There are a series of commands as steps that allow you to get started with minikube. The following section shows how to start minikube with minimal and required configurations:</p>
 </div>
 <div class="paragraph">
 <p>The profile devnation is created to run the tutorial:</p>
@@ -518,11 +552,19 @@ set KUBE_EDITOR="code -w"</code></pre>
 <p>Having <code>minikube</code> installed and in your <code>PATH</code>, then run:</p>
 </div>
 <div class="paragraph">
-<p><strong>MacOS / Linux:</strong></p>
+<p><strong>MacOS</strong></p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube start --memory=8192 --cpus=3 --kubernetes-version=v1.18.6 --vm-driver=virtualbox -p devnation</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Linux</strong></p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube start --memory=8192 --cpus=3 --kubernetes-version=v1.18.6 --vm-driver=kvm2 -p devnation</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -538,13 +580,13 @@ set KUBE_EDITOR="code -w"</code></pre>
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">❌  profile "devnation" not found
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">😄  [devnation] minikube v1.20.0 on Darwin 11.3
 ✅  Created a new profile : devnation
 ✅  minikube profile was successfully set to devnation
-😄  [default] minikube v1.12.1 on Darwin 10.15.2
+😄  [default] minikube v1.12.1 on Darwin 11.3
 ✨  Selecting 'virtualbox' driver from user configuration (alternates: [hyperkit])
 🔥  Creating virtualbox VM (CPUs=2, Memory=8192MB, Disk=50000MB) ...
-🐳  Preparing Kubernetes v1.18.6 on Docker '19.03.5' ...
+🐳  Preparing Kubernetes v1.18.6 on Docker '20.10.6' ...
     ▪ apiserver.enable-admission-plugins=LimitRanger,NamespaceExists,NamespaceLifecycle,ResourceQuota,ServiceAccount,DefaultStorageClass,MutatingAdmissionWebhook
 🚜  Pulling images ...
 🚀  Launching Kubernetes ...
@@ -580,20 +622,16 @@ Once you have your cluster, you can download the latest OpenShift client(oc) fro
 </div>
 </div>
 <div class="paragraph">
-<p>The output should show oc version &gt;=4.2:</p>
+<p>The output should show oc version &gt;=4.7:</p>
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Client Version: openshift-clients-4.3.0-201910250623-88-g6a937dfe
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Client Version: 4.7.0-202102130115.p0-c66c03f
 Kubernetes Version: v1.18.6</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Then login into the cluster and run:</p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc new-project devnation</code></pre>
+<p>Then login into the OpenShift cluster using <code>oc login</code></p>
 </div>
 </div>
 </div>
@@ -601,7 +639,10 @@ Kubernetes Version: v1.18.6</code></pre>
 </div>
 </div>
 </div>
-</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html" class="query-params-link">kubernetes-tutorial</a></span>
+  <span class="next"><a href="kubectl.html" class="query-params-link">kubectl</a></span>
+</nav>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
   <div class="toc-menu"></div>

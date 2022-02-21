@@ -4,23 +4,42 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Service :: Kubernetes Tutorial</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/service.html">
+    <link rel="canonical" href="https://redhat-scholars.github.io/kubernetes-tutorial/kubernetes-tutorial/service.html">
+    <link rel="prev" href="pod-rs-deployment.html">
+    <link rel="next" href="logs.html">
     <meta name="generator" content="Antora 2.3.1">
     <link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body class="article">
 <header class="header">
+  <style>
+    /* override master stylesheet properties for this partial here */
+
+    .navbar-item {
+      flex: unset;
+    }
+
+    .doc {
+      max-width: unset;
+    }
+
+
+  </style>
+
   <nav class="navbar">
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/NewRHDFullLogo_4-color_white-wordmark.png" height="40px" alt="Red Hat Developer Program"></a>
-      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-developer-demos.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img
+          src="../_/img/header_logo.png" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-scholars.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
         <span></span>
         <span></span>
       </button>
     </div>
-    <div id="topbar-nav" class="navbar-menu">
+        <div id="topbar-nav" class="navbar-menu">
       <div class="navbar-end">
         <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
         <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
@@ -28,24 +47,24 @@
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link" href="#">More Tutorials</a>
           <div class="navbar-dropdown">
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/outer-loop-guides/" target="_blank">Outer Loop</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/openshift-starter-guides/" target="_blank">OpenShift Starter</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/istio-tutorial/" target="_blank">Istio</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/tekton-tutorial/" target="_blank">Tekton</a>
           </div>
         </div>
       </div>
     </div>
   </nav>
-</header>
-<div class="body">
+</header><div class="body">
 <div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="index.html"></a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -156,7 +175,22 @@
 </ul>
   </nav>
 </div>
-    </div>
+<div class="nav-panel-explore"  style="display: none;"  data-panel="explore">
+  <div class="context">
+    <span class="title">kubernetes-tutorial</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">kubernetes-tutorial</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>    </div>
   </aside>
 </div>
 <main class="article">
@@ -262,15 +296,15 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-<div id="services-kubectl-watch-services" class="listingblock console-input">
+<div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get services</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME    TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-myapp   LoadBalancer   172.30.103.41   &lt;pending&gt;     8080:31974/TCP   4s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME          TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+the-service   LoadBalancer   172.30.103.41   &lt;pending&gt;     80:31974/TCP     4s</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -415,7 +449,7 @@ EOF</code></pre>
 <h2 id="_openshift_route"><a class="anchor" href="#_openshift_route"></a>OpenShift Route</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Delete the any manually created Ingress to avoid any naming collisions.  An OpenShift Route leverages ha-proxy for its default Ingress.</p>
+<p>Delete the manually created Ingress to avoid any naming collisions.  An OpenShift Route leverages ha-proxy for its default Ingress.</p>
 </div>
 <div id="delete-ingress" class="listingblock console-input">
 <div class="content">
@@ -455,7 +489,7 @@ the-service   the-service-myspace.apps.gcp.burrsutter.dev          the-service  
 </div>
 </div>
 <div class="paragraph">
-<p>copy and paste contents into jqplay.org</p>
+<p>Copy and paste contents into jqplay.org</p>
 </div>
 <div class="paragraph">
 <p><a href="https://www.screencast.com/t/09biZYHNo62" class="bare">https://www.screencast.com/t/09biZYHNo62</a></p>
@@ -474,6 +508,10 @@ the-service   the-service-myspace.apps.gcp.burrsutter.dev          the-service  
 </div>
 </div>
 </div>
+<nav class="pagination">
+  <span class="prev"><a href="pod-rs-deployment.html" class="query-params-link">Pod, ReplicaSet, Deployment</a></span>
+  <span class="next"><a href="logs.html" class="query-params-link">Logs</a></span>
+</nav>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
   <div class="toc-menu"></div>

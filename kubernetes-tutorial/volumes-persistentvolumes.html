@@ -4,23 +4,42 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Volumes &amp; Persistent Volumes :: Kubernetes Tutorial</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/volumes-persistentvolumes.html">
+    <link rel="canonical" href="https://redhat-scholars.github.io/kubernetes-tutorial/kubernetes-tutorial/volumes-persistentvolumes.html">
+    <link rel="prev" href="crds.html">
+    <link rel="next" href="taints-affinity.html">
     <meta name="generator" content="Antora 2.3.1">
     <link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body class="article">
 <header class="header">
+  <style>
+    /* override master stylesheet properties for this partial here */
+
+    .navbar-item {
+      flex: unset;
+    }
+
+    .doc {
+      max-width: unset;
+    }
+
+
+  </style>
+
   <nav class="navbar">
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/NewRHDFullLogo_4-color_white-wordmark.png" height="40px" alt="Red Hat Developer Program"></a>
-      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-developer-demos.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img
+          src="../_/img/header_logo.png" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-scholars.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
         <span></span>
         <span></span>
       </button>
     </div>
-    <div id="topbar-nav" class="navbar-menu">
+        <div id="topbar-nav" class="navbar-menu">
       <div class="navbar-end">
         <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
         <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
@@ -28,24 +47,24 @@
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link" href="#">More Tutorials</a>
           <div class="navbar-dropdown">
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/outer-loop-guides/" target="_blank">Outer Loop</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/openshift-starter-guides/" target="_blank">OpenShift Starter</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/istio-tutorial/" target="_blank">Istio</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/tekton-tutorial/" target="_blank">Tekton</a>
           </div>
         </div>
       </div>
     </div>
   </nav>
-</header>
-<div class="body">
+</header><div class="body">
 <div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="index.html"></a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -156,7 +175,22 @@
 </ul>
   </nav>
 </div>
-    </div>
+<div class="nav-panel-explore"  style="display: none;"  data-panel="explore">
+  <div class="context">
+    <span class="title">kubernetes-tutorial</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">kubernetes-tutorial</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>    </div>
   </aside>
 </div>
 <main class="article">
@@ -178,12 +212,12 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Containers are ephemeral by definition, which means that anything that it is stored at running time, it is lost when the container is stopped.
-This might cause problems with containers that need to persist its data like database containers.</p>
+<p>Containers are ephemeral by definition, which means that anything that it is stored at running time is lost when the container is stopped.
+This might cause problems with containers that need to persist their data, like database containers.</p>
 </div>
 <div class="paragraph">
-<p>A Kubernetes volume is just a directory, that is accessible to the Containers in a Pod.
-The concept is similar to Docker volumes, but in Docker, you are mapping the container to a computer host, in the case of Kubernetes volumes, the medium that backs it, and the contents of it are determined by the particular volume type used.</p>
+<p>A Kubernetes volume is just a directory that is accessible to the Containers in a Pod.
+The concept is similar to Docker volumes, but in Docker you are mapping the container to a computer host, whereas in the case of Kubernetes volumes, the medium that backs it and the contents of it are determined by the particular volume type used.</p>
 </div>
 <div class="paragraph">
 <p>Some of the volume types are:</p>
@@ -213,29 +247,132 @@ The concept is similar to Docker volumes, but in Docker, you are mapping the con
 </li>
 </ul>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_preparation"><a class="anchor" href="#_preparation"></a>Preparation</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_namespace"><a class="anchor" href="#_namespace"></a>Namespace</h3>
 <div class="paragraph">
-<p>Let&#8217;s start with two examples of <code>Volumes</code>.</p>
+<p>Make sure the proper namespace <code>myspace</code> is created and context is set to point to it.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You will need to create the <code>myspace</code> if you haven&#8217;t already.  Check for the existence of the namespace with</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get ns myspace</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the response is:</p>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Error from server (NotFound): namespaces "myspace" not found</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then you can create the namespace with:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create ns myspace</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="volumes-change-context-resource" class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl config set-context --current --namespace=myspace</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_watch"><a class="anchor" href="#_watch"></a>Watch</h3>
+<div class="paragraph">
+<p>If it&#8217;s not open already, you&#8217;ll want to have a terminal open (call it <strong>Terminal 2</strong>) to watch what&#8217;s going on with the pods in our current namespace</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset1_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset1_terminal-2">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch -n 1 "kubectl get pods -o wide \<i class="conum" data-value="1"></i><b>(1)</b>
+  | awk '{print \$1 \" \" \$2 \" \" \$3 \" \" \$5 \" \" \$7}' | column -t" <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the <code>-o wide</code> option allows us to see the node that the pod is schedule to</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>to keep the line from getting too long we&#8217;ll use <code>awk</code> and <code>column</code> to get and format only the columns we want</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_volumes"><a class="anchor" href="#_volumes"></a>Volumes</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s start with two examples of <code>Volumes</code>.</p>
+</div>
 <div class="sect2">
 <h3 id="_emptydir"><a class="anchor" href="#_emptydir"></a>EmptyDir</h3>
 <div class="paragraph">
 <p>An <code>emptyDir</code> volume is first created when a Pod is assigned to a node and exists as long as that Pod is running on that node.
 As the name says, it is initially empty.
 All Containers in the same Pod can read and write in the same <code>emptyDir</code> volume.
-When a Pod is restarted or removed, the data in the` emptyDir` is lost forever.</p>
+When a Pod is restarted or removed, the data in the <code>emptyDir</code> is lost forever.</p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s deploy a service that exposes two endpoints, one to write content to a file and another one to retrieve the content from that file.</p>
+<p>Let&#8217;s deploy a service that exposes two endpoints, one to write content to a file and another one to retrieve the content from that file.  Open <code>myboot-pod-volume.yml</code></p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>myboot-pod-volume.yml</code></p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
+<div class="title">myboot-pod-volume.yml</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
-kind: Pod
+kind: Pod <i class="conum" data-value="1"></i><b>(1)</b>
 metadata:
   name: myboot-demo
 spec:
@@ -244,40 +381,89 @@ spec:
     image: quay.io/rhdevelopers/myboot:v4
 
     volumeMounts:
-    - mountPath: /tmp/demo
-      name: demo-volume
+    - mountPath: /tmp/demo <i class="conum" data-value="2"></i><b>(2)</b>
+      name: demo-volume <i class="conum" data-value="3"></i><b>(3)</b>
 
   volumes:
   - name: demo-volume
     emptyDir: {}</code></pre>
 </div>
 </div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Notice that this is a <code>Pod</code> and not a <code>Deployment</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This is where this mount point will appear in the pod.  See below</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This must match the name of a volume that we define, in this case it is defined right at the bottom of the file</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>In <code>volumes</code> section, you are defining the volume, and in <code>volumeMounts</code> section, how the volume is mounted inside the container.</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pod-volume.yml
-
-kubectl get pods</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME          READY   STATUS    RESTARTS   AGE
-myboot-demo   1/1     Running   0          83s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pod-volume.yml</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s access into the container and run these methods:</p>
+<p>Then in our watch window we should see something like</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset2_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset2_terminal-2">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME         READY  STATUS             AGE  NODE
+myboot-demo  0/1    ContainerCreating  9s   devnation</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Once the pod is running, let&#8217;s exec into the container:</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -ti myboot-demo /bin/bash
-
-curl localhost:8080/appendgreetingfile
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -ti myboot-demo -- /bin/bash</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And once <code>exec</code> 'd into the container, run the following commands:</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset3_container"></a>Container</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset3_container">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/appendgreetingfile
 curl localhost:8080/readgreetingfile</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Which should return</p>
 </div>
 <div class="listingblock console-output">
 <div class="content">
@@ -297,8 +483,338 @@ curl localhost:8080/readgreetingfile</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">greeting.txt</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_emptydir_ephemerality"><a class="anchor" href="#_emptydir_ephemerality"></a>EmptyDir Ephemerality</h4>
 <div class="paragraph">
-<p>Exit the container&#8217;s shell:</p>
+<p>If you haven&#8217;t already, close the container&#8217;s shell:</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset4_container"></a>Container</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset4_container">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">exit</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>And delete the pod:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pod myboot-demo</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You need to wait until the pod is completely deleted before trying to deploy it again</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Then if you deploy the same service again:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pod-volume.yml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And once in the <code>Running</code> state <code>exec</code> into the pod:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -ti myboot-demo -- /bin/bash</code></pre>
+</div>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset5_container"></a>Container</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset5_container">
+<div class="paragraph">
+<p>Let&#8217;s list the contents of our mount point in our new pod</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ls /tmp/demo</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll notice that the directory content is empty, meaning that the file we created with the last pod was destroyed when the pod was deleted</p>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">root@myboot-demo:/app#</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Exit the pod</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">exit</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Now delete the pod.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pod myboot-demo</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_emptydir_sharing_in_pod"><a class="anchor" href="#_emptydir_sharing_in_pod"></a>EmptyDir Sharing in Pod</h4>
+<div class="paragraph">
+<p><code>emptyDir</code> is shared between containers of the same Pod.  Let&#8217;s take a look at a deployment that creates two containers in the same pod that mount the same <code>emptyDir</code> volume.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>myboot-pods-volume.yml</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Consider <code>myboot-pods-volume.yml</code>:</p>
+</div>
+<div class="listingblock console-output">
+<div class="title">myboot-pods-volume.yml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: myboot-demo
+spec:
+  containers:
+  - name: myboot-demo-1 <i class="conum" data-value="1"></i><b>(1)</b>
+    image: quay.io/rhdevelopers/myboot:v4
+    volumeMounts:
+    - mountPath: /tmp/demo
+      name: demo-volume
+
+  - name: myboot-demo-2 <i class="conum" data-value="2"></i><b>(2)</b>
+    image: quay.io/rhdevelopers/myboot:v4 <i class="conum" data-value="3"></i><b>(3)</b>
+
+    env:
+    - name: SERVER_PORT <i class="conum" data-value="4"></i><b>(4)</b>
+      value: "8090"
+
+    volumeMounts:
+    - mountPath: /tmp/demo
+      name: demo-volume
+
+  volumes:
+  - name: demo-volume <i class="conum" data-value="5"></i><b>(5)</b>
+    emptyDir: {}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The first container in the pod is called myboot-demo-1 and mounts <code>demo-volume</code> at <code>/tmp/demo</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The second container in the pod is called <code>myboot-demo-2</code> and mounts <code>demo-volume</code> at the same <code>/tmp/demo</code> point</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Both containers use the same exact image</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Notice that the second container needs to listen on a different port from the first since the containers share ports on the pod.  The <code>env</code> directive at this level only applies to the <code>myboot-demo-2</code> container</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The volume is defined only once but referenced by each container in the pod</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now let&#8217;s create that deployment in the <code>myspace</code> namespace</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pods-volume.yml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And in our pod watch we should see</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset6_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset6_terminal-2">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME          READY   STATUS    RESTARTS   AGE
+myboot-demo   <mark>2/2</mark>    Running   0          4s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice the <code>2/2</code> ready status.  This represents the 2 containers in the pod definition</p>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>First, let&#8217;s exec into the <strong>second</strong> container in the pod and start a watch on the mount point.  For this we&#8217;ll open yet another terminal (<strong>Terminal 3</strong>) <code>exec</code> into the other container in the pod to run the <code>cat</code> command</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset7_terminal-3"></a>Terminal 3</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset7_terminal-3">
+<div class="sidebarblock">
+<div class="content">
+<div class="title">VSCode: Open Terminal in Editor</div>
+<div class="paragraph">
+<p>If you&#8217;re doing this tutorial from within VSCode you may be running out of space to put your terminals at this point!  If you have a recent release of VSCode, you might consider opening a new terminal in the editor pane by using <span class="keyseq"><kbd>CTRL</kbd>+<kbd>SHIFT</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>SHIFT</kbd>+<kbd>p</kbd></span> on Mac OSX) to run the <code>Terminal: Create Terminal in Editor Area</code> command</p>
+</div>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it myboot-demo -c myboot-demo-2 -- bash</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And then from inside the <code>myboot-demo-2</code> container in the pod, run the following command:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch -n1 -- "ls -l /tmp/demo &amp;&amp; eval ""cat /tmp/demo/greeting.txt"""</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Which will at first return</p>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">total 0
+cat: /tmp/demo/greeting.txt: No such file or directory</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s access into the <strong>first</strong> container in the main terminal and see if we can get it to create a file that the <strong>second</strong> container can see</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset8_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset8_terminal-1">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -ti myboot-demo -c myboot-demo-1 -- /bin/bash</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and generate some content to <code>/tmp/demo</code> directory.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/appendgreetingfile</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And then show that the file exists and what its content is:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ls -l /tmp/demo &amp;&amp; echo $(cat /tmp/demo/greeting.txt)</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">total 4
+-rw-r--r--. 1 root root 5 Jul 13 08:11 greeting.txt
+Jambo</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Meanwhile in <strong>Terminal 3</strong> you should see something like:</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset9_terminal-3"></a>Terminal 3</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset9_terminal-3">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">total 4
+-rw-r--r--. 1 root root 5 Jul 13 08:11 greeting.txt
+Jambo</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Hit <span class="keyseq"><kbd>CTRL</kbd>+<kbd>c</kbd></span> to exit the watch and then exit out of the <code>exec</code> to the pod</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
@@ -306,76 +822,7 @@ curl localhost:8080/readgreetingfile</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And delete the pod.</p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pod myboot-demo</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then if you deploy again the same service you&#8217;ll notice that the directory content is empty.</p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -ti myboot-demo /bin/bash
-
-ls /tmp/demo
-exit</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Delete the pod.</p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pod myboot-demo</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><code>emptyDir</code> is shared between containers of the same Pod.
-The following deployment creates one pod with two containers mounting the same volume:</p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pods-volume.yml
-
-kubectl get pods</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME          READY   STATUS    RESTARTS   AGE
-myboot-demo   2/2     Running   0          4s</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Let&#8217;s access into the first container and generate some content to <code>/tmp/demo</code> directory.</p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -ti myboot-demo -c myboot-demo-1 /bin/bash
-
-curl localhost:8080/appendgreetingfile
-
-exit</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>And read the file contents from the other container:</p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec myboot-demo -c myboot-demo-2 "cat /tmp/demo/greeting.txt"</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Jambo</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You can get the volume information from a Pod by running:</p>
+<p>Now, back in your terminal you can get the volume information from a Pod by running:</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
@@ -391,11 +838,52 @@ exit</code></pre>
     SizeLimit:  &lt;unset&gt;</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h4>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset10_terminal-1"></a>Terminal 1</p>
+</li>
+<li>
+<p><a id="tabset10_terminal-3"></a>Terminal 3</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset10_terminal-1">
+<div class="paragraph">
+<p>Exit the <code>exec</code> command</p>
+</div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-pods-volume.yml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">exit</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now delete the pod</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pod myboot-demo</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset10_terminal-3">
+<div class="paragraph">
+<p>Close out the terminal window by typing the following in it</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">exit</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -403,9 +891,24 @@ exit</code></pre>
 <div class="sect2">
 <h3 id="_hostpath"><a class="anchor" href="#_hostpath"></a>HostPath</h3>
 <div class="paragraph">
-<p>A <code>hostPath</code> volume mounts a file or directory from the node&#8217;s filesystem into the Pod.</p>
+<p>A <code>hostPath</code> volume mounts a file or directory from the node&#8217;s filesystem into the Pod.  Take a look at <code>myboot-pod-volume-hostpath.yml</code></p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>myboot-pod-volume-hostpath.yml</code></p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
+<div class="title">myboot-pod-volume-hostpath.yml</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
 kind: Pod
@@ -422,9 +925,21 @@ spec:
 
   volumes:
   - name: demo-volume
-    hostPath:
-      path: "/mnt/data"</code></pre>
+    hostPath: <i class="conum" data-value="1"></i><b>(1)</b>
+      path: "/mnt/data" <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We&#8217;re mounting the same location as before, but you can see that we define the volume as <code>hostPath</code> here instead of <code>emptyDir</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>/mnt/data</code> is a location on the kubernetes <code>node</code> to which this pod gets assigned</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>In this case, you are defining the host/node directory where the contents are going to be stored.</p>
@@ -451,9 +966,110 @@ spec:
     HostPathType:</code></pre>
 </div>
 </div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset11_terminal-3"></a>Terminal 3</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset11_terminal-3">
 <div class="paragraph">
-<p>Notice that now the content stored in <code>/tmp/demo</code> inside the Pod is stored at host path <code>/mnt/data</code>, so if the Pod dies, the content is not lost.
-But this might not solve all the problems as if Pod goes down and it is rescheduled in another node, then the data will not be in this other node.</p>
+<p>Let&#8217;s open a terminal where we can watch the directory on the 'host' or the 'node'</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">VSCode: Open Terminal in Editor</div>
+<div class="paragraph">
+<p>If you&#8217;re doing this tutorial from within VSCode you may be running out of space to put your terminals at this point!  If you have a recent release of VSCode, you might consider opening a new terminal in the editor pane by using <span class="keyseq"><kbd>CTRL</kbd>+<kbd>SHIFT</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>SHIFT</kbd>+<kbd>p</kbd></span> on Mac OSX) to run the <code>Terminal: Create Terminal in Editor Area</code> command</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s use the <code>minikube ssh</code> command to simulate a connection to the kubernetes node.  (There is only one node running in minikube)</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube ssh</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Last login: Tue Jul 13 08:26:18 2021 from 192.168.49.1
+docker@devnation:~$</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now that we&#8217;re there, let&#8217;s watch the <code>/mnt/data</code> directory that the pod has mounted as <code>/tmp/demo</code></p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch -n1 -- "ls -al /mnt/data &amp;&amp; eval ""cat /mnt/data/greeting.txt"""</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset12_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset12_terminal-1">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -ti myboot-demo -- /bin/bash</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and then from within the pod, generate some content to <code>/tmp/demo</code> directory.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/appendgreetingfile</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Meanwhile in the other terminal (<strong>Terminal 3</strong>) you should at the same time see the watch output change</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset13_terminal-3"></a>Terminal 3</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset13_terminal-3">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Every 1.0s: eval ls -al /mnt/da...  devnation: Tue Jul 13 09:14:28 2021
+
+total 4
+drwxr-xr-x. 1 root root 24 Jul 13 09:13 .
+drwxr-xr-x. 1 root root  8 Jul 13 08:24 ..
+-rw-r--r--. 1 root root  5 Jul 13 09:13 greeting.txt
+Jambo</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that now the content stored in <code>/tmp/demo</code> inside the Pod is stored at host path <code>/mnt/data</code>, so if the Pod dies, the content is not lost.</p>
+</div>
+<div class="paragraph">
+<p>But this might not solve all the problems as if the Pod goes down and it is rescheduled in another node, then the data will not be in this other node.</p>
 </div>
 <div class="paragraph">
 <p>Let&#8217;s see another example, in this case for an Amazon EBS Volume:</p>
@@ -477,13 +1093,37 @@ spec:
 <p>What we want you to notice from the previous snippet is that you are mixing things from your application (ie the container, probes, ports, &#8230;&#8203;) things that are more in the <em>dev</em> side with things more related to the cloud (ie physical storage), which falls more in the <em>ops</em> side.</p>
 </div>
 <div class="paragraph">
-<p>To avoid this mix of concepts, Kubernetes offers some layer of abstractions, so developers just ask for space to store data (-persistent volume claim_), and operations team offers physical storage configuration.</p>
+<p>To avoid this mix of concepts, Kubernetes offers some layer of abstractions, so developers just ask for space to store data (<em>persistent volume claim</em>), and the operations team offers the physical storage configuration.</p>
 </div>
 <div class="sect3">
 <h4 id="_clean_up_2"><a class="anchor" href="#_clean_up_2"></a>Clean Up</h4>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset14_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset14_terminal-1">
+<div class="paragraph">
+<p>Exit the <code>exec</code> command</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">exit</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now delete the pod</p>
+</div>
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pod myboot-demo</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -494,19 +1134,34 @@ spec:
 <h2 id="_persistent_volume_persistent_volume_claim"><a class="anchor" href="#_persistent_volume_persistent_volume_claim"></a>Persistent Volume &amp; Persistent Volume Claim</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A <code>PersistentVolume</code> (<em>PV</em>) is a Kubernetes resource that is created by an administrator or dynamically using <code>Storage Classes</code> independently from Pod.
-It captures the details of the implementation of the storage, it can be NFS, Ceph, iSCSI, or a cloud-provider-specific storage system.</p>
+<p>A <code>PersistentVolume</code> (<em>PV</em>) is a Kubernetes resource that is created by an administrator or dynamically using <code>Storage Classes</code> independently from the Pod.
+It captures the details of the implementation of the storage and can be NFS, Ceph, iSCSI, or a cloud-provider-specific storage system.</p>
 </div>
 <div class="paragraph">
 <p>A <code>PersistentVolumeClaim</code> (<em>PVC</em>) is a request for storage by a user.
-It can request for specific volume size or for example the access mode.</p>
+It can request for a specific volume size or, for example, the access mode.</p>
 </div>
 <div class="sect2">
 <h3 id="_persistent_volumeclaim_with_hostpath"><a class="anchor" href="#_persistent_volumeclaim_with_hostpath"></a>Persistent volume/claim with hostPath</h3>
 <div class="paragraph">
-<p>Let&#8217;s use <code>hostPath</code> strategy but not configuring it directly as volume, but using persistence volume and persistence volume claim.</p>
+<p>Let&#8217;s use <code>hostPath</code> strategy, but not configuring it directly as volume, but using persistence volume and persistence volume claim. Check out <code>demo-persistent-volume-hostpath.yaml</code>:</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>demo-persistent-volume-hostpath.yaml</code></p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
+<div class="title">demo-persistent-volume-hostpath.yaml</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: PersistentVolume
 apiVersion: v1
@@ -531,7 +1186,7 @@ spec:
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/demo-persistent-volume-hostpath.yaml
 
-kubectl get pv</code></pre>
+kubectl get pv -w</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
@@ -541,10 +1196,52 @@ my-persistent-volume                       100Mi      RWO            Retain     
 </div>
 </div>
 <div class="paragraph">
+<p>Once the volume is established, let&#8217;s update our file watch terminal to look in the volume&#8217;s new location: <code>/mnt/persistent-volume</code></p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset15_terminal-3"></a>Terminal 3</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset15_terminal-3">
+<div class="paragraph">
+<p>Hit <span class="keyseq"><kbd>CTRL</kbd>+<kbd>c</kbd></span> to exit out of the current watch</p>
+</div>
+<div class="paragraph">
+<p>Then start a new watch</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch -n1 -- "ls -al /mnt/persistent-volume &amp;&amp; eval ""cat /mnt/persistent-volume/greeting.txt"""</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
 <p>Then from the dev side, we need to claim what we need from the <em>PV</em>.
-In the following example, we are requesting for 10Mi space.</p>
+In the following example, we are requesting for <strong>10Mi</strong> space.  See <code>myboot-persistent-volume-claim.yaml</code>:</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>myboot-persistent-volume-claim.yaml</code></p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
+<div class="title">myboot-persistent-volume-claim.yaml</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: PersistentVolumeClaim
 apiVersion: v1
@@ -563,7 +1260,7 @@ spec:
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-persistent-volume-claim.yaml
 
-kubectl get pvc</code></pre>
+kubectl get pvc -w</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
@@ -573,9 +1270,24 @@ myboot-volumeclaim   Bound    my-persistent-volume   100Mi      RWO            p
 </div>
 </div>
 <div class="paragraph">
-<p>The big difference is that now in the pod you are just defining in the <code>volumes</code> section, not the volume configuration directly, but the <em>persistent volume claim</em> to use.</p>
+<p>The big difference is that now in the pod you are just defining in the <code>volumes</code> section, not the volume configuration directly, but the <em>persistent volume claim</em> to use.  See <code>myboot-pod-volume-pvc.yaml</code>:</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>myboot-pod-volume-pvc.yaml</code></p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
+<div class="title">myboot-pod-volume-pvc.yaml</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
 kind: Pod
@@ -617,13 +1329,101 @@ kubectl describe pod myboot-demo</code></pre>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pod myboot-demo
-
-kubectl get pvc</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -ti myboot-demo -- /bin/bash</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Even though the pod has been deleted, the PVC (and the PV) are still there and need to be deleted manually.</p>
+<p>and then from within the pod, generate some content to <code>/tmp/demo</code> directory.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/appendgreetingfile</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And as soon as we&#8217;ve done that we&#8217;ll expect to see the following on the path on the node that the <code>PersistentVolume</code> maps to:</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset16_terminal-3"></a>Terminal 3</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset16_terminal-3">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Every 1.0s: ls -al /mnt/persistent-volume &amp;&amp; eval c...  devnation: Mon Jul 19 14:07:53 2021
+
+total 4
+drwxr-xr-x. 1 root root 24 Jul 19 14:06 .
+drwxr-xr-x. 1 root root 42 Jul 13 09:21 ..
+-rw-r--r--. 1 root root  5 Jul 19 14:06 greeting.txt
+Jambo</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_clean_up_3"><a class="anchor" href="#_clean_up_3"></a>Clean Up</h4>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset17_terminal-1"></a>Terminal 1</p>
+</li>
+<li>
+<p><a id="tabset17_terminal-3"></a>Terminal 3</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset17_terminal-1">
+<div class="paragraph">
+<p>Exit the <code>exec</code> command</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">exit</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now delete the pod</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pod myboot-demo</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset17_terminal-3">
+<div class="paragraph">
+<p>Hit <span class="keyseq"><kbd>CTRL</kbd>+<kbd>c</kbd></span> to exit out of the <code>watch</code></p>
+</div>
+<div class="paragraph">
+<p>And then in the <code>ssh</code> shell type</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">exit</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Once all is cleaned, run the following:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pvc</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Results in:</p>
 </div>
 <div class="listingblock console-output">
 <div class="content">
@@ -631,8 +1431,9 @@ kubectl get pvc</code></pre>
 myboot-volumeclaim   Bound    my-persistent-volume   100Mi      RWO            pv-demo        14m</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_clean_up_3"><a class="anchor" href="#_clean_up_3"></a>Clean Up</h4>
+<div class="paragraph">
+<p>Even though the pod has been deleted, the PVC (and the PV) are still there and need to be deleted manually.</p>
+</div>
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-persistent-volume-claim.yaml
@@ -664,8 +1465,8 @@ After the PVC is created, the storage device and the PV are automatically create
 The main purpose of dynamic provisioning is to work with cloud provider solutions.</p>
 </div>
 <div class="paragraph">
-<p>Normally, Kubernetes implementation offers a default Storage Class so anyone can get started quickly with dynamic provisioning.
-You can get information from default Storage Class by running:</p>
+<p>Normally, the Kubernetes implementation offers a default Storage Class so anyone can get started quickly with dynamic provisioning.
+You can get information from the default Storage Class by running:</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
@@ -676,15 +1477,15 @@ You can get information from default Storage Class by running:</p>
 <div class="ulist tabs">
 <ul>
 <li>
-<p><a id="tabset1_minikube"></a>Minikube</p>
+<p><a id="tabset18_minikube"></a>Minikube</p>
 </li>
 <li>
-<p><a id="tabset1_openshift"></a>OpenShift</p>
+<p><a id="tabset18_openshift"></a>OpenShift</p>
 </li>
 </ul>
 </div>
 <div class="content">
-<div class="tab-pane" aria-labelledby="tabset1_minikube">
+<div class="tab-pane" aria-labelledby="tabset18_minikube">
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                 PROVISIONER                RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
@@ -692,7 +1493,7 @@ standard (default)   k8s.io/minikube-hostpath   Delete          Immediate       
 </div>
 </div>
 </div>
-<div class="tab-pane" aria-labelledby="tabset1_openshift">
+<div class="tab-pane" aria-labelledby="tabset18_openshift">
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME            PROVISIONER             AGE
@@ -707,7 +1508,7 @@ For example in the case of AWS, a default Storage Class is provided pointing out
 </div>
 </div>
 <div class="paragraph">
-<p>Then you can create a Persistent Volume Claim which will create a Persistent Volume automatically.</p>
+<p>Then you can create a Persistent Volume Claim which will create a Persistent Volume automatically.  Use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> to open <code>demo-dynamic-persistent.yaml</code> quickly:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -724,7 +1525,13 @@ spec:
 </div>
 </div>
 <div class="paragraph">
-<p>Since we&#8217;ve not specified any <em>storage class</em> but there is one defined as the default, the <em>PVC</em> implicitly refers to that one.</p>
+<p>Since we&#8217;ve not specified any <em>storage class</em> but there is one defined as the default, the <em>PVC</em> implicitly refers to that one.  (You might consider comparing this pod definition to <code>myboot-persistent-volume-claim.yaml</code>)</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/pv-static-vs-dynamic.png" alt="pv static vs dynamic">
+</div>
+<div class="title">Figure 1. Difference between static and dynamic PVC (with static PV)</div>
 </div>
 <div class="listingblock console-input">
 <div class="content">
@@ -733,26 +1540,61 @@ spec:
 kubectl get pvc</code></pre>
 </div>
 </div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset19_minikube"></a>Minikube</p>
+</li>
+<li>
+<p><a id="tabset19_openshift"></a>OpenShift</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset19_minikube">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                 STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myboot-volumeclaim   Pending                                      standard       2s</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset19_openshift">
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                 STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 myboot-volumeclaim   Pending                                      gp2            46sç</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
 <div class="paragraph">
-<p>Notice that the <em>PVC</em> is in <em>Pending</em> STATUS, because remember that we are creating dynamic storage and it means that until the <em>pod</em> doesn&#8217;t request the volume, the <em>PVC</em> will remain in pending state and the <em>PV</em> will not be created.</p>
+<p>Notice that the <em>PVC</em> is in <em>Pending</em> STATUS, because remember that we are creating dynamic storage and it means that while the <em>pod</em> doesn&#8217;t request the volume, the <em>PVC</em> will remain in a pending state and the <em>PV</em> will not be created.</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pod-volume-pvc.yaml
-
-kubectl get pods</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pod-volume-pvc.yaml</code></pre>
 </div>
 </div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset20_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset20_terminal-2">
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME          READY   STATUS    RESTARTS   AGE
 myboot-demo   1/1     Running   0          2m36s</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
@@ -763,10 +1605,34 @@ myboot-demo   1/1     Running   0          2m36s</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pvc</code></pre>
 </div>
 </div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset21_minikube"></a>Minikube</p>
+</li>
+<li>
+<p><a id="tabset21_openshift"></a>OpenShift</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset21_minikube">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myboot-volumeclaim   Bound    pvc-170f2e9a-4afc-4869-bd19-f10c86bff34b   10Mi       RWO            standard       5s</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset21_openshift">
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 myboot-volumeclaim   Bound    pvc-6de4f27e-bd40-4b58-bb46-91eb08ca5bd7   1Gi        RWO            gp2            116s</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
@@ -780,10 +1646,34 @@ myboot-volumeclaim   Bound    pvc-6de4f27e-bd40-4b58-bb46-91eb08ca5bd7   1Gi    
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pv</code></pre>
 </div>
 </div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset22_minikube"></a>Minikube</p>
+</li>
+<li>
+<p><a id="tabset22_openshift"></a>OpenShift</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset22_minikube">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                        STORAGECLASS   REASON   AGE
+pvc-170f2e9a-4afc-4869-bd19-f10c86bff34b   10Mi       RWO            Delete           Bound    myspace/myboot-volumeclaim   standard                56s</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset22_openshift">
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                        STORAGECLASS   REASON   AGE
 pvc-6de4f27e-bd40-4b58-bb46-91eb08ca5bd7   1Gi        RWO            Delete           Bound    default/myboot-volumeclaim   gp2                     77s</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
@@ -808,11 +1698,15 @@ kubectl delete -f apps/kubefiles/demo-dynamic-persistent.yaml</code></pre>
 As you&#8217;ve seen in the last example, this storage class guarantees that all nodes see the same disk content.</p>
 </div>
 <div class="paragraph">
-<p>If for example, if you are using Kubernetes/OpenShift on-prem or if you don&#8217;t want to relay to a vendor solution, there is also support for distributed filesystems in Kubernetes.
-If that&#8217;s the case, we recommend you to use NFS, <a href="https://www.gluster.org/">GlusterFS </a> or <a href="https://ceph.io/">Ceph</a>.</p>
+<p>For example, if you are using Kubernetes/OpenShift on-prem or if you don&#8217;t want to relay to a vendor solution, there is also support for distributed filesystems in Kubernetes.
+If that&#8217;s the case, we recommend you use NFS, <a href="https://www.gluster.org/">GlusterFS </a> or <a href="https://ceph.io/">Ceph</a>.</p>
 </div>
 </div>
 </div>
+<nav class="pagination">
+  <span class="prev"><a href="crds.html" class="query-params-link">Operators</a></span>
+  <span class="next"><a href="taints-affinity.html" class="query-params-link">Taints &amp; Affinity</a></span>
+</nav>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
   <div class="toc-menu"></div>

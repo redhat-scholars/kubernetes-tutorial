@@ -4,23 +4,42 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Liveness &amp; Readiness :: Kubernetes Tutorial</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/live-ready.html">
+    <link rel="canonical" href="https://redhat-scholars.github.io/kubernetes-tutorial/kubernetes-tutorial/live-ready.html">
+    <link rel="prev" href="rolling-updates.html">
+    <link rel="next" href="configmap.html">
     <meta name="generator" content="Antora 2.3.1">
     <link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body class="article">
 <header class="header">
+  <style>
+    /* override master stylesheet properties for this partial here */
+
+    .navbar-item {
+      flex: unset;
+    }
+
+    .doc {
+      max-width: unset;
+    }
+
+
+  </style>
+
   <nav class="navbar">
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/NewRHDFullLogo_4-color_white-wordmark.png" height="40px" alt="Red Hat Developer Program"></a>
-      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-developer-demos.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img
+          src="../_/img/header_logo.png" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-scholars.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
         <span></span>
         <span></span>
       </button>
     </div>
-    <div id="topbar-nav" class="navbar-menu">
+        <div id="topbar-nav" class="navbar-menu">
       <div class="navbar-end">
         <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
         <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
@@ -28,24 +47,24 @@
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link" href="#">More Tutorials</a>
           <div class="navbar-dropdown">
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/outer-loop-guides/" target="_blank">Outer Loop</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/openshift-starter-guides/" target="_blank">OpenShift Starter</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/istio-tutorial/" target="_blank">Istio</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/tekton-tutorial/" target="_blank">Tekton</a>
           </div>
         </div>
       </div>
     </div>
   </nav>
-</header>
-<div class="body">
+</header><div class="body">
 <div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="index.html"></a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -156,7 +175,22 @@
 </ul>
   </nav>
 </div>
-    </div>
+<div class="nav-panel-explore"  style="display: none;"  data-panel="explore">
+  <div class="context">
+    <span class="title">kubernetes-tutorial</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">kubernetes-tutorial</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>    </div>
   </aside>
 </div>
 <main class="article">
@@ -178,7 +212,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Make sure you are in the correct namespace</p>
+<p>Make sure you are in the correct namespace:</p>
 </div>
 <div id="liveready-change-context-resource" class="listingblock console-input">
 <div class="content">
@@ -199,17 +233,31 @@
 </div>
 </div>
 <div class="paragraph">
-<p>Deploy an application with the Live and Ready probe set:</p>
+<p>Now we&#8217;re going to deploy our application with a Liveness and Readiness probe set.  Take a look at <code>myboot-deployment-live-ready.yml</code></p>
 </div>
-<div id="create-app-live-ready" class="listingblock console-input">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>myboot-deployment-live-ready.yml</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock console-output">
+<div class="title">myboot-deployment-live-ready.yml</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
-apiVersion: apps/v1
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: myboot
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: myboot
@@ -235,7 +283,7 @@ spec:
         livenessProbe:
           httpGet:
               port: 8080
-              path: /
+              path: /alive
           initialDelaySeconds: 10
           periodSeconds: 5
           timeoutSeconds: 2
@@ -244,8 +292,15 @@ spec:
             path: /health
             port: 8080
           initialDelaySeconds: 10
-          periodSeconds: 3
-EOF</code></pre>
+          periodSeconds: 3</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now apply this deployment with the following command</p>
+</div>
+<div id="create-app-live-ready" class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment-live-ready.yml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -346,7 +401,7 @@ If you are in AWS, you need to get the <code>hostname</code> instead of <code>ip
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true
 do curl $IP:$PORT
-sleep .3
+sleep 0.8
 done</code></pre>
 </div>
 </div>
@@ -383,7 +438,7 @@ Bonjour from Spring Boot! 3 on myboot-8449d5468d-m88z4</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>These are the Pod IPs that have passed their readiness probe:</p>
+<p>These are the Pod IPs that have passed their readiness probes:</p>
 </div>
 <div class="listingblock console-output bash">
 <div class="content">
@@ -484,11 +539,28 @@ Jambo from Spring Boot! 71 on myboot-56659c9d69-6sglj</code></pre>
 <div class="paragraph">
 <p>Edit the Deployment to point to the /alive URL:</p>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this tutorial from within VSCode or would like to use VSCode to edit the resource targeted, make sure you set the following environment variable before issuing the <code>kubectl edit</code>:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export KUBE_EDITOR="code -w"</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div id="change-liveness-v3-live-ready" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export KUBE_EDITOR="code -w"
-
-kubectl edit deployment myboot</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl edit deployment myboot</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -516,7 +588,7 @@ kubectl edit deployment myboot</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Save and close the editor, allowing that change to rollout</p>
+<p>Save and close the editor, allowing that change to rollout:</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
@@ -594,8 +666,7 @@ Jambo from Spring Boot! 176 on myboot-558b4f8678-z7f9n</code></pre>
 <div class="sectionbody">
 <div id="cleanup-live-ready" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete deployment myboot
-kubectl delete service myboot</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete deployment myboot</code></pre>
 </div>
 </div>
 </div>
@@ -607,15 +678,29 @@ kubectl delete service myboot</code></pre>
 <p>Some applications require an additional startup time on their first initialization.</p>
 </div>
 <div class="paragraph">
-<p>It might be tricky to fit this scenario into liveness/readiness probe as you need to configure them for their normal behaviour to detect abnormalities during the running time and moreover covering the long start up time.</p>
+<p>It might be tricky to fit this scenario into the liveness/readiness probes as you need to configure them for their normal behaviour to detect abnormalities during the running time and moreover covering the long start up time.</p>
 </div>
 <div class="paragraph">
-<p>Startup probes fixes this problem, as once the startup probe has succeeded, the rest of the probes takes over</p>
+<p>For instance, what if we had an application that might deadlock and we want to catch such issues immediately, we might have liveness and readiness probes that look like in <code>apps/kubefiles/myboot-deployment-live-ready-aggressive.yml</code></p>
 </div>
-<div class="listingblock console-input">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>myboot-deployment-live-ready-aggressive.yml</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock console-output">
+<div class="title">myboot-deployment-live-ready-aggressive.yml</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
-apiVersion: apps/v1
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: myboot
@@ -632,7 +717,7 @@ spec:
     spec:
       containers:
       - name: myboot
-        image: quay.io/rhdevelopers/myboot:zoombie
+        image: quay.io/rhdevelopers/myboot:v1
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -646,30 +731,145 @@ spec:
         livenessProbe:
           httpGet:
               port: 8080
-              path: /
-          initialDelaySeconds: 10
-          periodSeconds: 5
+              path: /alive
+          periodSeconds: 2
           timeoutSeconds: 2
+          failureThreshold: 2
         readinessProbe:
           httpGet:
             path: /health
             port: 8080
-          initialDelaySeconds: 10
+          periodSeconds: 3</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then apply that deployment</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment-live-ready-aggressive.yml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As we&#8217;ll see from the pod watch, the pods are continually getting restarted, sometimes after it successfully boots up (because kubelet schedules for restart) and this is due to the startup time of SpringBoot.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe pods</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Events:
+  Type     Reason     Age                 From               Message
+  ----     ------     ----                ----               -------
+  Normal   Scheduled  96s                 default-scheduler  Successfully assigned myspace/myboot-849ccd6948-8vrfq to devnation
+  Normal   Pulled     92s                 kubelet            Successfully pulled image "quay.io/rhdevelopers/myboot:v1" in 3.295180194s
+  Normal   Created    55s (x2 over 92s)   kubelet            Created container myboot
+  Normal   Started    55s (x2 over 92s)   kubelet            Started container myboot
+  Normal   Pulled     55s                 kubelet            Successfully pulled image "quay.io/rhdevelopers/myboot:v1" in 3.289395484s
+  Warning  Unhealthy  52s (x4 over 90s)   kubelet            Liveness probe failed: Get "http://172.17.0.4:8080/alive": dial tcp 172.17.0.4:8080: connect: connection refused
+  Normal   Killing    52s (x2 over 88s)   kubelet            Container myboot failed liveness probe, will be restarted
+  Normal   Pulling    22s (x3 over 95s)   kubelet            Pulling image "quay.io/rhdevelopers/myboot:v1"
+  Warning  Unhealthy  19s (x10 over 88s)  kubelet            Readiness probe failed: Get "http://172.17.0.4:8080/health": dial tcp 172.17.0.4:8080: connect: connection refused</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Startup probes</strong> fix this problem, as once the startup probe has succeeded, the rest of the probes take over, but until the startup probe passes, neither the liveness nor the readiness probes can run.</p>
+</div>
+<div class="paragraph">
+<p><code>myboot-deployment-startup-live-ready.yml</code> is an example of a deployment with just such a probe</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>myboot-deployment-startup-live-ready.yml</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock console-output">
+<div class="title">myboot-deployment-startup-live-ready.yml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myboot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myboot
+  template:
+    metadata:
+      labels:
+        app: myboot
+        env: dev
+    spec:
+      containers:
+      - name: myboot
+        image: quay.io/rhdevelopers/myboot:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "300Mi"
+            cpu: "250m" # 1/4 core
+          limits:
+            memory: "400Mi"
+            cpu: "1000m" # 1 core
+        livenessProbe:
+          httpGet:
+              port: 8080
+              path: /alive
+          periodSeconds: 2
+          timeoutSeconds: 2
+          failureThreshold: 2
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
           periodSeconds: 3
         startupProbe:
           httpGet:
             path: /alive
             port: 8080
-          failureThreshold: 12
+          failureThreshold: 6
           periodSeconds: 5
-EOF</code></pre>
+          timeoutSeconds: 1</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The startup probe waits for one minute (<code>5 * 12</code>) to startup the application.</p>
+<p>You&#8217;ll see the difference is this section</p>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">        startupProbe:
+          httpGet:
+            path: /alive
+            port: 8080
+          failureThreshold: 6
+          periodSeconds: 5
+          timeoutSeconds: 1</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>The current application returns a <code>503</code> error in <code>/alive</code> endpoint so it will never succeed to boot up and <code>restartPolicy</code> is applied.</p>
+<p>Then apply that deployment</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment-startup-live-ready.yml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The startup probe waits for 30 seconds (<code>5 * 6</code>) to startup the application.  Notice, too, that the delay on the liveness and readiness checks has gone down to 0.</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
@@ -683,38 +883,32 @@ myboot-579cc5cc47-2bk5p   0/1     Running   0          67s</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Wait for 60 seconds until you see that the pod is restarted.</p>
+<p>Eventually your curl loop should show the pod running</p>
 </div>
-<div class="paragraph">
-<p>And you will see it restarted:</p>
-</div>
-<div class="listingblock console-output bash">
+<div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>NAME                      READY   STATUS    RESTARTS   AGE
-myboot-579cc5cc47-2bk5p   0/1     Running   1          3m7s</code></pre>
+<pre>Aloha from Spring Boot! 18 on myboot-849ccd6948-8vrfq
+Aloha from Spring Boot! 19 on myboot-849ccd6948-8vrfq
+Aloha from Spring Boot! 20 on myboot-849ccd6948-8vrfq
+Aloha from Spring Boot! 21 on myboot-849ccd6948-8vrfq</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>To make the pod succeed, <code>exec</code> into it and reborn it:</p>
+<p>Let&#8217;s show that the liveness probe has taken over.
+Now pick one of the pods, <code>exec</code> into it and shoot it:</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it myboot-579cc5cc47-2bk5p /bin/bash</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash</code></pre>
 </div>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/reborn</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl localhost:8080/shot</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And finally it is started:</p>
-</div>
-<div class="listingblock console-output bash">
-<div class="content">
-<pre class="highlightjs highlight"><code>NAME                      READY   STATUS    RESTARTS   AGE
-myboot-579cc5cc47-2bk5p   1/1     Running   1          3m41s</code></pre>
-</div>
+<p>And you will see it get restarted.</p>
 </div>
 <div class="paragraph">
 <p>Describe the pod to get the statistics of probes:</p>
@@ -746,11 +940,16 @@ Mounts:</code></pre>
 <div class="sectionbody">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete deployment myboot</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete deployment myboot
+kubectl delete svc myboot</code></pre>
 </div>
 </div>
 </div>
 </div>
+<nav class="pagination">
+  <span class="prev"><a href="rolling-updates.html" class="query-params-link">Rolling updates</a></span>
+  <span class="next"><a href="configmap.html" class="query-params-link">ConfigMap</a></span>
+</nav>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
   <div class="toc-menu"></div>

@@ -4,23 +4,42 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Operators :: Kubernetes Tutorial</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/crds.html">
+    <link rel="canonical" href="https://redhat-scholars.github.io/kubernetes-tutorial/kubernetes-tutorial/crds.html">
+    <link rel="prev" href="secrets.html">
+    <link rel="next" href="volumes-persistentvolumes.html">
     <meta name="generator" content="Antora 2.3.1">
     <link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body class="article">
 <header class="header">
+  <style>
+    /* override master stylesheet properties for this partial here */
+
+    .navbar-item {
+      flex: unset;
+    }
+
+    .doc {
+      max-width: unset;
+    }
+
+
+  </style>
+
   <nav class="navbar">
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/NewRHDFullLogo_4-color_white-wordmark.png" height="40px" alt="Red Hat Developer Program"></a>
-      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-developer-demos.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img
+          src="../_/img/header_logo.png" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-scholars.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
         <span></span>
         <span></span>
       </button>
     </div>
-    <div id="topbar-nav" class="navbar-menu">
+        <div id="topbar-nav" class="navbar-menu">
       <div class="navbar-end">
         <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
         <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
@@ -28,24 +47,24 @@
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link" href="#">More Tutorials</a>
           <div class="navbar-dropdown">
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/outer-loop-guides/" target="_blank">Outer Loop</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/openshift-starter-guides/" target="_blank">OpenShift Starter</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/istio-tutorial/" target="_blank">Istio</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/tekton-tutorial/" target="_blank">Tekton</a>
           </div>
         </div>
       </div>
     </div>
   </nav>
-</header>
-<div class="body">
+</header><div class="body">
 <div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="index.html"></a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -156,7 +175,22 @@
 </ul>
   </nav>
 </div>
-    </div>
+<div class="nav-panel-explore"  style="display: none;"  data-panel="explore">
+  <div class="context">
+    <span class="title">kubernetes-tutorial</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">kubernetes-tutorial</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>    </div>
   </aside>
 </div>
 <main class="article">
@@ -178,6 +212,133 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
+<p>Operators are a way of extending the functionality of our Kubernetes cluster by installing automated controllers to manage extensions we provide to the underlying Kubernetes API.</p>
+</div>
+<div class="paragraph">
+<p>In this section we&#8217;ll take a deeper look at how operators interact with the Kubernetes API to do this</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Operators in the Real World</div>
+<div class="paragraph">
+<p>When demonstrating this tutorial in a master class, it can be good to show the Kafka Operator in Openshift (as roughly outlined <a href="#_kafka_for_openshift">here</a>).  Key Points when showing on an OpenShift cluster:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Use OperatorHub to show how many different Operators there are.</p>
+</li>
+<li>
+<p>Install the <code>AMQStreams</code> or <code>Strimzi</code> Operator to add Kafka support (i.e. CRDs as we&#8217;ll see) to the cluster</p>
+</li>
+<li>
+<p>Once the operator is installed, pick a namespace to install a <code>Kafka</code> CR in</p>
+</li>
+<li>
+<p>Show in the Developer Perspective the Kafka being created by the operator</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>In this section of the tutorial we&#8217;ll be demonstrating these aspects of operators with a home grown toy "Pizza Operator"</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_preparation"><a class="anchor" href="#_preparation"></a>Preparation</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_namespace"><a class="anchor" href="#_namespace"></a>Namespace</h3>
+<div class="paragraph">
+<p>We&#8217;ll need a namespace where we&#8217;re house our operator deployment and our <code>CustomResources</code> upon which the operator will operate</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create namespace pizzahat
+kubectl config set-context --current --namespace=pizzahat</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_watch"><a class="anchor" href="#_watch"></a>Watch</h3>
+<div class="paragraph">
+<p>If it&#8217;s not open already, you&#8217;ll want to have a terminal open (call it <strong>Terminal 2</strong>) to watch what&#8217;s going on with the pods in our current namespace</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset1_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset1_terminal-2">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch -n 1 "kubectl get pods -o wide \<i class="conum" data-value="1"></i><b>(1)</b>
+  | awk '{print \$1 \" \" \$2 \" \" \$3 \" \" \$5 \" \" \$7}' | column -t" <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the <code>-o wide</code> option allows us to see the node that the pod is schedule to</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>to keep the line from getting too long we&#8217;ll use <code>awk</code> and <code>column</code> to get and format only the columns we want</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_logs"><a class="anchor" href="#_logs"></a>Logs</h3>
+<div class="paragraph">
+<p>We&#8217;ll want to open a third terminal (call it <strong>Terminal 3</strong>) where we&#8217;ll use a tool called <code>stern</code> to watch the output of certain pods</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">VSCode: Open Terminal in Editor</div>
+<div class="paragraph">
+<p>If you&#8217;re doing this tutorial from within VSCode you may be running out of space to put your terminals at this point!  If you have a recent release of VSCode, you might consider opening a new terminal in the editor pane by using <span class="keyseq"><kbd>CTRL</kbd>+<kbd>SHIFT</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>SHIFT</kbd>+<kbd>p</kbd></span> on Mac OSX) to run the <code>Terminal: Create Terminal in Editor Area</code> command</p>
+</div>
+</div>
+</div>
+<div id="crd-kubectl-watch-logs" class="paragraph">
+<p>We are going to have stern watch the pizzahat namespace for p-pod</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset2_terminal-3-"></a>Terminal 3 </p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset2_terminal-3-">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">stern -n pizzahat p-pod</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_crds"><a class="anchor" href="#_crds"></a>CRDs</h2>
+<div class="sectionbody">
+<div class="paragraph">
 <p>Custom Resources extend the API</p>
 </div>
 <div class="paragraph">
@@ -192,22 +353,128 @@
 <div class="paragraph">
 <p>Custom Resource Definitions (CRDs) in version 1.7</p>
 </div>
+<div class="paragraph">
+<p>CRDs extend the Kubernetes API.  We can see these api resources readily:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl api-resources</code></pre>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_crds"><a class="anchor" href="#_crds"></a>CRDs</h2>
-<div class="sectionbody">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                              SHORTNAMES   APIVERSION                             NAMESPACED   KIND
+bindings                                       v1                                     true         Binding
+componentstatuses                 cs           v1                                     false        ComponentStatus
+configmaps                        cm           v1                                     true         ConfigMap
+endpoints                         ep           v1                                     true         Endpoint
+... <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This list is truncated</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In the list you will find some of the resources we&#8217;ve already learned about, like <code>Deployments</code></p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl api-resources | grep Deployment</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">deployments                       deploy       apps/v1                                true         Deployment</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>CustomResourceDefinition</code> s are a sub-set of the Kubernetes <code>api-resources</code>.  Let&#8217;s see if there are any CRDs already installed in our cluster</p>
+</div>
 <div id="get-crds" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get crds --all-namespaces
-kubectl api-resources</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get crds --all-namespaces</code></pre>
+</div>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset3_minikube"></a>Minikube</p>
+</li>
+<li>
+<p><a id="tabset3_openshift"></a>OpenShift</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset3_minikube">
+<div class="paragraph">
+<p>If you are using something like minikube, you will find that there are no CRDs installed yet</p>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">No resources found</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset3_openshift">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                                              CREATED AT
+alertmanagerconfigs.monitoring.coreos.com                         2021-07-12T01:37:49Z
+alertmanagers.monitoring.coreos.com                               2021-07-12T01:37:53Z
+apiservers.config.openshift.io                                    2021-07-12T01:37:06Z
+authentications.config.openshift.io                               2021-07-12T01:37:06Z
+authentications.operator.openshift.io                             2021-07-12T01:37:53Z
+baremetalhosts.metal3.io                                          2021-07-12T01:38:25Z
+builds.config.openshift.io                                        2021-07-12T01:37:06Z
+catalogsources.operators.coreos.com                               2021-07-12T01:37:49Z
+cloudcredentials.operator.openshift.io                            2021-07-12T01:37:10Z
+... <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This list has been truncated</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>OpenShift is at its heart Kubernetes.  One of the main ways OpenShift extends Kubernetes is via CRDs, which explains why you find so many of them installed even on the back of a fresh installation.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_example_crd"><a class="anchor" href="#_example_crd"></a>Example CRD</h3>
+<div class="paragraph">
+<p>Let&#8217;s go ahead and create our own Custom Resource Definition.  Later on, this Custom Resources created from this definition will be something that our operator will operate upon.  Take a look at <code>pizza-crd.yaml</code> to see what the CRD we&#8217;ll be creating looks like</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>pizza-crd.yaml</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="listingblock">
+<div class="title">pizza-crd.yaml</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: apiextensions.k8s.io/v1beta1
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   name: pizzas.mykubernetes.acme.org
@@ -217,9 +484,29 @@ metadata:
 spec:
   group: mykubernetes.acme.org
   scope: Namespaced
-  version: v1beta2
+  versions:
+  - name: v1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        description: "A custom resource for making yummy pizzas" <i class="conum" data-value="1"></i><b>(1)</b>
+        type: object
+        properties:
+          spec:
+            type: object
+            description: "Information about our pizza"
+            properties:
+              toppings: <i class="conum" data-value="2"></i><b>(2)</b>
+                type: array
+                items:
+                  type: string
+                description: "List of toppings for our pizza"
+              sauce: <i class="conum" data-value="3"></i><b>(3)</b>
+                type: string
+                description: "The name of the sauce to use on our pizza"
   names:
-    kind: Pizza
+    kind: Pizza <i class="conum" data-value="4"></i><b>(4)</b>
     listKind: PizzaList
     plural: pizzas
     singular: pizza
@@ -227,20 +514,51 @@ spec:
     - pz</code></pre>
 </div>
 </div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This is a description that will be shown when somebody attempts to describe the CRD</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This describes one of the values our <code>CustomResource</code> will have, namely, the (<code>array</code>) list of (<code>string</code>) toppings</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This describes the second field our <code>CustomResource</code> can define in its spec, the (<code>string</code>) name of the sauce to use</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>This is the name that our CustomResources will have.  Sort of like <code>Deployment</code> or <code>Pod</code></td>
+</tr>
+</table>
 </div>
-<div class="sect2">
-<h3 id="_add_pizzas"><a class="anchor" href="#_add_pizzas"></a>Add Pizzas</h3>
-<div id="add-pizzas" class="listingblock console-input">
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Many CRDs include metadata about the fields that are exposed so that the CR can be validated by the Kubernetes API.  Prior to API version <code>v1</code> this was not enforced, after Kubernetes v1.22 all <code>CustomResources</code> will need to be <code>v1</code> and thus will need to define their object schema</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now let&#8217;s go ahead ad add this CRD to our cluster so that we can create <code>Pizza</code> Custom Resources.</p>
+</div>
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create namespace pizzahat
-kubectl config set-context --current --namespace=pizzahat
-
-kubectl apply -f apps/pizzas/pizza-crd.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/pizzas/pizza-crd.yaml</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>We should now be able to see that our CRD is part of our API</p>
 </div>
-<div class="sect2">
-<h3 id="_now_part_of_the_api"><a class="anchor" href="#_now_part_of_the_api"></a>Now part of the API</h3>
 <div id="get-pizzas-crds" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get crds | grep pizza</code></pre>
@@ -255,29 +573,213 @@ kubectl apply -f apps/pizzas/pizza-crd.yaml</code></pre>
 pizzas.mykubernetes.acme.org   2020-07-01T08:12:00Z</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>And since CRDs are a subset of all <code>api-resources</code>, we should now see <code>pizzas</code> as extending our cluster&#8217;s api-resources:</p>
+</div>
 <div id="get-api-pizzas-crds" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl api-resources | grep pizzas</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Results:</p>
+<p>Yields:</p>
 </div>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">pizzas                            pz           mykubernetes.acme.org          true         Pizza</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Finally, since we defined the schema for our <code>CustomResourceDefinition</code> we&#8217;ve made it easier for people to consume our api.  CRDs hook into the <code>kubectl describe</code> functionality</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl explain pizza</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Gives us this helpful output</p>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">KIND:     Pizza
+VERSION:  mykubernetes.acme.org/v1
+
+DESCRIPTION:
+     A custom resource for making yummy pizzas <i class="conum" data-value="1"></i><b>(1)</b>
+
+FIELDS:
+   apiVersion   &lt;string&gt;
+     APIVersion defines the versioned schema of this representation of an
+     object. Servers should convert recognized schemas to the latest internal
+     value, and may reject unrecognized values. More info:
+     <a href="https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources" class="bare">https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources</a>
+
+   kind &lt;string&gt;
+     Kind is a string value representing the REST resource this object
+     represents. Servers may infer this from the endpoint the client submits
+     requests to. Cannot be updated. In CamelCase. More info:
+     <a href="https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds" class="bare">https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds</a>
+
+   metadata     &lt;Object&gt;
+     Standard object's metadata. More info:
+     <a href="https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata" class="bare">https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata</a>
+
+   sauce        &lt;string&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+     The name of the sauce to use on our pizza
+
+   toppings     &lt;[]string&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+     List of toppings for our pizza'</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Notice that this matches our overall description of the pizza</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This is from the Schema section of the CRD for sauce.  It says that it&#8217;s a string.  The description comes from the description field</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This is from the Schema section of the CRD for toppings.  It says that it&#8217;s an array of strings.  The description comes from the description field</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_deploying_the_operator"><a class="anchor" href="#_deploying_the_operator"></a>Deploying the Operator</h3>
-<div class="listingblock">
+<div class="paragraph">
+<p>Our CRD is not limited to a particular namespace, but we do need a namespace to put our operator that is going to operate on our <code>pizza</code> CRs.</p>
+</div>
+<div class="paragraph">
+<p>At its heart, an operator is just an application, like the <code>myboot</code> application that we deployed previously.  The difference is that the operator knows to to interact with the Kubernetes API and watch for resources that it cares about.</p>
+</div>
+<div class="paragraph">
+<p>The Pizza operator that we&#8217;re about to deploy was written in <a href="https://quarkus.io/" target="_blank" rel="noopener">Quarkus</a> using the <a href="https://github.com/java-operator-sdk/java-operator-sdk" target="_blank" rel="noopener">java operator sdk</a>.  The code for this operator is present in this repo.  See the <code>PizzaResourceWatcher.java</code> which is one of the key classes in the operator controller:</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>PizzaResourceWatcher.java</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock console-output">
+<div class="title">PizzaResourceWatcher.java</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/pizzas/pizza-deployment.yaml
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package org.acme;
 
-kubectl get pods</code></pre>
+import io.fabric8.kubernetes.api.model.ContainerBuilder;
+import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
+import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.api.model.PodBuilder;
+import io.fabric8.kubernetes.api.model.PodSpecBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClientException;
+import io.fabric8.kubernetes.client.Watcher;
+import io.fabric8.kubernetes.client.dsl.NonNamespaceOperation;
+import io.fabric8.kubernetes.client.dsl.Resource;
+import io.quarkus.runtime.StartupEvent;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
+public class PizzaResourceWatcher {
+
+    @Inject
+    KubernetesClient defaultClient;
+
+    @Inject
+    NonNamespaceOperation&lt;PizzaResource, PizzaResourceList, PizzaResourceDoneable, Resource&lt;PizzaResource, PizzaResourceDoneable&gt;&gt; crClient;
+
+    void onStartup(@Observes StartupEvent event) {
+        System.out.println("Startup");
+        crClient.watch(new Watcher&lt;PizzaResource&gt;() { <i class="conum" data-value="1"></i><b>(1)</b>
+            @Override
+            public void eventReceived(Action action, PizzaResource resource) {
+                System.out.println("Event " + action.name());
+                if (action == Action.ADDED) {
+                    final String app = resource.getMetadata().getName();
+                    final String sauce = resource.getSpec().getSauce();
+                    final List&lt;String&gt; toppings = resource.getSpec().getToppings();
+                    final Map&lt;String, String&gt; labels = new HashMap&lt;&gt;();
+                    labels.put("app", app);
+                    final ObjectMetaBuilder objectMetaBuilder = new ObjectMetaBuilder().withName(app + "-pod")
+                            .withNamespace(resource.getMetadata().getNamespace()).withLabels(labels);
+                    final ContainerBuilder containerBuilder = new ContainerBuilder().withName("pizza-maker")
+                            .withImage("quay.io/lordofthejars/pizza-maker:1.0.0").withCommand("/work/application")
+                            .withArgs("--sauce=" + sauce, "--toppings=" + String.join(",", toppings));
+                    final PodSpecBuilder podSpecBuilder = new PodSpecBuilder().withContainers(containerBuilder.build())
+                            .withRestartPolicy("Never");
+                    final PodBuilder podBuilder = new PodBuilder().withMetadata(objectMetaBuilder.build())
+                            .withSpec(podSpecBuilder.build());
+                    final Pod pod = podBuilder.build();
+                    defaultClient.resource(pod).createOrReplace();
+
+                }
+            }
+
+            @Override
+            public void onClose(KubernetesClientException e) {
+            }
+        });
+    }
+
+}</code></pre>
 </div>
 </div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Notice that it&#8217;s watching for our custom resource of <code>Pizza</code></td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The creation of an operator controller is outside the scope of this tutorial.  If you&#8217;d like to learn more about creating operators with Quarkus, watch <a href="https://bit.ly/3kwJmcd" target="_blank" rel="noopener">this 20 minute tutorial</a></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/pizzas/pizza-deployment.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Soon in your watch window (<strong>Terminal 2</strong>) you should see something like this</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset4_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset4_terminal-2">
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                        READY   STATUS    RESTARTS   AGE
@@ -285,8 +787,52 @@ quarkus-operator-example-5f5bf777bc-glfg9   1/1     Running   0          58s</co
 </div>
 </div>
 </div>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Wait until the deployment <code>STATUS</code> of the operator is <code>Running</code> before moving on to the next section</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
 <div class="sect2">
 <h3 id="_make_some_pizzas"><a class="anchor" href="#_make_some_pizzas"></a>Make some Pizzas</h3>
+<div class="paragraph">
+<p>Once our operator is running, it will be on the lookout for information in our <code>Pizza</code> Custom Resources and use it to (pretend to) make some pizzas by spinning up a pod configurated with information from the Custom Resource instance.</p>
+</div>
+<div class="paragraph">
+<p>For example, consider this instance of the Pizza <code>CustomResourceDefinition</code>:</p>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pay special attention to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Sauce</strong>: <code>regular</code></p>
+</li>
+<li>
+<p><strong>Toppings</strong>: <code>mozzarella</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Now let&#8217;s create this <code>CustomResource</code>:</p>
+</div>
 <div id="create-pizzas-crds" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/pizzas/cheese-pizza.yaml
@@ -316,11 +862,19 @@ Kind:         Pizza
 ...</code></pre>
 </div>
 </div>
-<div class="listingblock console-input">
+<div class="paragraph">
+<p>And in our <strong>Terminal 2</strong> we should see how the Operator responds&#8230;&#8203;</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset5_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
-</div>
-</div>
+<div class="tab-pane" aria-labelledby="tabset5_terminal-2">
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                        READY   STATUS      RESTARTS   AGE
@@ -328,56 +882,232 @@ cheesep-pod                                 0/1     Completed   0          3s
 quarkus-operator-example-5f5bf777bc-glfg9   1/1     Running     0          44m</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
 <div class="paragraph">
-<p>And check the logs of the cheese Pod:</p>
+<p>And once the <code>cheesep-pod</code> completes we should see the following in <strong>Terminal 3</strong></p>
 </div>
-<div class="listingblock console-input">
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset6_terminal-3"></a>Terminal 3</p>
+</li>
+</ul>
+</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs cheesep-pod</code></pre>
-</div>
-</div>
+<div class="tab-pane" aria-labelledby="tabset6_terminal-3">
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">__  ____  __  _____   ___  __ ____  ______
- --/ __ \/ / / / _ | / _ \/ //_/ / / / __/
- -/ /_/ / /_/ / __ |/ , _/ ,&lt; / /_/ /\ \
---\___\_\____/_/ |_/_/|_/_/|_|\____/___/
-2020-07-01 09:03:11,537 INFO  [io.quarkus] (main) pizza-maker 1.0-SNAPSHOT (powered by Quarkus 1.4.0.CR1) started in 0.006s.
-2020-07-01 09:03:11,537 INFO  [io.quarkus] (main) Profile prod activated.
-2020-07-01 09:03:11,537 INFO  [io.quarkus] (main) Installed features: [cdi]
-Doing The Base
-Adding Sauce regular
-Adding Toppings [mozzarella]
-Baking
-Baked
-Ready For Delivery
-2020-07-01 09:03:12,038 INFO  [io.quarkus] (main) pizza-maker stopped in 0.000s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">+ cheesep-pod › pizza-maker
+cheesep-pod pizza-maker __  ____  __  _____   ___  __ ____  ______ 
+cheesep-pod pizza-maker  --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+cheesep-pod pizza-maker  -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+cheesep-pod pizza-maker --\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+cheesep-pod pizza-maker 2021-07-19 08:16:26,113 INFO  [io.quarkus] (main) pizza-maker 1.0-SNAPSHOT (powered by Quarkus 1.4.0.CR1) started in 1.063s.
+cheesep-pod pizza-maker 2021-07-19 08:16:26,114 INFO  [io.quarkus] (main) Profile prod activated.
+cheesep-pod pizza-maker 2021-07-19 08:16:26,114 INFO  [io.quarkus] (main) Installed features: [cdi]
+cheesep-pod pizza-maker Doing The Base
+cheesep-pod pizza-maker Adding Sauce <mark>regular</mark>
+cheesep-pod pizza-maker Adding Toppings <mark>[mozzarella]</mark>
+cheesep-pod pizza-maker Baking
+cheesep-pod pizza-maker Baked
+cheesep-pod pizza-maker Ready For Delivery
+cheesep-pod pizza-maker 2021-07-19 08:16:26,615 INFO  [io.quarkus] (main) pizza-maker stopped in 0.000s</code></pre>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that <strong>Sauce</strong> and <strong>Toppings</strong> matches what was specified in the <code>pizza</code> CustomResource</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_make_more_pizzas"><a class="anchor" href="#_make_more_pizzas"></a>Make more Pizzas</h3>
+<div class="paragraph">
+<p>Take a look at <code>meat-pizza.yaml</code> and <code>veggie-lovers.yaml</code> to show the sauce and toppings options there</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>meat-pizza.yaml</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock console-output">
+<div class="title">meat-pizza.yaml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: mykubernetes.acme.org/v1
+kind: Pizza
+metadata:
+  name: meatsp
+spec:
+  toppings:
+  - mozzarella
+  - pepperoni
+  - sausage
+  - bacon
+  sauce: extra</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now make the pizzas</p>
+</div>
 <div id="create-more-pizzas-crds" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/pizzas/meat-lovers.yaml
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/pizzas/meat-pizza.yaml
 kubectl apply -f apps/pizzas/veggie-lovers.yaml
 kubectl get pizzas --all-namespaces</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Pod watch in the <strong>Terminal 2</strong> should show</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset7_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset7_terminal-2">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                      READY  STATUS             AGE    NODE
+cheesep-pod                               0/1    Completed          8m46s  devnation
+meatsp-pod                                0/1    ContainerCreating  8s     devnation
+quarkus-operator-example-fdb76c946-cwmnq  1/1    Running            14m    devnation
+veggiep-pod                               0/1    ContainerCreating  6s     devnation</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>And this notice in our log terminal <strong>Terminal 3</strong></p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset8_terminal-3"></a>Terminal 3</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset8_terminal-3">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">+ meatsp-pod › pizza-maker
+meatsp-pod pizza-maker __  ____  __  _____   ___  __ ____  ______ 
+meatsp-pod pizza-maker  --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+meatsp-pod pizza-maker  -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+meatsp-pod pizza-maker --\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+meatsp-pod pizza-maker 2021-07-19 08:24:48,015 INFO  [io.quarkus] (main) pizza-maker 1.0-SNAPSHOT (powered by Quarkus 1.4.0.CR1) started in 0.817s.
+meatsp-pod pizza-maker 2021-07-19 08:24:48,016 INFO  [io.quarkus] (main) Profile prod activated.
+meatsp-pod pizza-maker 2021-07-19 08:24:48,016 INFO  [io.quarkus] (main) Installed features: [cdi]
+meatsp-pod pizza-maker Doing The Base
+meatsp-pod pizza-maker Adding Sauce <mark>extra</mark> <i class="conum" data-value="1"></i><b>(1)</b>
+meatsp-pod pizza-maker Adding Toppings <mark>[mozzarella,pepperoni,sausage,bacon]</mark>
+meatsp-pod pizza-maker Baking
+meatsp-pod pizza-maker Baked
+meatsp-pod pizza-maker Ready For Delivery
+meatsp-pod pizza-maker 2021-07-19 08:24:48,517 INFO  [io.quarkus] (main) pizza-maker stopped in 0.000s
++ veggiep-pod › pizza-maker
+veggiep-pod pizza-maker __  ____  __  _____   ___  __ ____  ______ 
+veggiep-pod pizza-maker  --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+veggiep-pod pizza-maker  -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+veggiep-pod pizza-maker --\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+veggiep-pod pizza-maker 2021-07-19 08:24:55,289 INFO  [io.quarkus] (main) pizza-maker 1.0-SNAPSHOT (powered by Quarkus 1.4.0.CR1) started in 0.869s.
+veggiep-pod pizza-maker 2021-07-19 08:24:55,289 INFO  [io.quarkus] (main) Profile prod activated.
+veggiep-pod pizza-maker 2021-07-19 08:24:55,289 INFO  [io.quarkus] (main) Installed features: [cdi]
+veggiep-pod pizza-maker Doing The Base
+veggiep-pod pizza-maker Adding Sauce <mark>extra</mark> <i class="conum" data-value="2"></i><b>(2)</b>
+veggiep-pod pizza-maker Adding Toppings <mark>[mozzarella,black olives]</mark>
+veggiep-pod pizza-maker Baking
+veggiep-pod pizza-maker Baked
+veggiep-pod pizza-maker Ready For Delivery
+veggiep-pod pizza-maker 2021-07-19 08:24:55,790 INFO  [io.quarkus] (main) pizza-maker stopped in 0.000s</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Matches <code>sauce</code> and <code>toppings</code> on the meat-pizza CR</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Matches <code>sauce</code> and <code>toppings</code> on the veggie-lovers CR</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_eat_all_pizzas"><a class="anchor" href="#_eat_all_pizzas"></a>Eat all Pizzas</h3>
+<h3 id="_cleanup"><a class="anchor" href="#_cleanup"></a>Cleanup</h3>
+<div class="paragraph">
+<p>Let&#8217;s cleanup everything in our namespace</p>
+</div>
 <div id="delete-pizzas-crds" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete pizzas --all</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete all --all <i class="conum" data-value="1"></i><b>(1)</b>
+kubectl delete ns pizzahat</code></pre>
 </div>
 </div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Whilst namespaces do tend to automatically cleanup the resources within them, it&#8217;s usually good practice to empty them out first to ensure you don&#8217;t have any <code>finalizer</code> issues</td>
+</tr>
+</table>
 </div>
-<div class="sect2">
-<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h3>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">pizza.mykubernetes.acme.org "cheesep" deleted
+pizza.mykubernetes.acme.org "meatsp" deleted
+pizza.mykubernetes.acme.org "veggiep" deleted
+pod "cheesep-pod" deleted
+pod "meatsp-pod" deleted
+pod "quarkus-operator-example-fdb76c946-cwmnq" deleted
+pod "veggiep-pod" deleted
+deployment.apps "quarkus-operator-example" deleted
+namespace "pizzahat" deleted</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And finally, let&#8217;s remove our CRD (which was not bound to a specific namespace like <code>section-namespace</code>)</p>
+</div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete all --all</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete crd pizzas.mykubernetes.acme.org <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>When deleting a crd we need to refer to it by its fully qualified name</td>
+</tr>
+</table>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">customresourcedefinition.apiextensions.k8s.io "pizzas.mykubernetes.acme.org" deleted</code></pre>
 </div>
 </div>
 </div>
@@ -474,7 +1204,7 @@ my-cluster   3                        3</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_clean_up_2"><a class="anchor" href="#_clean_up_2"></a>Clean up</h3>
+<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean up</h3>
 <div id="clean-up" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete namespace pizzahat
@@ -486,6 +1216,10 @@ kubectl delete namespace franz</code></pre>
 </div>
 </div>
 </div>
+<nav class="pagination">
+  <span class="prev"><a href="secrets.html" class="query-params-link">Secrets</a></span>
+  <span class="next"><a href="volumes-persistentvolumes.html" class="query-params-link">Volumes</a></span>
+</nav>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
   <div class="toc-menu"></div>

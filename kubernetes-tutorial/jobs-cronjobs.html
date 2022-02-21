@@ -4,23 +4,42 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Jobs &amp; CronJobs :: Kubernetes Tutorial</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/jobs-cronjobs.html">
+    <link rel="canonical" href="https://redhat-scholars.github.io/kubernetes-tutorial/kubernetes-tutorial/jobs-cronjobs.html">
+    <link rel="prev" href="taints-affinity.html">
+    <link rel="next" href="daemonset.html">
     <meta name="generator" content="Antora 2.3.1">
     <link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body class="article">
 <header class="header">
+  <style>
+    /* override master stylesheet properties for this partial here */
+
+    .navbar-item {
+      flex: unset;
+    }
+
+    .doc {
+      max-width: unset;
+    }
+
+
+  </style>
+
   <nav class="navbar">
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/NewRHDFullLogo_4-color_white-wordmark.png" height="40px" alt="Red Hat Developer Program"></a>
-      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-developer-demos.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img
+          src="../_/img/header_logo.png" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-scholars.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
         <span></span>
         <span></span>
       </button>
     </div>
-    <div id="topbar-nav" class="navbar-menu">
+        <div id="topbar-nav" class="navbar-menu">
       <div class="navbar-end">
         <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
         <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
@@ -28,24 +47,24 @@
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link" href="#">More Tutorials</a>
           <div class="navbar-dropdown">
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/outer-loop-guides/" target="_blank">Outer Loop</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/openshift-starter-guides/" target="_blank">OpenShift Starter</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/istio-tutorial/" target="_blank">Istio</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/tekton-tutorial/" target="_blank">Tekton</a>
           </div>
         </div>
       </div>
     </div>
   </nav>
-</header>
-<div class="body">
+</header><div class="body">
 <div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="index.html"></a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -156,7 +175,22 @@
 </ul>
   </nav>
 </div>
-    </div>
+<div class="nav-panel-explore"  style="display: none;"  data-panel="explore">
+  <div class="context">
+    <span class="title">kubernetes-tutorial</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">kubernetes-tutorial</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>    </div>
   </aside>
 </div>
 <main class="article">
@@ -192,17 +226,120 @@
 </div>
 </div>
 <div class="sect1">
+<h2 id="_preparation"><a class="anchor" href="#_preparation"></a>Preparation</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_namespace_setup"><a class="anchor" href="#_namespace_setup"></a>Namespace Setup</h3>
+<div class="paragraph">
+<p>Make sure you are in the correct namespace:</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You will need to create the <code>myspace</code> if you haven&#8217;t already.  Check for the existence of the namespace with</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get ns myspace</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the response is:</p>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Error from server (NotFound): namespaces "myspace" not found</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then you can create the namespace with:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create ns myspace</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="resource-change-context-resource" class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl config set-context --current --namespace=myspace</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_watch_terminal"><a class="anchor" href="#_watch_terminal"></a>Watch Terminal</h3>
+<div class="paragraph">
+<p>To be able to observe what&#8217;s going on, let&#8217;s open another terminal (<strong>Terminal 2</strong>) and <code>watch</code> what happens as we run our different jobs</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset1_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset1_terminal-2">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch -n 1 "kubectl get pods -o wide \<i class="conum" data-value="1"></i><b>(1)</b>
+  | awk '{print \$1 \" \" \$2 \" \" \$3 \" \" \$5 \" \" \$7}' | column -t" <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the <code>-o wide</code> option allows us to see the node that the pod is schedule to</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>to keep the line from getting too long we&#8217;ll use <code>awk</code> and <code>column</code> to get and format only the columns we want</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_jobs"><a class="anchor" href="#_jobs"></a>Jobs</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A Job is created using the Kubernetes <code>Job</code> resource:</p>
+<p>A Job is created using the Kubernetes <code>Job</code> resource.  To examine one, open the <code>whalesay-job.yaml</code>.  Here are the interesting aspects of this file:</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>whalesay-job.yaml</code></p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
+<div class="title">whalesay-job.yaml</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: batch/v1
 kind: Job
 metadata:
-  name: whale-say-job
+  name: whale-say-job <i class="conum" data-value="1"></i><b>(1)</b>
 spec:
   template:
     spec:
@@ -213,28 +350,79 @@ spec:
       restartPolicy: Never</code></pre>
 </div>
 </div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The name of the job will be used as the value of a label <code>job-name</code> on any pods that are spawned by this job definition.</td>
+</tr>
+</table>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset2_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset2_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/whalesay-job.yaml
-
-watch kubectl get pods</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/whalesay-job.yaml</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>This should yield the following output (in successive refreshes) in <strong>Terminal 2</strong></p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset3_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset3_terminal-2">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                 READY  STATUS             AGE  NODE
+whale-say-job-m8vxt  0/1    ContainerCreating  14s  devnation-m02</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                  READY   STATUS              RESTARTS   AGE
-whale-say-job-lp4n5   0/1     ContainerCreating   0          9s
-
-NAME                  READY   STATUS    RESTARTS   AGE
-whale-say-job-lp4n5   1/1     Running   0          19s
-
-NAME                  READY   STATUS      RESTARTS   AGE
-whale-say-job-lp4n5   0/1     Completed   0          25s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                 READY  STATUS     AGE  NODE
+whale-say-job-m8vxt  1/1    Running    80s  devnation-m02</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                 READY  STATUS     AGE  NODE
+whale-say-job-m8vxt  0/1    Completed  85s  devnation-m02</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
-<p>You can get Jobs as any other Kubernetes resource:</p>
+<p>You can get <code>jobs</code> as any other Kubernetes resource:</p>
 </div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset4_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset4_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get jobs</code></pre>
@@ -246,13 +434,30 @@ whale-say-job-lp4n5   0/1     Completed   0          25s</code></pre>
 whale-say-job   1/1           20s        36s</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
 <div class="paragraph">
-<p>To get the output of the Job execution:</p>
+<p>Since the job is run by a pod, to get the output of the <code>job</code> execution, we need only to get the output of the pod&#8217;s logs:</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs whale-say-job-lp4n5</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs \
+  -l job-name=whale-say-job \<i class="conum" data-value="1"></i><b>(1)</b>
+  --tail=-1 <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This is allowing us to look for any pod labeled with <code>job-name</code> (see above) set to <code>whale-say-job</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>--tail</code> tells the log command how many lines from the end of the (pod&#8217;s) log to return.  So that we can see all the whimsy in this job pod&#8217;s message, we set this to <code>-1</code> to see all the lines<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></td>
+</tr>
+</table>
 </div>
 <div class="listingblock console-output">
 <div class="content">
@@ -274,9 +479,22 @@ whale-say-job   1/1           20s        36s</code></pre>
 </div>
 <div class="sect2">
 <h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h3>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset5_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset5_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/whalesay-job.yaml</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -286,11 +504,26 @@ whale-say-job   1/1           20s        36s</code></pre>
 <h2 id="_cronjobs"><a class="anchor" href="#_cronjobs"></a>CronJobs</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A CronJob is defined using the Kubernetes <code>CronJob</code> resource:</p>
+<p>A CronJob is defined using the Kubernetes <code>CronJob</code> resource.  The name <code>cronjob</code> comes from Linux and represents some sort of batch process that is scheduled to run once or repeatedly.  This concept has been translated into Kubernetes as we can see in the <code>whalesay-cronjob.yaml</code> file:</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>whalesay-cronjob.yaml</code></p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
+<div class="title">whalesay-cronjob.yaml</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: batch/v1beta1
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: whale-say-cronjob
@@ -299,6 +532,9 @@ spec:
   jobTemplate:
     spec:
       template:
+        metadata:
+          labels:
+            job-type: whale-say <i class="conum" data-value="2"></i><b>(2)</b>
         spec:
           containers:
           - name: whale-say-container
@@ -311,80 +547,358 @@ spec:
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Job is executed every minute.</td>
+<td>This string represents a job is executed every minute.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Here we specify our own additional label we&#8217;d like applied to <code>jobs</code> and <code>pods</code> created by the <code>cronjob</code>.  Even though the <code>job-name</code> label will still exist, it will contain a guid on every indication meaning we can&#8217;t predict what the value is a priori</td>
 </tr>
 </table>
 </div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset6_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset6_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/whalesay-cronjob.yaml
-
-kubectl get pods</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/whalesay-cronjob.yaml</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>But then if we look to our watch window in <strong>Terminal 2</strong></p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset7_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset7_terminal-2">
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                  READY   STATUS      RESTARTS   AGE</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>No Pod is running as CronJob is executed after 1 minute.</p>
 </div>
+</div>
+</div>
+<div class="paragraph">
+<p>No Pod is running as CronJob is setting up (and is checked only once every 10 seconds or so, see warning below)</p>
+</div>
+<div class="paragraph">
+<p>While we&#8217;re waiting for our cronjob to run, we can use <strong>Terminal 1</strong> to watch how the <code>cronjob</code> is changing:</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset8_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset8_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get cronjobs</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get cronjobs -w <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the <code>-w</code> flag says to watch the output (sort of like what we&#8217;re doing in the <strong>Terminal 2</strong>) but only post back when the state of the observed resource&#8217;s (in this case the <code>cronjob</code>) state changes.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here is some representative output after waiting almost 3 minutes (notice the job restarts)</p>
 </div>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
-whale-say-cronjob   */1 * * * *   False     0        &lt;none&gt;          34s</code></pre>
+whale-say-cronjob   */1 * * * *   False     <mark>1</mark>        0s              <mark>20s</mark> <i class="conum" data-value="1"></i><b>(1)</b>
+whale-say-cronjob   */1 * * * *   False     0        31s             51s
+whale-say-cronjob   */1 * * * *   False     <mark>1</mark>        0s              <mark>80s</mark> <i class="conum" data-value="2"></i><b>(2)</b>
+whale-say-cronjob   */1 * * * *   False     0        23s             103s
+whale-say-cronjob   */1 * * * *   False     <mark>1</mark>        1s              <mark>2m21s</mark></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The first invocation took a while to start, this was not a function of the <code>cronjob</code> schedule</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Notice that the next time the job is active is about 60s after the first job was active (by AGE).  And the job after that has an age of ~60s after that</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
-<p>Wait one minute:</p>
+<p>You&#8217;ll notice that every time the cronjob moves to ACTIVE (see highlight above),you should see the following in <strong>Terminal 2</strong>;</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset9_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset9_terminal-2">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                              READY  STATUS     AGE  NODE
+whale-say-cronjob-27108480-2ws6k  0/1    Completed  46s  devnation-m02</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Per the <a href="https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/">official Kubernetes documentation</a>: A cron job creates a job object about once per execution time of its schedule. We say "about" because there are certain circumstances where two jobs might be created, or no job might be created. We attempt to make these rare, but do not completely prevent them. Therefore, jobs should be idempotent.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s examine our cronjob by using the <code>describe</code> subcommand.  Use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>c</kbd></span> to cancel the <code>kubectl get cronjobs -w</code> command and replace with the following:</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                 READY   STATUS      RESTARTS   AGE
-whale-say-cronjob-1593436740-z9tf2   0/1     Completed   0          23s</code></pre>
-</div>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get cronjobs</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
-whale-say-cronjob   */1 * * * *   False     0        48s             3m41s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe cronjobs</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Notice that one important field there is the <em>Last Schedule</em> as show us when was the last time a job was executed.</p>
+<p>You should then see something like this</p>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Name:                          whale-say-cronjob
+Namespace:                     myspace
+Labels:                        &lt;none&gt;
+Annotations:                   &lt;none&gt;
+Schedule:                      */1 * * * *
+Concurrency Policy:            Allow
+Suspend:                       False
+<mark>Successful Job History Limit:  3</mark> <i class="conum" data-value="1"></i><b>(1)</b>
+Failed Job History Limit:      1
+Starting Deadline Seconds:     &lt;unset&gt;
+Selector:                      &lt;unset&gt;
+Parallelism:                   &lt;unset&gt;
+Completions:                   &lt;unset&gt;
+Pod Template:
+  Labels:  <mark>job-type=whale-say</mark>
+  Containers:
+   whale-say-container:
+    Image:      docker/whalesay
+    Port:       &lt;none&gt;
+    Host Port:  &lt;none&gt;
+    Command:
+      cowsay
+      Hello DevNation
+    Environment:     &lt;none&gt;
+    Mounts:          &lt;none&gt;
+  Volumes:           &lt;none&gt;
+<mark>Last Schedule Time:  Sat, 17 Jul 2021 08:06:00 +0000</mark> <i class="conum" data-value="2"></i><b>(2)</b>
+Active Jobs:         whale-say-cronjob-27108486
+Events:
+  Type    Reason            Age    From                Message
+  ----    ------            ----   ----                -------
+  Normal  SuccessfulCreate  6m21s  cronjob-controller  Created job whale-say-cronjob-27108480
+  Normal  SawCompletedJob   6m1s   cronjob-controller  Saw completed job: whale-say-cronjob-27108480, status: Complete
+  Normal  SuccessfulCreate  5m21s  cronjob-controller  Created job whale-say-cronjob-27108481
+  Normal  SawCompletedJob   4m56s  cronjob-controller  Saw completed job: whale-say-cronjob-27108481, status: Complete
+  Normal  SuccessfulCreate  4m21s  cronjob-controller  Created job whale-say-cronjob-27108482
+  Normal  SawCompletedJob   3m56s  cronjob-controller  Saw completed job: whale-say-cronjob-27108482, status: Complete
+  Normal  SuccessfulCreate  3m21s  cronjob-controller  Created job whale-say-cronjob-27108483
+  Normal  SawCompletedJob   2m48s  cronjob-controller  Saw completed job: whale-say-cronjob-27108483, status: Complete
+  Normal  SuccessfulDelete  2m46s  cronjob-controller  Deleted job whale-say-cronjob-27108480
+  Normal  SuccessfulCreate  2m20s  cronjob-controller  Created job whale-say-cronjob-27108484
+  Normal  SawCompletedJob   104s   cronjob-controller  Saw completed job: whale-say-cronjob-27108484, status: Complete
+  Normal  SuccessfulDelete  101s   cronjob-controller  Deleted job whale-say-cronjob-27108481
+  Normal  SuccessfulCreate  81s    cronjob-controller  Created job whale-say-cronjob-27108485
+  Normal  SawCompletedJob   54s    cronjob-controller  Saw completed job: whale-say-cronjob-27108485, status: Complete
+  Normal  SuccessfulDelete  52s    cronjob-controller  Deleted job whale-say-cronjob-27108482
+  Normal  SuccessfulCreate  21s    cronjob-controller  Created job whale-say-cronjob-27108486
+  Normal  SawCompletedJob   1s     cronjob-controller  Saw completed job: whale-say-cronjob-27108486, status: Complete</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Kubernetes cleans up jobs after a certain amount of time</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Notice that the <em>Last Schedule Time</em> shows the last time a job was executed.</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>It is important to notice that a CronJob creates a Job:</p>
+<p>It is important to notice that a CronJob creates a <code>job</code> (which, in turn, creates pods) whenever the schedule is activated:</p>
 </div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset10_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset10_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get jobs</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>With example output after the cronjob has been around for more than 3 minutes:</p>
+</div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                           COMPLETIONS   DURATION   AGE
-whale-say-cronjob-1593436800   1/1           3s         44s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                         COMPLETIONS   DURATION   AGE
+whale-say-cronjob-27108487   1/1           19s        2m37s
+whale-say-cronjob-27108488   1/1           20s        97s
+whale-say-cronjob-27108489   1/1           21s        37s</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, we can see the effect of job history by logging for all our jobs</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset11_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset11_terminal-1">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs \
+  -l job-type=whale-say \<i class="conum" data-value="1"></i><b>(1)</b>
+  --tail=-1</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This time we&#8217;re looking to get the logs on anything created with the label <code>job-type</code> (our custom label from above) set to <code>whale</code></td>
+</tr>
+</table>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">NOTE</div>
+<div class="paragraph">
+<p>It would less specific but we <em>could</em> find out whale job logs without a custom label <em>by instead not looking to match the value on the label</em> like this:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs <mark>-l job-name</mark> --tail=-1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This basically states that we should match any pod with a label named <code>job-name</code></p>
+</div>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"> _________________
+&lt; Hello DevNation &gt;
+ -----------------
+    \
+     \
+      \
+                    ##        .
+              ## ## ##       ==
+           ## ## ## ##      ===
+       /""""""""""""""""___/ ===
+  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~
+       \______ o          __/
+        \    \        __/
+          \____\______/
+ _________________
+&lt; Hello DevNation &gt;
+ -----------------
+    \
+     \
+      \
+                    ##        .
+              ## ## ##       ==
+           ## ## ## ##      ===
+       /""""""""""""""""___/ ===
+  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~
+       \______ o          __/
+        \    \        __/
+          \____\______/
+ _________________
+&lt; Hello DevNation &gt;
+ -----------------
+    \
+     \
+      \
+                    ##        .
+              ## ## ##       ==
+           ## ## ## ##      ===
+       /""""""""""""""""___/ ===
+  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~
+       \______ o          __/
+        \    \        __/
+          \____\______/</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_clean_up_2"><a class="anchor" href="#_clean_up_2"></a>Clean Up</h3>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset12_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset12_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/whalesay-cronjob.yaml</code></pre>
@@ -393,6 +907,19 @@ whale-say-cronjob-1593436800   1/1           3s         44s</code></pre>
 </div>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. Normally --tail is set to -1 by default, but that&#8217;s only when requesting logs from a <em>single specific resource</em>.  When there is the potential to return multiple resources' logs (as is the case here when we&#8217;re asking for logs by label) the number of lines returned from each resource&#8217;s logs are limited to 10 by default
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="taints-affinity.html" class="query-params-link">Taints &amp; Affinity</a></span>
+  <span class="next"><a href="daemonset.html" class="query-params-link">DaemonSet</a></span>
+</nav>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
   <div class="toc-menu"></div>

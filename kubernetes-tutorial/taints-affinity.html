@@ -4,23 +4,42 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Taints and Affinity :: Kubernetes Tutorial</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/taints-affinity.html">
+    <link rel="canonical" href="https://redhat-scholars.github.io/kubernetes-tutorial/kubernetes-tutorial/taints-affinity.html">
+    <link rel="prev" href="volumes-persistentvolumes.html">
+    <link rel="next" href="jobs-cronjobs.html">
     <meta name="generator" content="Antora 2.3.1">
     <link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body class="article">
 <header class="header">
+  <style>
+    /* override master stylesheet properties for this partial here */
+
+    .navbar-item {
+      flex: unset;
+    }
+
+    .doc {
+      max-width: unset;
+    }
+
+
+  </style>
+
   <nav class="navbar">
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/NewRHDFullLogo_4-color_white-wordmark.png" height="40px" alt="Red Hat Developer Program"></a>
-      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-developer-demos.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img
+          src="../_/img/header_logo.png" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-scholars.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
         <span></span>
         <span></span>
       </button>
     </div>
-    <div id="topbar-nav" class="navbar-menu">
+        <div id="topbar-nav" class="navbar-menu">
       <div class="navbar-end">
         <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
         <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
@@ -28,24 +47,24 @@
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link" href="#">More Tutorials</a>
           <div class="navbar-dropdown">
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/outer-loop-guides/" target="_blank">Outer Loop</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/openshift-starter-guides/" target="_blank">OpenShift Starter</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/istio-tutorial/" target="_blank">Istio</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/tekton-tutorial/" target="_blank">Tekton</a>
           </div>
         </div>
       </div>
     </div>
   </nav>
-</header>
-<div class="body">
+</header><div class="body">
 <div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="index.html"></a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -156,7 +175,22 @@
 </ul>
   </nav>
 </div>
-    </div>
+<div class="nav-panel-explore"  style="display: none;"  data-panel="explore">
+  <div class="context">
+    <span class="title">kubernetes-tutorial</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">kubernetes-tutorial</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>    </div>
   </aside>
 </div>
 <main class="article">
@@ -188,6 +222,8 @@
 <div class="sect1">
 <h2 id="_preparation"><a class="anchor" href="#_preparation"></a>Preparation</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_minikube_multinode"><a class="anchor" href="#_minikube_multinode"></a>Minikube Multinode</h3>
 <div class="paragraph">
 <p>If you are running this tutorial in Minikube, you need to add more nodes to run this part of the tutorial.
 Check the number of nodes you have delpoyed by running:</p>
@@ -247,9 +283,47 @@ Multi-node clusters are currently experimental and might exhibit unintended beha
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_watch_nodes"><a class="anchor" href="#_watch_nodes"></a>Watch Nodes</h3>
+<div class="paragraph">
+<p>To be able to observe what&#8217;s going on, let&#8217;s open another terminal (<strong>Terminal 2</strong>) and <code>watch</code> what happens to the pods as we change taints on the nodes.</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset1_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset1_terminal-2">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch -n 1 "kubectl get pods -o wide \<i class="conum" data-value="1"></i><b>(1)</b>
+  | awk '{print \$1 \" \" \$2 \" \" \$3 \" \" \$5 \" \" \$7}' | column -t" <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the <code>-o wide</code> option allows us to see the node that the pod is schedule to</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>to keep the line from getting too long we&#8217;ll use <code>awk</code> and <code>column</code> to get and format only the columns we want</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="sect1">
-<h2 id="_taints_and_tolerations"><a class="anchor" href="#_taints_and_tolerations"></a>Taints and Tolerations</h2>
+<h2 id="_taints"><a class="anchor" href="#_taints"></a>Taints</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>A Taint is applied to a Kubernetes Node that signals the scheduler to avoid or not schedule certain Pods.</p>
@@ -279,11 +353,20 @@ Name:               ip-10-0-150-226.eu-central-1.compute.internal
 Taints:             &lt;none&gt;</code></pre>
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
 <p>Notice that in this case, the <code>master</code> node contains a taint which blocks your application Pods from being scheduled there.</p>
 </div>
-<div class="sect2">
-<h3 id="_taints"><a class="anchor" href="#_taints"></a>Taints</h3>
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>Let&#8217;s add a taint to all nodes:</p>
 </div>
@@ -306,31 +389,153 @@ node/ip-10-0-175-64.eu-central-1.compute.internal tainted</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The color=blue is simply a key=value pair to identify the taint and NoSchedule is the specific effect.</p>
+<p>The color=blue is simply a key=value pair to identify the taint and NoSchedule is the specific effect for pods that can&#8217;t "tolerate" the taint.  In other words, if a pod does not tolerate "color=blue" then the effect will be "NoSchedule"</p>
 </div>
 <div class="paragraph">
-<p>Now deploy a new pod.</p>
+<p>So let&#8217;s try this out.  From the main terminal, we&#8217;ll deploy a new pod that doesn&#8217;t have any particular tolerations:</p>
 </div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset2_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset2_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment.yml
-
-kubectl get pods</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment.yml</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
-<p>The pod will remain in Pending status as it has no schedulable Node available.</p>
+<p>You&#8217;ll see the output in the other terminal change</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset3_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset3_terminal-2">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   STATUS    AGE     NODE
+myboot-7cbfbd9b89-hqx6h   0/1     <mark>Pending</mark>   4m12s   devnation</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The pod will remain in <code>Pending</code> status as it has no schedulable Node available.</p>
+</div>
+<div class="paragraph">
+<p>We can get more insight into this by entering the following</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset4_terminal-1---minikube"></a>Terminal 1 - Minikube</p>
+</li>
+<li>
+<p><a id="tabset4_terminal-1---openshift"></a>Terminal 1 - OpenShift</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset4_terminal-1---minikube">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe pod <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>There is only one pod in this case.  If we wanted to be specific, we could add the name of the pod (e.g. <code>myboot-7f889dd6d-n5z55</code>)</td>
+</tr>
+</table>
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS    RESTARTS   AGE
-myboot-7f889dd6d-n5z55   0/1     Pending   0          55s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Name:           myboot-7cbfbd9b89-bzhxw
+Namespace:      myspace
+Priority:       0
+Node:           &lt;none&gt;
+Labels:         app=myboot
+                pod-template-hash=7cbfbd9b89
+Annotations:    &lt;none&gt;
+Status:         Pending
+...
+Node-Selectors:              &lt;none&gt;
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason            Age                From               Message
+  ----     ------            ----               ----               -------
+  Warning  FailedScheduling  13s (x2 over 14s)  default-scheduler  <mark>0/2 nodes are available: 2 node(s) had taint {color: blue}, that the pod didn't tolerate.</mark></code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s get the list of nodes in our cluster</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe pod myboot-7f889dd6d-n5z55</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get nodes</code></pre>
 </div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME            STATUS   ROLES                  AGE     VERSION
+devnation       Ready    control-plane,master   2d22h   v1.21.2
+devnation-m02   Ready    &lt;none&gt;                 40h     v1.21.2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And pick one node that we will <strong>remove</strong> the taint from:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl taint node devnation-m02 color:NoSchedule- <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>adding the <code>-</code> here means to remove the taint in question (the <code>color</code> with the action <code>NoSchedule</code>)</td>
+</tr>
+</table>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">node/devnation-m02  untainted</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset4_terminal-1---openshift">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe pod <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>There is only one pod in this case.  If we wanted to be specific, we could add the name of the pod (e.g. <code>myboot-7f889dd6d-n5z55</code>)</td>
+</tr>
+</table>
 </div>
 <div class="listingblock console-output">
 <div class="content">
@@ -349,12 +554,12 @@ Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
 Events:
   Type     Reason            Age        From               Message
   ----     ------            ----       ----               -------
-  Warning  FailedScheduling  &lt;unknown&gt;  default-scheduler  0/9 nodes are available: 9 node(s) had taints that the pod didn't tolerate.
-  Warning  FailedScheduling  &lt;unknown&gt;  default-scheduler  0/9 nodes are available: 9 node(s) had taints that the pod didn't tolerate.</code></pre>
+  Warning  FailedScheduling  &lt;unknown&gt;  default-scheduler  <mark>0/9 nodes are available: 9 node(s) had taints that the pod didn't tolerate.</mark>
+  Warning  FailedScheduling  &lt;unknown&gt;  default-scheduler  <mark>0/9 nodes are available: 9 node(s) had taints that the pod didn't tolerate.</mark></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now let&#8217;s remove one taint from one node and see what&#8217;s happening:</p>
+<p>Let&#8217;s get the list of nodes in our cluster</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
@@ -376,18 +581,64 @@ ip-10-0-175-64.eu-central-1.compute.internal    Ready    worker   18h   v1.16.2<
 </div>
 </div>
 <div class="paragraph">
-<p>Pick one node.</p>
+<p>And pick one node that we will <strong>remove</strong> the taint from:</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl taint node ip-10-0-140-186.eu-central-1.compute.internal color:NoSchedule-</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl taint node ip-10-0-140-186.eu-central-1.compute.internal color:NoSchedule- <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>adding the <code>-</code> here means to remove the taint in question (the <code>color</code> with the action <code>NoSchedule</code>)</td>
+</tr>
+</table>
 </div>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">node/ip-10-0-140-186.eu-central-1.compute.internal  untainted</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Now in <strong>Terminal 2</strong> you should see the Pending pod scheduled to the newly untained node.</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset5_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset5_terminal-2">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   STATUS              AGE       NODE
+myboot-7cbfbd9b89-hqx6h   0/1     <mark>ContainerCreating</mark>   20m   <mark>devnation-m02</mark></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, let&#8217;s take a quick look at the taint status on all the nodes.</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset6_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset6_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl describe nodes | egrep "Name:|Taints:"</code></pre>
@@ -405,18 +656,17 @@ Name:               ip-10-0-146-109.eu-central-1.compute.internal
 Taints:             color=blue:NoSchedule</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_restore_taint"><a class="anchor" href="#_restore_taint"></a>Restore Taint</h3>
 <div class="paragraph">
-<p>And you should see the Pending pod scheduled to the newly untained node.</p>
+<p>Add the taint back to the node (or in this case all nodes):</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS    RESTARTS   AGE
-myboot-7f889dd6d-n5z55   1/1     Running   0          11m</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl taint nodes --all=true color=blue:NoSchedule --overwrite</code></pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -427,28 +677,56 @@ myboot-7f889dd6d-n5z55   1/1     Running   0          11m</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can use <code>kubectl get pods -o wide</code> to see the node upon which the pod is scheduled.</p>
+<p>Setting the taint on all nodes is a bit sloppy.  If you&#8217;d like you can get the same effect a bit more elegantly by setting the taint only on the node from which it was removed.  For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>kubectl taint node ip-10-0-140-186.eu-central-1.compute.internal color=blue:NoSchedule</pre>
+</div>
 </div>
 </td>
 </tr>
 </table>
 </div>
-<div class="sect3">
-<h4 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h4>
 <div class="paragraph">
-<p>Undeploy the myboot deployment and add again the taint to the node:</p>
+<p>Take a look and notice that the pod is still running despite the change in taint (this is due to scheduling being a one time activity in the lifecycle of a pod)</p>
 </div>
-<div class="listingblock console-input">
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset7_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-deployment.yml
-
-kubectl taint node ip-10-0-140-186.eu-central-1.compute.internal color=blue:NoSchedule</code></pre>
+<div class="tab-pane" aria-labelledby="tabset7_terminal-2">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   STATUS    AGE   NODE
+myboot-7cbfbd9b89-bzhxw   1/1     <mark>Running</mark>   18m   devnation-m02</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_tolerations"><a class="anchor" href="#_tolerations"></a>Tolerations</h3>
+<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h3>
+<div class="paragraph">
+<p>Undeploy the myboot deployment and add again the taint to the node:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-deployment.yml</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tolerations"><a class="anchor" href="#_tolerations"></a>Tolerations</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Let&#8217;s create a Pod but containing a toleration, so it can be scheduled to a tainted node.</p>
 </div>
@@ -465,24 +743,51 @@ kubectl taint node ip-10-0-140-186.eu-central-1.compute.internal color=blue:NoSc
     image: quay.io/rhdevelopers/myboot:v1</code></pre>
 </div>
 </div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset8_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset8_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-toleration.yaml
-
-kubectl get pods</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-toleration.yaml</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>And then we should see before too long in our watch window our pod get scheduled and advance to the run state</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset9_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset9_terminal-2">
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   STATUS    RESTARTS   AGE
-myboot-84b457458b-mbf9r   1/1     Running   0          3m18s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   STATUS    AGE     NODE
+myboot-84b457458b-mbf9r   1/1     <mark>Running</mark>   3m18s   devnation-m02</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
 <p>Now, although all nodes contain a taint, the Pod is scheduled and run as we defined a tolerance against color=blue taint.</p>
 </div>
-<div class="sect3">
-<h4 id="_clean_up_2"><a class="anchor" href="#_clean_up_2"></a>Clean Up</h4>
+<div class="sect2">
+<h3 id="_clean_up_2"><a class="anchor" href="#_clean_up_2"></a>Clean Up</h3>
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-toleration.yaml</code></pre>
@@ -490,8 +795,10 @@ myboot-84b457458b-mbf9r   1/1     Running   0          3m18s</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_noexecution_taint"><a class="anchor" href="#_noexecution_taint"></a>NoExecution Taint</h3>
+</div>
+<div class="sect1">
+<h2 id="_noexecution_taint"><a class="anchor" href="#_noexecution_taint"></a><code>NoExecution</code> Taint</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>So far, you&#8217;ve seen the <code>NoSchedule</code> taint effect which means that newly created Pods will not be scheduled there unless they have an overriding toleration.
 But notice that if we add this taint to a node that already has running/scheduled Pods, this taint will not terminate them.</p>
@@ -502,82 +809,195 @@ But notice that if we add this taint to a node that already has running/schedule
 <div class="paragraph">
 <p>First of all, let&#8217;s remove all previous taints.</p>
 </div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset10_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset10_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl taint nodes --all=true color=blue:NoSchedule-</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Then deploy a service:</p>
 </div>
+</div>
+</div>
+<div class="paragraph">
+<p>Then deploy another instance of myboot (with no Tolerations):</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset11_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset11_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment.yml
-
-kubectl get pods</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment.yml</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>We should see the following in the watch</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset12_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset12_terminal-2">
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS    RESTARTS   AGE
-myboot-7f889dd6d-bkfg5   1/1     Running   0          16s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   STATUS    AGE   NODE
+myboot-7cbfbd9b89-wpddg   1/1     Running   47s   devnation-m02</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Now let&#8217;s taint find the node the pod is running on</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset13_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset13_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pod myboot-7f889dd6d-bkfg5 -o json | jq '.spec.nodeName'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NODE=$(kubectl get pod -o jsonpath='{.items[0].spec.nodeName}') <i class="conum" data-value="1"></i><b>(1)</b>
+echo ${NODE}</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the <code>.items[0]</code> is because we&#8217;re asking for all pods, but we know our list will contain only one element</td>
+</tr>
+</table>
 </div>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"ip-10-0-146-109.eu-central-1.compute.internal"</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset14_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset14_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl taint node ip-10-0-146-109.eu-central-1.compute.internal color=blue:NoExecute
-
-kubectl get pods</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl taint node ${NODE} color=blue:NoExecute</code></pre>
 </div>
 </div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS        RESTARTS   AGE
-myboot-7f889dd6d-8fm2v   1/1     Running       0          14s
-myboot-7f889dd6d-bkfg5   1/1     Terminating   0          5m51s</code></pre>
+</div>
 </div>
 </div>
 <div class="paragraph">
-<p>If you have more nodes available then the Pod is terminated and deployed onto another node, if it is not the case, then the Pod will remain in <em>Pending</em> status.</p>
+<p>As soon as we do this, we should be able to watch this "rescheduling" occur in the Terminal 2 watch</p>
 </div>
-<div class="paragraph">
-<p>You can watch this "rescheduling" occur with use of  <code>-o wide</code></p>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset15_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
 </div>
-<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods -o wide</code></pre>
-</div>
-</div>
+<div class="tab-pane" aria-labelledby="tabset15_terminal-2">
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     READY   STATUS        RESTARTS   AGE     IP           NODE
-myboot-7f889dd6d-b9tks   1/1     Running       0          6s      10.88.0.5    devnation-m02
-myboot-7f889dd6d-l897f   1/1     Terminating   0          9m11s   172.17.0.4   devnation</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   STATUS              AGE   NODE
+myboot-7cbfbd9b89-5t24z   0/1     <mark>ContainerCreating</mark>   16s   devnation
+myboot-7cbfbd9b89-wpddg   1/1     <mark>Terminating</mark>         65m   devnation-m02</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_clean_up_3"><a class="anchor" href="#_clean_up_3"></a>Clean Up</h4>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you have more nodes available then the Pod is terminated and deployed onto another node, if it is not the case, then the Pod will remain in <code>Pending</code> status.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_clean_up_3"><a class="anchor" href="#_clean_up_3"></a>Clean Up</h3>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset16_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset16_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-deployment.yml</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>And remove the NoExecute taint</p>
 </div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset17_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset17_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl taint node ip-10-0-146-109.eu-central-1.compute.internal color=blue:NoExecute-</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl taint node ${NODE} color=blue:NoExecute-</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -598,40 +1018,151 @@ Reasons such as significant network communication between Pods and you want to a
 <div class="sect2">
 <h3 id="_node_affinity"><a class="anchor" href="#_node_affinity"></a>Node Affinity</h3>
 <div class="paragraph">
-<p>Let&#8217;s deploy a new pod with a node affinity:</p>
+<p>Let&#8217;s deploy a new pod with a node affinity.  Take a look at <code>myboot-node-affinity.yml</code> (relevant section shown below)</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>myboot-node-affinity.yml</code></p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
+<div class="title">myboot-node-affinity.yml</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
   affinity:
     nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
+      requiredDuringSchedulingIgnoredDuringExecution: <i class="conum" data-value="1"></i><b>(1)</b>
         nodeSelectorTerms:
         - matchExpressions:
           - key: color
             operator: In
             values:
-            - blue
+            - blue <i class="conum" data-value="2"></i><b>(2)</b>
       containers:
       - name: myboot
         image: quay.io/rhdevelopers/myboot:v1</code></pre>
 </div>
 </div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This key highlights that what&#8217;s follows must be used during scheduling but not a factor once a pod is executing</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>matchExpressions</code> is saying this pod has affinity for any node with a <code>color</code> in the value set <code>blue</code></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now let&#8217;s deploy this</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset18_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset18_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-node-affinity.yml
-
-kubectl get pods</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-node-affinity.yml</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>And we&#8217;ll see in our watch window the pod in a pending state</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset19_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset19_terminal-2">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   STATUS    AGE   NODE
+myboot-546d4d9b45-7vgfc   0/1     <mark>Pending</mark>   6s    &lt;none&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s create a <strong>label</strong> on a node matching the affinity expression:</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset20_terminal-1---minikube"></a>Terminal 1 - Minikube</p>
+</li>
+<li>
+<p><a id="tabset20_terminal-1---openshift"></a>Terminal 1 - OpenShift</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset20_terminal-1---minikube">
+<div class="paragraph">
+<p>Get a list of nodes:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get nodes</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                           READY   STATUS    RESTARTS   AGE
-myboot-54d788fdc8-f6wks        0/1     Pending   0          13s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                            STATUS   ROLES    AGE   VERSION
+devnation       Ready    control-plane,master   3d    v1.21.2
+<mark>devnation-m02</mark>   Ready    &lt;none&gt;                 42h   v1.21.2</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s create a label on a node matching the affinity expression:</p>
+<p>Then pick a node in the list to label (such as the one highlighted)</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label nodes devnation-m02 <mark>color=blue</mark> <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Notice that this matches the affinity in the pod</td>
+</tr>
+</table>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">node/devnation-m02 labeled</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset20_terminal-1---openshift">
+<div class="paragraph">
+<p>Get a list of nodes:</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
@@ -649,59 +1180,152 @@ ip-10-0-150-226.eu-central-1.compute.internal   Ready    worker   26h   v1.16.2
 ip-10-0-155-122.eu-central-1.compute.internal   Ready    master   26h   v1.16.2
 ip-10-0-162-206.eu-central-1.compute.internal   Ready    worker   26h   v1.16.2
 ip-10-0-168-102.eu-central-1.compute.internal   Ready    master   26h   v1.16.2
-ip-10-0-175-64.eu-central-1.compute.internal    Ready    worker   25h   v1.16.2</code></pre>
+<mark>ip-10-0-175-64.eu-central-1.compute.internal</mark>    Ready    worker   25h   v1.16.2</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Then pick a node in the list to label (such as the one highlighted)</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label nodes ip-10-0-175-64.eu-central-1.compute.internal color=blue</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label nodes ip-10-0-175-64.eu-central-1.compute.internal <mark>color=blue</mark> <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Notice that this matches the affinity in the pod</td>
+</tr>
+</table>
 </div>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">node/ip-10-0-175-64.eu-central-1.compute.internal labeled</code></pre>
 </div>
 </div>
-<div class="listingblock console-input">
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>And then in the watch window the output should change to:</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset21_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods</code></pre>
-</div>
-</div>
+<div class="tab-pane" aria-labelledby="tabset21_terminal-2">
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                          READY   STATUS    RESTARTS   AGE
-myboot-54d788fdc8-f6wks       1/1     Running   0          7m57s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   STATUS              AGE   NODE
+myboot-546d4d9b45-7vgfc   0/1     <mark>ContainerCreating</mark>   15m   devnation-m02</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s delete the label from the node:</p>
+<p>Let&#8217;s delete the label from the node that the pod is running on</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset22_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset22_terminal-1">
+<div class="paragraph">
+<p>First find the node the pod is running on</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label nodes ip-10-0-175-64.eu-central-1.compute.internal color-
-
-kubectl get pods</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NODE=$(kubectl get pod -o jsonpath='{.items[0].spec.nodeName}') <i class="conum" data-value="1"></i><b>(1)</b>
+echo ${NODE}</code></pre>
 </div>
 </div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the <code>.items[0]</code> is because we&#8217;re asking for all pods, but we know our list will contain only one element</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>and then remove the color label from it</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl label nodes ${NODE} color-</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>And notice the that watch output is <strong>unchanged</strong> and if running, the pod will continue to run</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset23_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset23_terminal-2">
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                         READY   STATUS    RESTARTS   AGE
-myboot-54d788fdc8-f6wks      1/1     Running   0          7m57s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   STATUS    AGE   NODE
+myboot-546d4d9b45-7vgfc   1/1     Running   22m   devnation-m02</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
-<p>As with taints, the rule is set during the scheduling phase, therefore, the Pod is not removed.</p>
+<p>Since we used the <code>requiredDuringSchedulingIgnoredDuringExecution</code> in the deployment spec for our pod, we got our affinity to work like taints (in the previous section) worked, namely, that the rule is set during the scheduling phase but ignore after that (i.e. once executing).  Therefore the Pod is not removed in our case.</p>
 </div>
 <div class="paragraph">
-<p>This is an example of a <em>hard</em> rule, if the Kubernetes scheduler does not find any node with the required label then the Pod reminds in <em>Pending</em> state.
-There is also a way to create a <em>soft</em> rule, where the Kubernetes scheduler attempts to match the rules but if it can not then the Pod is scheduled to any node.  In the example below, you can see the use of the word <em>preferred</em> vs <em>required</em>.</p>
+<p>This is an example of a <em>hard</em> rule:</p>
 </div>
-<div class="listingblock">
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Hard Rule</div>
+<div class="paragraph">
+<p>If the Kubernetes scheduler does not find any node with the required label then the Pod reminds in <em>Pending</em> state.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>There is also a way to create a <em>soft</em> rule:</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Soft Rule</div>
+<div class="paragraph">
+<p>The Kubernetes scheduler attempts to match the rules but if it can.  However, if it can&#8217;t then the Pod is scheduled to any node.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Consider the example below:</p>
+</div>
+<div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
   affinity:
     nodeAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
+      preferredDuringSchedulingIgnoredDuringExecution: <i class="conum" data-value="1"></i><b>(1)</b>
       - weight: 1
         preference:
           matchExpressions:
@@ -710,6 +1334,14 @@ There is also a way to create a <em>soft</em> rule, where the Kubernetes schedul
             values:
             - blue</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>You can see the use of the word <em>preferred</em> vs <em>required</em>.</td>
+</tr>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_clean_up_4"><a class="anchor" href="#_clean_up_4"></a>Clean Up</h4>
@@ -723,9 +1355,24 @@ There is also a way to create a <em>soft</em> rule, where the Kubernetes schedul
 <div class="sect2">
 <h3 id="_pod_affinityanti_affinity"><a class="anchor" href="#_pod_affinityanti_affinity"></a>Pod Affinity/Anti-Affinity</h3>
 <div class="paragraph">
-<p>Let&#8217;s deploy a new pod with a Pod Affinity:</p>
+<p>Let&#8217;s deploy a new pod with a Pod Affinity.  See this relevant part of <code>myboot-pod-affinity.yml</code>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>myboot-pod-affinity.yml</code></p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
+<div class="title">myboot-pod-affinity.yml</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
   affinity:
@@ -753,69 +1400,93 @@ There is also a way to create a <em>soft</em> rule, where the Kubernetes schedul
 </tr>
 </table>
 </div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset24_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset24_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pod-affinity.yml
-
-kubectl get pods</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pod-affinity.yml</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                                              READY   STATUS    RESTARTS   AGE
-myboot2-784bc58c8d-j2l74                                          0/1     Pending   0          19s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY  STATUS   AGE    NODE
+myboot2-7c5f46cbc9-hwm2v  0/1    Pending  5h38m  &lt;none&gt;</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>myboot2</code> Pod is pending as couldn&#8217;t find any Pod matching the affinity rule.
-Let&#8217;s deploy <code>myboot</code> application labeled with <code>app=myboot</code>.</p>
+<p>The <code>myboot2</code> Pod is pending as couldn&#8217;t find any Pod matching the affinity rule.</p>
 </div>
+<div class="paragraph">
+<p>To address this, let&#8217;s deploy a  <code>myboot</code> application labeled with <code>app=myboot</code>.</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset25_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset25_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment.yml
-
-kubectl get pods</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment.yml</code></pre>
 </div>
 </div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                                              READY   STATUS    RESTARTS   AGE
-myboot-7f889dd6d-tr7gr                                            1/1     Running   0          3m27s
-myboot2-64566b697b-snm7p                                          1/1     Running   0          18s</code></pre>
+</div>
 </div>
 </div>
 <div class="paragraph">
-<p>Now both applications are running in the same node:</p>
+<p>And we&#8217;ll see that both start up, and run on <em>the same node</em></p>
 </div>
-<div class="listingblock console-input">
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset26_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pod myboot-7f889dd6d-tr7gr -o json | jq '.spec.nodeName'</code></pre>
-</div>
-</div>
+<div class="tab-pane" aria-labelledby="tabset26_terminal-2">
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"ip-10-0-146-109.eu-central-1.compute.internal"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY  STATUS             AGE    NODE
+myboot-7cbfbd9b89-267k6   0/1    ContainerCreating  5s     <mark>devnation-m02</mark>
+myboot2-7c5f46cbc9-hwm2v  0/1    ContainerCreating  5h45m  <mark>devnation-m02</mark></code></pre>
 </div>
 </div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pod myboot2-64566b697b-snm7p -o json | jq '.spec.nodeName'</code></pre>
 </div>
 </div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"ip-10-0-146-109.eu-central-1.compute.internal"</code></pre>
 </div>
-</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>What you&#8217;ve seen here is a <em>hard</em> rule, you can use a "soft" rules as well in Pod Affinity.</p>
+<p>What you&#8217;ve just seen is a <em>hard</em> rule, you can use a "soft" rules as well in Pod Affinity.</p>
 </div>
-<div class="listingblock">
+<div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
   affinity:
     podAntiAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
+      <mark>preferredDuringSchedulingIgnoredDuringExecution:</mark>
       - weight: 1
         podAffinityTerm:
           topologyKey: kubernetes.io/hostname
@@ -827,10 +1498,32 @@ myboot2-64566b697b-snm7p                                          1/1     Runnin
               - myboot</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Anti-affinity is used to insure that two Pods do NOT run together on the same node.</p>
+</td>
+</tr>
+</table>
 </div>
-<div class="listingblock">
+<div class="paragraph">
+<p><strong>Anti-affinity</strong> is used to insure that two Pods do NOT run together on the same node.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s add another pod.  Open <code>myboot-pod-antiaffinity.yaml</code> and focus on the following part</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re running this from within VSCode you can use <span class="keyseq"><kbd>CTRL</kbd>+<kbd>p</kbd></span> (or <span class="keyseq"><kbd>CMD</kbd>+<kbd>p</kbd></span> on Mac OSX) to quickly open <code>myboot-pod-antiaffinity.yaml</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock console-output">
+<div class="title">myboot-pod-antiaffinity.yaml</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
   affinity:
@@ -846,38 +1539,72 @@ myboot2-64566b697b-snm7p                                          1/1     Runnin
 </div>
 </div>
 <div class="paragraph">
-<p>Deploy a myboot3 with an anti-affinity rule</p>
+<p>This basically says that this pod should not be scheduled on any individual node (<code>topologyKey: kubernetes.io/hostname</code>) that has a pod with the <code>app=myboot</code> label.</p>
 </div>
+<div class="paragraph">
+<p>Deploy a myboot3 with the above anti-affinity rule</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset27_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset27_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-pod-antiaffinity.yaml</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
 <div class="paragraph">
-<p>And then use the <code>kubectl get pods -o wide</code> command to see which pods land on which nodes.</p>
+<p>And then notice what happens in the watch window</p>
 </div>
-<div class="listingblock console-input">
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset28_terminal-2"></a>Terminal 2</p>
+</li>
+</ul>
+</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods -o wide</code></pre>
-</div>
-</div>
+<div class="tab-pane" aria-labelledby="tabset28_terminal-2">
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                       READY   STATUS    RESTARTS   AGE    IP          NODE
-myboot-7f889dd6d-tr7gz     1/1     Running   0          4m27s  10.88.0.9   devnation-m02
-myboot2-64566b697b-snm7p   1/1     Running   0          48s    10.88.0.10  devnation-m02
-myboot3-78656b637r-suy1t   1/1     Running   0          1s     172.17.0.2  devnation</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY  STATUS             AGE    NODE
+myboot-7cbfbd9b89-267k6   1/1    Running            10m    devnation-m02
+myboot2-7c5f46cbc9-hwm2v  1/1    Running            5h56m  devnation-m02
+myboot3-6f95c866f6-7kvdw  0/1    ContainerCreating  6s     <mark>devnation</mark></code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
-<p><code>myboot3</code> Pod is deployed in a different node than the <code>myboot</code> Pod</p>
+<p>As you can see from the highlight, the <code>myboot3</code> Pod is deployed in a different node than the <code>myboot</code> Pod</p>
 </div>
 <div class="sect3">
 <h4 id="_clean_up_5"><a class="anchor" href="#_clean_up_5"></a>Clean Up</h4>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset29_terminal-1"></a>Terminal 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset29_terminal-1">
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-pod-affinity.yml
-kubectl delete -f apps/kubefiles/myboot-pod-antiaffinity.yml
+kubectl delete -f apps/kubefiles/myboot-pod-antiaffinity.yaml
 kubectl delete -f apps/kubefiles/myboot-deployment.yml</code></pre>
 </div>
 </div>
@@ -885,6 +1612,13 @@ kubectl delete -f apps/kubefiles/myboot-deployment.yml</code></pre>
 </div>
 </div>
 </div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="volumes-persistentvolumes.html" class="query-params-link">Volumes</a></span>
+  <span class="next"><a href="jobs-cronjobs.html" class="query-params-link">Jobs &amp; CronJobs</a></span>
+</nav>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
   <div class="toc-menu"></div>

@@ -4,23 +4,42 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Resources and Limits :: Kubernetes Tutorial</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/kubernetes-tutorial/resources.html">
+    <link rel="canonical" href="https://redhat-scholars.github.io/kubernetes-tutorial/kubernetes-tutorial/resources.html">
+    <link rel="prev" href="building-images.html">
+    <link rel="next" href="rolling-updates.html">
     <meta name="generator" content="Antora 2.3.1">
     <link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body class="article">
 <header class="header">
+  <style>
+    /* override master stylesheet properties for this partial here */
+
+    .navbar-item {
+      flex: unset;
+    }
+
+    .doc {
+      max-width: unset;
+    }
+
+
+  </style>
+
   <nav class="navbar">
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/NewRHDFullLogo_4-color_white-wordmark.png" height="40px" alt="Red Hat Developer Program"></a>
-      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-developer-demos.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img
+          src="../_/img/header_logo.png" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-scholars.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
         <span></span>
         <span></span>
       </button>
     </div>
-    <div id="topbar-nav" class="navbar-menu">
+        <div id="topbar-nav" class="navbar-menu">
       <div class="navbar-end">
         <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
         <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
@@ -28,24 +47,24 @@
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link" href="#">More Tutorials</a>
           <div class="navbar-dropdown">
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/outer-loop-guides/" target="_blank">Outer Loop</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/openshift-starter-guides/" target="_blank">OpenShift Starter</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/istio-tutorial/" target="_blank">Istio</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
             <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
-            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/tekton-tutorial/" target="_blank">Tekton</a>
           </div>
         </div>
       </div>
     </div>
   </nav>
-</header>
-<div class="body">
+</header><div class="body">
 <div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="index.html"></a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -156,7 +175,22 @@
 </ul>
   </nav>
 </div>
-    </div>
+<div class="nav-panel-explore"  style="display: none;"  data-panel="explore">
+  <div class="context">
+    <span class="title">kubernetes-tutorial</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">kubernetes-tutorial</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>    </div>
   </aside>
 </div>
 <main class="article">
@@ -178,6 +212,41 @@
 <div class="paragraph">
 <p>Make sure you are in the correct namespace:</p>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You will need to create the <code>myspace</code> if you haven&#8217;t already.  Check for the existence of the namespace with</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get ns myspace</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the response is:</p>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Error from server (NotFound): namespaces "myspace" not found</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then you can create the namespace with:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create ns myspace</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div id="resource-change-context-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl config set-context --current --namespace=myspace</code></pre>
@@ -197,7 +266,7 @@
 </div>
 </div>
 <div class="paragraph">
-<p>First deploy an application without any Requests nor Limits:</p>
+<p>First deploy an application without any Requests or Limits:</p>
 </div>
 <div id="no-limits-resource" class="listingblock console-input">
 <div class="content">
@@ -209,7 +278,7 @@
 </div>
 <div id="resource-kubectl-describe-services" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot -o name)
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot --field-selector 'status.phase!=Terminating' -o name)
 kubectl describe $PODNAME</code></pre>
 </div>
 </div>
@@ -312,7 +381,7 @@ myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If you want to get more information of the error:</p>
+<p>If you want to get more information about the error:</p>
 </div>
 <div id="get-events-resource" class="listingblock console-input">
 <div class="content">
@@ -326,39 +395,32 @@ myboot-7b7d754c86-kjwlr   0/1     Pending   0          19s</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The "resource requests" of the pod specification require that at least one worker node have N cores and X memory available.  If there is no worker node that meets the requires, you recieve "PENDING" and the appropriate notations in the events listing.</p>
+<p>The "resource requests" of the pod specification require that at least one worker node has N cores and X memory available.  If there is no worker node that meets the requirements, you receive "PENDING" and the appropriate notations in the events listing.</p>
 </div>
 <div class="paragraph">
-<p>You can also use <code>kubectl describe</code> on the pod to find more informatoin about the failure.</p>
+<p>You can also use <code>kubectl describe</code> on the pod to find more information about the failure.</p>
 </div>
 <div id="resource-limit-kubectl-describe-services" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot -o name)
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot --field-selector 'status.phase!=Terminating' -o name)
 kubectl describe $PODNAME</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Delete the deployment:</p>
-</div>
-<div id="delete-deployment-limit-resource" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/myboot-deployment-resources.yml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Create a new deployment with a more sane resource request and a hard limit:</p>
+<p>We should fix the deployment while keeping a history of changes done by <code>replace</code>:</p>
 </div>
 <div id="apply-deployment-sane-limit-resource" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl replace -f apps/kubefiles/myboot-deployment-resources-limits.yml</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Describe the Pod:</p>
+<p>The above command will replace the Deployment template and instruct the Pod to have container limits.
+Describe the Pod:</p>
 </div>
 <div id="resource-soft-limit-kubectl-describe-services" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot -o name)
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot --field-selector 'status.phase!=Terminating' -o name)
 kubectl describe $PODNAME</code></pre>
 </div>
 </div>
@@ -373,13 +435,13 @@ kubectl describe $PODNAME</code></pre>
 <div class="paragraph">
 <p>And watch your Pods:</p>
 </div>
-<div id="resource-soft-limit-kubectl-watch-pods" class="listingblock console-input">
+<div id="resources-kubectl-watch-pods" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch kubectl get pods</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch -n 1 -- kubectl get pods</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In another Terminal, loop and curl that service</p>
+<p>In another Terminal, loop and curl that service:</p>
 </div>
 <div class="tabset is-loading">
 <div class="ulist tabs">
@@ -446,12 +508,12 @@ If you are in AWS, you need to get the <code>hostname</code> instead of <code>ip
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true
 do curl $IP:$PORT
-sleep .3
+sleep 0.8
 done</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In yet another terminal window, curl the /sysresources endpoint</p>
+<p>In yet another terminal window, curl the /sysresources endpoint:</p>
 </div>
 <div id="sysresources-sane-limit-resource" class="listingblock console-input">
 <div class="content">
@@ -473,7 +535,7 @@ The reported memory vs what was set in the resource limits
 <div id="podresources-sane-limit-resource" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot -o name)
-kubectl get $PODNAME -o json | jq ".spec.containers[0].resources"</code></pre>
+kubectl get $PODNAME -o jsonpath='{.spec.containers[*].resources}'</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
@@ -517,7 +579,7 @@ curl: (56) Recv failure: Connection reset by peer</code></pre>
 </div>
 <div id="resource-soft-limit-fail-kubectl-describe-services" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot -o name)
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODNAME=$(kubectl get pod -l app=myboot --field-selector 'status.phase!=Terminating' -o name)
 kubectl describe $PODNAME</code></pre>
 </div>
 </div>
@@ -533,7 +595,7 @@ kubectl describe $PODNAME</code></pre>
 </div>
 <div id="terminated-pod-resource" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get $PODNAME -o json | jq ".status.containerStatuses[0].lastState.terminated"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"> kubectl get $PODNAME -o jsonpath='{.status.containerStatuses[0].lastState.terminated'}</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
@@ -559,6 +621,10 @@ myboot-d78fb6d58-69kl7   0/1     OOMKilled   1          30m</code></pre>
 <div class="paragraph">
 <p>And you will notice that the RESTARTS column increments with each crash of the Spring Boot Pod.</p>
 </div>
+<nav class="pagination">
+  <span class="prev"><a href="building-images.html" class="query-params-link">Building Images</a></span>
+  <span class="next"><a href="rolling-updates.html" class="query-params-link">Rolling updates</a></span>
+</nav>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
   <div class="toc-menu"></div>
