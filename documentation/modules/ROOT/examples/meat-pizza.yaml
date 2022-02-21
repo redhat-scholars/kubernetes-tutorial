@@ -1,1 +1,11 @@
-/workspaces/kubernetes-tutorial/apps/pizzas/meat-pizza.yaml
+apiVersion: mykubernetes.acme.org/v1
+kind: Pizza
+metadata:
+  name: meatsp
+spec:
+  toppings:
+  - mozzarella
+  - pepperoni
+  - sausage
+  - bacon
+  sauce: extra

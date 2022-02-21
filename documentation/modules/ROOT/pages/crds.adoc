@@ -162,10 +162,10 @@ include::partial$tip_vscode_quick_open.adoc[]
 ----
 include::example$pizza-crd.yaml[]
 ----
-<.> This is a description that will be shown when somebody attempts to describe the CRD
-<.> This describes one of the values our `CustomResource` will have, namely, the (`array`) list of (`string`) toppings
-<.> This describes the second field our `CustomResource` can define in its spec, the (`string`) name of the sauce to use
-<.> This is the name that our CustomResources will have.  Sort of like `Deployment` or `Pod`
+<1> This is a description that will be shown when somebody attempts to describe the CRD
+<2> This describes one of the values our `CustomResource` will have, namely, the (`array`) list of (`string`) toppings
+<3> This describes the second field our `CustomResource` can define in its spec, the (`string`) name of the sauce to use
+<4> This is the name that our CustomResources will have.  Sort of like `Deployment` or `Pod`
 
 [IMPORTANT]
 ====

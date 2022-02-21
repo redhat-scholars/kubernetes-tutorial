@@ -190,24 +190,16 @@ You can also use `kubectl describe` on the pod to find more information about th
 :label-describe: app=myboot
 include::partial$describe.adoc[]
 
-Delete the deployment:
-
-[#delete-deployment-limit-resource]
-[.console-input]
-[source, bash]
-----
-kubectl delete -f apps/kubefiles/myboot-deployment-resources.yml
-----
-
-Create a new deployment with a more sane resource request and a hard limit:
+We should fix the deployment while keeping a history of changes done by `replace`:
 
 [#apply-deployment-sane-limit-resource]
 [.console-input]
 [source, bash]
 ----
-kubectl apply -f apps/kubefiles/myboot-deployment-resources-limits.yml
+kubectl replace -f apps/kubefiles/myboot-deployment-resources-limits.yml
 ----
 
+The above command will replace the Deployment template and instruct the Pod to have container limits.
 Describe the Pod:
 
 :section-k8s: resource-soft-limit
@@ -254,7 +246,7 @@ NOTE: The reported memory vs what was set in the resource limits
 [source, bash]
 ----
 PODNAME=$(kubectl get pod -l app=myboot -o name)
-kubectl get $PODNAME -o json | jq ".spec.containers[0].resources"
+kubectl get $PODNAME -o jsonpath='{.spec.containers[*].resources}'
 ----
 
 [.console-output]
@@ -316,7 +308,7 @@ And look for the following part:
 [.console-input]
 [source, bash]
 ----
-kubectl get $PODNAME -o json | jq ".status.containerStatuses[0].lastState.terminated"
+ kubectl get $PODNAME -o jsonpath='{.status.containerStatuses[0].lastState.terminated'}
 ----
 
 [.console-output]

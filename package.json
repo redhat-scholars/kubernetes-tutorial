@@ -1,7 +1,7 @@
 {
-  "name": "quarkus-tutorial-site",
-  "description": "Quarkus Tutorial Documentation",
-  "homepage": "https://redhat-developer-demos.github.io/quarkus-tutorial",
+  "name": "kubernetes-tutorial-site",
+  "description": "Kubernetes Tutorial Documentation",
+  "homepage": "https://redhat-scholars.github.io/kubernetes-tutorial",
   "author": {
     "email": "kamesh.sampath@hotmail.com",
     "name": "Kamesh Sampath",
@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/redhat-developer-demos/quarkus-tutorial.git"
+    "url": "git+https://github.com/redhat-scholars/kubernetes-tutorial.git"
   },
   "license": "Apache-2.0",
   "babel": {

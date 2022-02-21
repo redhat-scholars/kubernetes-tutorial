@@ -27,3 +27,4 @@ local-config/
 
 # once gulp is run, this file is generated.  Some debate whether this should be checked in or not
 package-lock.json
+yarn.lock

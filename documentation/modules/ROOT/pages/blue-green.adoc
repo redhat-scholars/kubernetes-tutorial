@@ -1,6 +1,6 @@
 = Blue/Green
 
-https://martinfowler.com/bliki/BlueGreenDeployment.html[Description of Blue/Green Deployment]
+https://martinfowler.com/bliki/BlueGreenDeployment.html[Here] you can find a description and history of Blue/Green Deployment.
 
 Make sure you are in the correct namespace
 

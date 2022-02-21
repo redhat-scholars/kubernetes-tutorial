@@ -6,9 +6,10 @@ Make sure you are in the correct namespace
 :set-namespace: myspace
 include::partial$set-context.adoc[]
 
-.TIP
-****
+[TIP,subs="attributes+,+macros"]
+====
 If you just came from xref::resources.adoc[the Resources and Limits section, window=_blank] then you should already have the pods and deployments active that you need.  If not, you will need run the following commands to deploy the needed elements into {set-namespace}
+====
 
 Deploy the Spring Boot app if needed:
 
@@ -34,9 +35,8 @@ And run loop script:
 
 include::partial$loop.adoc[]
 
-****
 
-*Terminal 3*: Run commands.
+*Terminal 3* : Run commands.
 
 Describe (or `kubectl edit`) the Deployment:
 
@@ -236,13 +236,21 @@ Events:
   Normal  ScalingReplicaSet  2m37s  deployment-controller  Scaled down replica set myboot-d78fb6d58 to 0
 ----
 
-Rollback to v1:
+You can list the revisions associated to your deployment by running the following command:
+[#rollout-history]
+[.console-input]
+[source, bash]
+----
+kubectl rollout history deployment/myboot
+----
+
+You can rollback to v1 using the following command:
 
 [#describe-rollback-rolling]
 [.console-input]
 [source, bash]
 ----
-kubectl set image deployment myboot myboot=quay.io/rhdevelopers/myboot:v1
+kubectl rollout undo deployment/myboot --to-revision=1
 ----
 
 And it rolls back to Aloha:
