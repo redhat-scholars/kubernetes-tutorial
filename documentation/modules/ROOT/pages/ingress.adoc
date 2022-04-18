@@ -17,7 +17,7 @@ Wait a minute or so and verify that it has been deployed correctly:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl get pods -n kube-system
+kubectl get pods -n ingress-nginx
 ----
 
 [.console-output]
@@ -89,7 +89,7 @@ An Ingress resource is defined as:
 
 [source, yaml]
 ----
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: example-ingress
@@ -100,10 +100,13 @@ spec:
   - host: kube-devnation.info
     http:
       paths:
-      - path: /
+      - pathType: Prefix
+        path: /
         backend:
-          serviceName: quarkus-demo-deployment
-          servicePort: 8080
+          service: 
+            name: quarkus-demo-deployment
+            port:
+              number: 8080
 ----
 
 [.console-input]
