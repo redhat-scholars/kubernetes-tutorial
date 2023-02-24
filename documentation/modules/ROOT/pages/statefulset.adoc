@@ -3,7 +3,7 @@ include::_attributes.adoc[]
 :watch-terminal: Terminal 2
 
 A `StatefulSet` provides a unique identity to the Pods that they manage.
-`StatefulSet` s are particularly useful when your application requires a unique network identifier or persistence storage across Pod (re)scheduling or when your application needs some guarantee about the ordering of deployment and scaling.
+`StatefulSet` s are particularly useful when your application requires a unique network identifier or persistent storage across Pod (re)scheduling or when your application needs some guarantee about the ordering of deployment and scaling.
 
 One of the most typical examples of using `StatefulSet` s is when one needs to deploy primary/secondary servers (i.e database cluster) where you need to know beforehand the hostname of each of the servers to start the cluster.
 Also, when you scale up and down you want to do it in a specified order (i.e you want to start the primary node first and then the secondary node).

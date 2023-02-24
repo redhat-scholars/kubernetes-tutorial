@@ -525,7 +525,7 @@ It can request for a specific volume size or, for example, the access mode.
 
 :quick-open-file: demo-persistent-volume-hostpath.yaml
 
-Let's use `hostPath` strategy, but not configuring it directly as volume, but using persistence volume and persistence volume claim. Check out `{quick-open-file}`:
+Let's use `hostPath` strategy, but not configuring it directly as volume, but using persistent volume and persistent volume claim. Check out `{quick-open-file}`:
 
 include::partial$tip_vscode_quick_open.adoc[]
 
@@ -668,7 +668,7 @@ Volumes:
     ReadOnly:   false
 ----
 
-Notice that now the description of the pod shows that the volume is not set directly but through a persistence volume claim.
+Notice that now the description of the pod shows that the volume is not set directly but through a persistent volume claim.
 
 include::partial$create-greeting-file.adoc[]
 
