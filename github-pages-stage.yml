@@ -32,7 +32,7 @@ asciidoc:
     
 ui:
   bundle:
-    url: https://github.com/redhat-scholars/course-ui/releases/download/v0.1.12/ui-bundle.zip
+    url: https://github.com/redhat-scholars/course-ui/releases/download/v0.1.14/ui-bundle.zip
     snapshot: true
   supplemental_files: ./supplemental-ui
 
