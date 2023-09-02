@@ -126,7 +126,7 @@ NOTE: "5979886fb7-grf59" is part of the unique id for the pod. The `.java` code 
 [source,bash,subs="+macros,+attributes"]
 ----
 cat <<EOF | kubectl apply -f -
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: myingress
@@ -136,9 +136,12 @@ spec:
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: the-service
-          servicePort: 80
+          service:
+            name: the-service
+            port:
+              number: 80
 EOF          
 ----
 
