@@ -226,11 +226,11 @@ Here is some representative output after waiting almost 3 minutes (notice the jo
 [source,bash,subs="+macros,+attributes,+quotes"]
 ----
 NAME                SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
-whale-say-cronjob   */1 * * * *   False     #1#        0s              #20s# #<.>
-whale-say-cronjob   */1 * * * *   False     0        31s             51s
-whale-say-cronjob   */1 * * * *   False     #1#        0s              #80s# #<.>
-whale-say-cronjob   */1 * * * *   False     0        23s             103s
-whale-say-cronjob   */1 * * * *   False     #1#        1s              #2m21s#
+whale-say-cronjob   * * * * *   False     #1#        0s              #20s# #<.>
+whale-say-cronjob   * * * * *   False     0        31s             51s
+whale-say-cronjob   * * * * *   False     #1#        0s              #80s# #<.>
+whale-say-cronjob   * * * * *   False     0        23s             103s
+whale-say-cronjob   * * * * *   False     #1#        1s              #2m21s#
 ----
 <.> The first invocation took a while to start, this was not a function of the `cronjob` schedule
 <.> Notice that the next time the job is active is about 60s after the first job was active (by AGE).  And the job after that has an age of ~60s after that
@@ -276,7 +276,7 @@ Name:                          whale-say-cronjob
 Namespace:                     myspace
 Labels:                        <none>
 Annotations:                   <none>
-Schedule:                      */1 * * * *
+Schedule:                      * * * * *
 Concurrency Policy:            Allow
 Suspend:                       False
 #Successful Job History Limit:  3# #<.>

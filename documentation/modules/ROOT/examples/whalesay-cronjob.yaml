@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: whale-say-cronjob
 spec:
-  schedule: "*/1 * * * *" #<.>
+  schedule: "* * * * *" #<.>
   jobTemplate:                   
     spec:                        
       template:    
