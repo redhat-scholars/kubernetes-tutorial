@@ -61,7 +61,7 @@ Verify the application in the Pod:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl exec -it quarkus-demo /bin/sh
+kubectl exec -it quarkus-demo -- /bin/sh
 ----
 
 Run the next command.
