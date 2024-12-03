@@ -360,6 +360,9 @@ metadata:
 spec:
   serviceName: "quarkus" <i class="conum" data-value="1"></i><b>(1)</b>
   replicas: 2
+  selector:
+    matchLabels:
+      app: quarkus-statefulset
   template:
     metadata:
       labels:
