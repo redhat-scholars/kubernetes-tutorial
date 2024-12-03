@@ -528,7 +528,7 @@ kind: CronJob
 metadata:
   name: whale-say-cronjob
 spec:
-  schedule: "*/1 * * * *" <i class="conum" data-value="1"></i><b>(1)</b>
+  schedule: "* * * * *" <i class="conum" data-value="1"></i><b>(1)</b>
   jobTemplate:
     spec:
       template:
@@ -629,11 +629,11 @@ spec:
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
-whale-say-cronjob   */1 * * * *   False     <mark>1</mark>        0s              <mark>20s</mark> <i class="conum" data-value="1"></i><b>(1)</b>
-whale-say-cronjob   */1 * * * *   False     0        31s             51s
-whale-say-cronjob   */1 * * * *   False     <mark>1</mark>        0s              <mark>80s</mark> <i class="conum" data-value="2"></i><b>(2)</b>
-whale-say-cronjob   */1 * * * *   False     0        23s             103s
-whale-say-cronjob   */1 * * * *   False     <mark>1</mark>        1s              <mark>2m21s</mark></code></pre>
+whale-say-cronjob   * * * * *   False     <mark>1</mark>        0s              <mark>20s</mark> <i class="conum" data-value="1"></i><b>(1)</b>
+whale-say-cronjob   * * * * *   False     0        31s             51s
+whale-say-cronjob   * * * * *   False     <mark>1</mark>        0s              <mark>80s</mark> <i class="conum" data-value="2"></i><b>(2)</b>
+whale-say-cronjob   * * * * *   False     0        23s             103s
+whale-say-cronjob   * * * * *   False     <mark>1</mark>        1s              <mark>2m21s</mark></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -704,7 +704,7 @@ whale-say-cronjob-27108480-2ws6k  0/1    Completed  46s  devnation-m02</code></p
 Namespace:                     myspace
 Labels:                        &lt;none&gt;
 Annotations:                   &lt;none&gt;
-Schedule:                      */1 * * * *
+Schedule:                      * * * * *
 Concurrency Policy:            Allow
 Suspend:                       False
 <mark>Successful Job History Limit:  3</mark> <i class="conum" data-value="1"></i><b>(1)</b>
