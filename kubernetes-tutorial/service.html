@@ -414,7 +414,7 @@ If you are in AWS, you need to get the <code>hostname</code> instead of <code>ip
 <div id="create-ingress" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: myingress
@@ -424,9 +424,12 @@ spec:
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: the-service
-          servicePort: 80
+          service:
+            name: the-service
+            port:
+              number: 80
 EOF</code></pre>
 </div>
 </div>
