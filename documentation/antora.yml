@@ -1,5 +1,6 @@
 name: kubernetes-tutorial
 version: master
+display_version: v1.0
 nav:
   - modules/ROOT/nav.adoc
 start_page: ROOT:index.adoc

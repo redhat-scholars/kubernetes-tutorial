@@ -4,6 +4,7 @@ on:
   push:
     branches: 
     - master
+    - v2
     paths:
     - .github/workflows/docs.yml
     - github-pages.yml
@@ -14,15 +15,17 @@ jobs:
     runs-on: ubuntu-22.04 
     steps:
     - name: Checkout project
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
     - name: Run antora
       uses: docker://antora/antora:2.3.1
       with:
         args: github-pages.yml
     - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@releases/v3
+      uses: JamesIves/github-pages-deploy-action@releases/v4
       with:
-        GITHUB_TOKEN: "${{github.token}}"
+        token: "${{github.token}}"
         FOLDER: gh-pages
         BRANCH: gh-pages
-        COMMIT_MESSAGE: "[docs] Publishing the docs for commit(s) ${{github.sha}}"
+        commit-message: "[docs] Publishing the docs for commit(s) ${{github.sha}}"
