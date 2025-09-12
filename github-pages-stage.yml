@@ -14,7 +14,7 @@ content:
       
 asciidoc:
   attributes:
-    release-version: v1.29
+    release-version: v1.34
     # This attribute enables creating footer based navigation to move to the next or prev page as defined in nav.adoc
     page-pagination: true
     # Set this to true to hide the versions component that appears at the bottom of the side nav
