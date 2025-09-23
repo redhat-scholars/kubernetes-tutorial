@@ -1,4 +1,4 @@
-FROM openjdk:8u131-jre
+FROM openjdk:17.0-slim
 ENV JAVA_APP_JAR boot-demo-1.0.0.jar
 WORKDIR /app/
 COPY target/$JAVA_APP_JAR .

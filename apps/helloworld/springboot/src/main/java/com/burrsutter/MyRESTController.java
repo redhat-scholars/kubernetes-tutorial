@@ -1,18 +1,16 @@
 package com.burrsutter;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.core.env.Environment;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
@@ -29,7 +27,7 @@ public class MyRESTController {
 
      RestTemplate restTemplate = new RestTemplate();
 
-   @RequestMapping("/appendgreetingfile")
+   @GetMapping("/appendgreetingfile")
    public ResponseEntity<String> appendGreetingToFile() throws IOException {
      
        try(final FileWriter fileWriter = new FileWriter("/tmp/demo/greeting.txt", true)) {
@@ -40,12 +38,12 @@ public class MyRESTController {
    } 
 
 
-   @RequestMapping("readgreetingfile")
+   @GetMapping("/readgreetingfile")
    public String readGreetingFile() throws IOException {
         return new String(Files.readAllBytes(Paths.get("/tmp/demo/greeting.txt")));
    }
 
-   @RequestMapping("/")
+   @GetMapping("/")
    public String sayHello() {
        greeting = environment.getProperty("GREETING","Jambo");
        count++;
@@ -53,7 +51,7 @@ public class MyRESTController {
        return greeting + " from Spring Boot! " + count + " on " + hostname + "\n";
    }
 
-   @RequestMapping("/sysresources") 
+   @GetMapping("/sysresources")
    public String getSystemResources() {
         long memory = Runtime.getRuntime().maxMemory();
         int cores = Runtime.getRuntime().availableProcessors();
@@ -63,7 +61,7 @@ public class MyRESTController {
             " Cores: " + cores + "\n";
    }
 
-   @RequestMapping("/consume") 
+   @GetMapping("/consume")
    public String consumeSome() {
         System.out.println("/consume " + hostname);
 
@@ -82,7 +80,7 @@ public class MyRESTController {
         return msg + "\n";
    }
 
-   @RequestMapping(method = RequestMethod.GET, value = "/health")   
+   @GetMapping("/health")
    public ResponseEntity<String> health() {               
         if (behave) {
           return ResponseEntity.status(HttpStatus.OK)
@@ -92,33 +90,33 @@ public class MyRESTController {
         }
    }
 
-   @RequestMapping(method = RequestMethod.GET, value = "/misbehave")   
+   @GetMapping("/misbehave")
    public ResponseEntity<String> misbehave() {
         behave = false;
         return ResponseEntity.status(HttpStatus.OK).body("Misbehaving");
    }
 
-   @RequestMapping(method = RequestMethod.GET, value = "/behave")   
+   @GetMapping("/behave")
    public ResponseEntity<String> behave() {
         behave = true;
         return ResponseEntity.status(HttpStatus.OK).body("Ain't Misbehaving");
    }
 
-   @RequestMapping(method = RequestMethod.GET, value = "/shot")   
+   @GetMapping("/shot")
    public ResponseEntity<String> shot() {
         dead = true;
         return ResponseEntity.status(HttpStatus.OK).body("I have been shot in the head");
         // https://www.quora.com/Why-can-zombies-only-die-by-being-shot-in-the-head-Why-can-they-survive-all-the-blood-loss-and-still-live-If-zombies-were-real-anyway
    }
 
-   @RequestMapping(method = RequestMethod.GET, value = "/reborn")   
+   @GetMapping("/reborn")
    public ResponseEntity<String> reborn() {
         dead = false;
         return ResponseEntity.status(HttpStatus.OK).body("I have been reborn");
         // https://www.quora.com/Why-can-zombies-only-die-by-being-shot-in-the-head-Why-can-they-survive-all-the-blood-loss-and-still-live-If-zombies-were-real-anyway
    }
 
-   @RequestMapping(method = RequestMethod.GET, value = "/alive")   
+   @GetMapping("/alive")
    public ResponseEntity<String> alive() {
     if (!dead) {
       return ResponseEntity.status(HttpStatus.OK)
@@ -130,7 +128,7 @@ public class MyRESTController {
 
 
 
-   @RequestMapping("/configure")
+   @GetMapping("/configure")
    public String configure() {
         String databaseConn = environment.getProperty("DBCONN","Default");
         String msgBroker = environment.getProperty("MSGBROKER","Default");
@@ -143,7 +141,7 @@ public class MyRESTController {
             + "love=" + love + "\n";
    }
 
-   @RequestMapping("/callinganother")
+   @GetMapping("/callinganother")
    public String callinganother() {
         
         // <servicename>.<namespace>.svc.cluster.local
