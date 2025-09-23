@@ -3,13 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>DaemonSets :: Kubernetes Tutorial</title>
-    <link rel="canonical" href="https://redhat-scholars.github.io/kubernetes-tutorial/kubernetes-tutorial/daemonset.html">
-    <link rel="prev" href="jobs-cronjobs.html">
-    <link rel="next" href="statefulset.html">
+    <title>Kubernetes Tutorial :: Kubernetes Tutorial</title>
+    <link rel="canonical" href="https://redhat-scholars.github.io/kubernetes-tutorial/kubernetes-tutorial/index.html">
+    <link rel="next" href="installation.html">
     <meta name="generator" content="Antora 2.3.1">
-    <link rel="stylesheet" href="../_/css/site.css">
-<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body class="article">
@@ -31,7 +30,7 @@
   <nav class="navbar">
     <div class="navbar-brand">
       <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img
-          src="../_/img/header_logo.png" height="40px" alt="Red Hat Developer Program"></a>
+          src="../../_/img/header_logo.png" height="40px" alt="Red Hat Developer Program"></a>
       <a class="navbar-item" style="font-size: 24px; color: white" href="https://redhat-scholars.github.io/kubernetes-tutorial">Kubernetes Tutorial</a>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
@@ -60,7 +59,7 @@
     </div>
   </nav>
 </header><div class="body">
-<div class="nav-container" data-component="kubernetes-tutorial" data-version="master">
+<div class="nav-container" data-component="kubernetes-tutorial" data-version="v2">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
@@ -153,7 +152,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="jobs-cronjobs.html">Jobs &amp; CronJobs</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="daemonset.html">DaemonSet</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -178,17 +177,17 @@
 <div class="nav-panel-explore"  data-panel="explore">
   <div class="context">
     <span class="title">kubernetes-tutorial</span>
-    <span class="version">v1.0</span>
+    <span class="version">v2.0</span>
   </div>
   <ul class="components">
     <li class="component is-current">
       <span class="title">kubernetes-tutorial</span>
       <ul class="versions">
-        <li class="version is-current is-latest">
-          <a href="index.html">v1.0</a>
+        <li class="version is-latest">
+          <a href="../index.html">v1.0</a>
         </li>
-        <li class="version">
-          <a href="v2/index.html">v2.0</a>
+        <li class="version is-current">
+          <a href="index.html">v2.0</a>
         </li>
       </ul>
     </li>
@@ -199,159 +198,145 @@
 <main class="article">
 <div class="toolbar" role="navigation">
 <button class="nav-toggle"></button>
-  <a href="index.html" class="home-link"></a>
+  <a href="../index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">kubernetes-tutorial</a></li>
-    <li>4. Intermediate</li>
-    <li><a href="daemonset.html">DaemonSet</a></li>
+    <li><a href="index.html">Kubernetes Tutorial</a></li>
   </ul>
 </nav>
 <div class="page-versions">
-  <button class="version-menu-toggle" title="Show other versions of page">v1.0</button>
+  <button class="version-menu-toggle" title="Show other versions of page">v2.0</button>
   <div class="version-menu">
-    <a class="version is-current" href="daemonset.html">v1.0</a>
-    <a class="version" href="v2/daemonset.html">v2.0</a>
+    <a class="version" href="../index.html">v1.0</a>
+    <a class="version is-current" href="index.html">v2.0</a>
   </div>
 </div>
-  <div class="edit-this-page"><a href="https://github.com/redhat-scholars/kubernetes-tutorial/edit/master/documentation/modules/ROOT/pages/daemonset.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="https://github.com/redhat-scholars/kubernetes-tutorial/edit/v2/documentation/modules/ROOT/pages/index.adoc">Edit this Page</a></div>
   </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">DaemonSets</h1>
-<div id="preamble">
-<div class="sectionbody">
+<h1 class="page">Kubernetes Tutorial</h1>
 <div class="paragraph">
-<p>A DaemonSet ensures that all nodes run a copy of a Pod.
-As nodes are added to the cluster, Pods are added to them automatically.
-When the nodes are deleted, they are not rescheduled but deleted.</p>
+<p>Welcome to your Kubernetes Journey!</p>
 </div>
 <div class="paragraph">
-<p>So DaemonSet allows you to deploy a Pod across all nodes.</p>
+<p>Your journey contains four steps, each one of them in a different section:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>1. Requirements</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="installation.html" class="page">Installation</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="installation.html#tutorial-all-local" class="page">CLI</a></p>
+</li>
+<li>
+<p><a href="installation.html#install-minikube" class="page">Install Minikube</a></p>
+</li>
+<li>
+<p><a href="installation.html#start-kubernetes" class="page">Start Kubernetes</a></p>
+</li>
+</ul>
 </div>
+</li>
+</ul>
 </div>
-<div class="sect1">
-<h2 id="_preparation"><a class="anchor" href="#_preparation"></a>Preparation</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>If you are running this tutorial in Minikube, you need to add more nodes to run this part of the tutorial.
-Check the number of nodes you have delpoyed by running:</p>
+</li>
+<li>
+<p>2. Beginner</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="kubectl.html" class="page">kubectl</a></p>
+</li>
+<li>
+<p><a href="pod-rs-deployment.html" class="page">Pod, ReplicaSet, Deployment</a></p>
+</li>
+<li>
+<p><a href="service.html" class="page">Service</a></p>
+</li>
+<li>
+<p><a href="logs.html" class="page">Logs</a></p>
+</li>
+<li>
+<p><a href="service-magic.html" class="page">Service Magic</a></p>
+</li>
+<li>
+<p><a href="blue-green.html" class="page">Blue/Green Deployments</a></p>
+</li>
+</ul>
 </div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get nodes</code></pre>
+</li>
+<li>
+<p>3. Elementary</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="building-images.html" class="page">Building Images</a></p>
+</li>
+<li>
+<p><a href="resources.html" class="page">Resources and Limits</a></p>
+</li>
+<li>
+<p><a href="rolling-updates.html" class="page">Rolling updates</a></p>
+</li>
+<li>
+<p><a href="live-ready.html" class="page">Liveness, Readiness &amp; Startup</a></p>
+</li>
+<li>
+<p><a href="configmap.html" class="page">ConfigMap</a></p>
+</li>
+</ul>
 </div>
+</li>
+<li>
+<p>4. Intermediate</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="secrets.html" class="page">Secrets</a></p>
+</li>
+<li>
+<p><a href="crds.html" class="page">Operators</a></p>
+</li>
+<li>
+<p><a href="volumes-persistentvolumes.html" class="page">Volumes</a></p>
+</li>
+<li>
+<p><a href="taints-affinity.html" class="page">Taints &amp; Affinity</a></p>
+</li>
+<li>
+<p><a href="jobs-cronjobs.html" class="page">Jobs &amp; CronJobs</a></p>
+</li>
+<li>
+<p><a href="daemonset.html" class="page">DaemonSet</a></p>
+</li>
+<li>
+<p><a href="statefulset.html" class="page">StatefulSet</a></p>
+</li>
+</ul>
 </div>
-<div class="paragraph">
-<p>If only one node is present then you need to create a new node by following the next steps:</p>
+</li>
+<li>
+<p>5. Advanced</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="ingress.html" class="page">Ingress</a>-</p>
+</li>
+</ul>
 </div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME       STATUS   ROLES    AGE     VERSION
-kube       Ready    master   54m     v1.17.3</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Having <code>minikube</code> installed and in your <code>PATH</code>, then run:</p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube node add -p devnation</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Or if you do not have enough resources to add a new node with same resources as master node, you can create a new cluster with minial requirements.</p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minikube start --nodes 2 -p multinode --kubernetes-version='v1.26.1' --vm-driver='virtualbox' --memory=2048</code></pre>
-</div>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get nodes</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME       STATUS   ROLES    AGE     VERSION
-kube       Ready    master   54m     v1.17.3
-kube-m02   Ready    &lt;none&gt;   2m50s   v1.17.3</code></pre>
-</div>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-Multi-node clusters are currently experimental and might exhibit unintended behavior.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_daemonset"><a class="anchor" href="#_daemonset"></a>DaemonSet</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>DaemonSet is created using the Kubernetes <code>DaemonSet</code> resource:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  name: quarkus-daemonset
-  labels:
-    app: quarkus-daemonset
-spec:
-  selector:
-    matchLabels:
-      app: quarkus-daemonset
-  template:
-    metadata:
-      labels:
-        app: quarkus-daemonset
-    spec:
-      containers:
-      - name: quarkus-daemonset
-        image: quay.io/rhdevelopers/quarkus-demo:v1</code></pre>
-</div>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f apps/kubefiles/quarkus-daemonset.yaml
-
-kubectl get pods -o wide</code></pre>
-</div>
-</div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                      READY   STATUS    RESTARTS   AGE   IP           NODE            NOMINATED NODE   READINESS GATES
-quarkus-daemonset-jl2t5   1/1     Running   0          23s   10.244.0.2   multinode       &lt;none&gt;           &lt;none&gt;
-quarkus-daemonset-r64ql   1/1     Running   0          23s   10.244.1.2   multinode-m02   &lt;none&gt;           &lt;none&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Notice that an instance of the Quarkus Pod is deployed to every node.</p>
-</div>
-<div class="sect2">
-<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean Up</h3>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f apps/kubefiles/quarkus-daemonset.yaml</code></pre>
-</div>
-</div>
-</div>
-</div>
+</li>
+</ul>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="jobs-cronjobs.html" class="query-params-link">Jobs &amp; CronJobs</a></span>
-  <span class="next"><a href="statefulset.html" class="query-params-link">StatefulSet</a></span>
+  <span class="next"><a href="installation.html" class="query-params-link">Installation</a></span>
 </nav>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
@@ -363,8 +348,8 @@ quarkus-daemonset-r64ql   1/1     Running   0          23s   10.244.1.2   multin
 <footer class="footer">
   <a class="rhd-logo" href="https://developers.redhat.com" target="_blank"></div>
 </footer>
-<script src="../_/js/vendor/clipboard.js"></script>
-<script src="../_/js/site.js"></script>
-<script async src="../_/js/vendor/highlight.js"></script>
+<script src="../../_/js/vendor/clipboard.js"></script>
+<script src="../../_/js/site.js"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
   </body>
 </html>
