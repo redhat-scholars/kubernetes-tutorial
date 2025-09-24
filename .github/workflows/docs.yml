@@ -3,8 +3,8 @@ name: docs
 on:
   push:
     branches: 
-    - master
-    - v2
+    - v1.29
+    - v1.34
     paths:
     - .github/workflows/docs.yml
     - github-pages.yml

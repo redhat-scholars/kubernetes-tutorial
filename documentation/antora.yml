@@ -1,5 +1,5 @@
 name: kubernetes-tutorial
-version: master
+version: v1.29
 display_version: v1.29
 nav:
   - modules/ROOT/nav.adoc
