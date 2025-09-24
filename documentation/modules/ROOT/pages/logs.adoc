@@ -96,7 +96,7 @@ And in another Terminal:
 [.console-input]
 [source,bash]
 ----
-kubectl exec -it my-deployment-5dc67997c7-m7z9f /bin/bash
+kubectl exec -it my-deployment-5dc67997c7-m7z9f -- /bin/bash
 curl localhost:8080
 ----
 

@@ -138,7 +138,7 @@ Exec into a single Pod and change its readiness flag:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl exec -it myboot-845968c6ff-k5lcb /bin/bash
+kubectl exec -it myboot-845968c6ff-k5lcb -- /bin/bash
 ----
 
 [.console-input]
@@ -276,7 +276,7 @@ Now pick one of the pods, `exec` into it and shoot it:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
+kubectl exec -it myboot-558b4f8678-qbrgc -- /bin/bash
 ----
 
 [.console-input]
@@ -301,7 +301,7 @@ Plus, your exec will be terminated:
 [.console-input]
 [source,bash]
 ----
-kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
+kubectl exec -it myboot-558b4f8678-qbrgc -- /bin/bash
 ----
 
 [.console-output]
@@ -459,7 +459,7 @@ Now pick one of the pods, `exec` into it and shoot it:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl exec -it myboot-558b4f8678-qbrgc /bin/bash
+kubectl exec -it myboot-558b4f8678-qbrgc -- /bin/bash
 ----
 
 [.console-input]

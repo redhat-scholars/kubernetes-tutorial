@@ -7,7 +7,7 @@ You can execute it this way:
 [.console-input]
 [source,bash]
 ----
-kubectl exec -it {podname} /bin/bash
+kubectl exec -it {podname} -- /bin/bash
 ----
 
 Or this way:
@@ -15,7 +15,7 @@ Or this way:
 [.console-input]
 [source,bash]
 ----
-kubectl exec {podname} /somecommand
+kubectl exec {podname} -- /somecommand
 ----
 
 In this section, we will be debugging an OOMKilled that is often seen when running Java inside of a container, inside of Kubernetes.
@@ -43,7 +43,7 @@ Then let's move inside the container by running `exec` into that running Pod:
 [source, bash]
 ----
 PODNAME=$(kubectl get pod  -l app=myboot -o name)
-kubectl exec -it $PODNAME /bin/bash
+kubectl exec -it $PODNAME -- /bin/bash
 ----
 
 Run `ps` command to see the current running processes:
