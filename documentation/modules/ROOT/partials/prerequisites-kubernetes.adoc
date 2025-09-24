@@ -1,0 +1,47 @@
+:kubernetes-version: v1.34.0
+:minikube-version: v1.37.0
+:maven-version: 3.9.9
+:java-version: 21
+:stern-version: 1.33.0
+
+The following CLI tools are required for running the exercises in this tutorial. 
+Please have them installed and configured before you get started with any of the tutorial chapters.
+
+[cols="4*^,4*.",options="header,+attributes"]
+|===
+|**Tool**|**macOS**|**Fedora**|**windows**
+
+| `Git`
+| https://git-scm.com/download/mac[Download]
+| https://git-scm.com/download/linux[Download]
+| https://git-scm.com/download/win[Download]
+
+| `Docker`
+| https://docs.docker.com/docker-for-mac/install[Docker for Mac]
+| `dnf install docker`
+| https://docs.docker.com/docker-for-windows/install[Docker for Windows]
+
+| `VirtualBox`
+| https://download.virtualbox.org/virtualbox/7.2.2/VirtualBox-7.2.2-170484-OSX.dmg[Download]
+| No need for VirtualBox on Linux since you can rely on embedded kernel virtualization
+| https://download.virtualbox.org/virtualbox/7.2.2/VirtualBox-7.2.2-170484-Win.exe[Download]
+
+| https://kubernetes.io/docs/tasks/tools/install-minikube[Minikube] {minikube-version}
+| https://github.com/kubernetes/minikube/releases/download/{minikube-version}/minikube-darwin-amd64[Download]
+| https://github.com/kubernetes/minikube/releases/download/{minikube-version}/minikube-linux-amd64[Download]
+| https://github.com/kubernetes/minikube/releases/download/{minikube-version}/minikube-windows-amd64.exe[Download]
+
+| `kubectl {kubernetes-version}`
+| https://storage.googleapis.com/kubernetes-release/release/{kubernetes-version}/bin/darwin/amd64/kubectl[Download]
+| https://storage.googleapis.com/kubernetes-release/release/{kubernetes-version}/bin/linux/amd64/kubectl[Download]
+| https://storage.googleapis.com/kubernetes-release/release/{kubernetes-version}/bin/windows/amd64/kubectl.exe[Download]
+
+| https://github.com/wercker/stern[stern]
+| `brew install stern`
+| https://github.com/stern/stern/releases/download/v{stern-version}/stern_{stern-version}_linux_amd64.tar.gz[Download]
+| https://github.com/stern/stern/releases/download/v{stern-version}/stern_{stern-version}_windows_amd64.tar.gz[Download]
+
+| `Apache Maven {maven-version}`
+| https://archive.apache.org/dist/maven/maven-3/{maven-version}/binaries/apache-maven-{maven-version}-bin.tar.gz[Download]
+| https://archive.apache.org/dist/maven/maven-3/{maven-version}/binaries/apache-maven-{maven-version}-bin.tar.gz[Download]
+| https://archive.apache.org/dist/maven/maven-3/{maven-version}/binaries/apache-maven-{maven-version}-bin.tar.gz[Download]

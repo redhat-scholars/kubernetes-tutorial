@@ -4,7 +4,7 @@ include::_attributes.adoc[]
 [#tutorial-all-local]
 == CLI tools
 
-include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/prerequisites-kubernetes.adoc[]
+include::partial$prerequisites-kubernetes.adoc[]
 |===
 
 include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/optional-requisites.adoc[]

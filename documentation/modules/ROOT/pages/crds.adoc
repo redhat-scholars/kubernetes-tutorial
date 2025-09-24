@@ -658,7 +658,7 @@ Start a watch in another terminal:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-watch kubectl get pods
+kubectl -w get pods
 ----
 
 Then deploy the resource requesting a Kafka cluster:

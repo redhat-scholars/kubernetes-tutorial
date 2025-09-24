@@ -2,7 +2,7 @@
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-watch kubectl get services
+kubectl -w get services
 ----
 
 [.console-output]
