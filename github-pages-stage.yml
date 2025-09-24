@@ -9,7 +9,7 @@ site:
 content:
   sources:
     - url: .
-      branches: HEAD
+      branches: [master,v1.34]
       start_path: documentation
       
 asciidoc:

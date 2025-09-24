@@ -9,7 +9,7 @@ site:
 content:
   sources:
     - url: .
-      branches: [master,openshift]
+      branches: [master,v1.34]
       start_path: documentation
       
 asciidoc:
