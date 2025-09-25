@@ -26,7 +26,7 @@ Please have them installed and configured before you get started with any of the
 | No need for VirtualBox on Linux since you can rely on embedded kernel virtualization
 | https://download.virtualbox.org/virtualbox/7.2.2/VirtualBox-7.2.2-170484-Win.exe[Download]
 
-| https://kubernetes.io/docs/tasks/tools/install-minikube[Minikube] {minikube-version}
+| `https://kubernetes.io/docs/tasks/tools/install-minikube[Minikube] {minikube-version}`
 | https://github.com/kubernetes/minikube/releases/download/{minikube-version}/minikube-darwin-amd64[Download]
 | https://github.com/kubernetes/minikube/releases/download/{minikube-version}/minikube-linux-amd64[Download]
 | https://github.com/kubernetes/minikube/releases/download/{minikube-version}/minikube-windows-amd64.exe[Download]
@@ -36,12 +36,15 @@ Please have them installed and configured before you get started with any of the
 | https://storage.googleapis.com/kubernetes-release/release/{kubernetes-version}/bin/linux/amd64/kubectl[Download]
 | https://storage.googleapis.com/kubernetes-release/release/{kubernetes-version}/bin/windows/amd64/kubectl.exe[Download]
 
-| https://github.com/wercker/stern[stern]
-| `brew install stern`
-| https://github.com/stern/stern/releases/download/v{stern-version}/stern_{stern-version}_linux_amd64.tar.gz[Download]
-| https://github.com/stern/stern/releases/download/v{stern-version}/stern_{stern-version}_windows_amd64.tar.gz[Download]
 
 | `Apache Maven {maven-version}`
 | https://archive.apache.org/dist/maven/maven-3/{maven-version}/binaries/apache-maven-{maven-version}-bin.tar.gz[Download]
 | https://archive.apache.org/dist/maven/maven-3/{maven-version}/binaries/apache-maven-{maven-version}-bin.tar.gz[Download]
 | https://archive.apache.org/dist/maven/maven-3/{maven-version}/binaries/apache-maven-{maven-version}-bin.tar.gz[Download]
+
+| `Java {java-version}`
+| https://adoptium.net/installation/
+| https://adoptium.net/installation/ alternatively: 
+
+`dnf install java-{java-version}-openjdk-devel`
+| https://adoptium.net/installation/ (Make sure you set the `JAVA_HOME` environment variable and add `%JAVA_HOME%\bin` to your `PATH`)

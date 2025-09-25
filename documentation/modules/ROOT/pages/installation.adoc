@@ -7,7 +7,7 @@ include::_attributes.adoc[]
 include::partial$prerequisites-kubernetes.adoc[]
 |===
 
-include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/optional-requisites.adoc[]
+include::partial$optional-requisites.adoc[]
 |===
 
 [#download-tutorial-sources]
