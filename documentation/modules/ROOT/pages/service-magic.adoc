@@ -101,7 +101,7 @@ EOF
 [.console-input]
 [source, bash]
 ----
-kubectl -w get pods --show-labels
+kubectl get pods -w --show-labels
 ----
 
 [.console-output]

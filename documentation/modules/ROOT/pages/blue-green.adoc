@@ -48,7 +48,7 @@ Watch and `show-labels`:
 [.console-input]
 [source, bash]
 ----
-kubectl -w get pods --show-labels
+kubectl get pods -w --show-labels
 ----
 
 Deploy the service:

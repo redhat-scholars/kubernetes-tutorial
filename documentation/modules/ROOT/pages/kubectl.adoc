@@ -59,7 +59,7 @@ kubectl create deployment myapp --image=quay.io/rhdevelopers/quarkus-demo:v1
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl -w get events --sort-by=.metadata.creationTimestamp
+kubectl get events -w --sort-by=.metadata.creationTimestamp
 ----
 
 [.console-output]
@@ -169,7 +169,7 @@ Open three Terminal Windows.
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl -w get pods
+kubectl get pods -w
 ----
 
 === Terminal 2

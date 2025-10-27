@@ -201,7 +201,7 @@ Let the rollout finish to completion across all 3 replicas:
 [.console-output]
 [source.bash]
 ----
-kubectl -w get pods
+kubectl get pods -w
 NAME                      READY   STATUS    RESTARTS   AGE
 myboot-56659c9d69-6sglj   1/1     Running   0          2m2s
 myboot-56659c9d69-mdllq   1/1     Running   0          97s
@@ -258,7 +258,7 @@ Save and close the editor, allowing that change to rollout:
 [.console-input]
 [source,bash]
 ----
-kubectl -w get pods
+kubectl get pods -w
 ----
 
 [.console-output]
@@ -434,7 +434,7 @@ The startup probe waits for 30 seconds (`5 * 6`) to startup the application.  No
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl -w get pods
+kubectl get pods -w
 ----
 
 [.console-output]

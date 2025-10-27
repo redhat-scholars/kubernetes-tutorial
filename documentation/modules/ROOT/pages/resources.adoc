@@ -323,7 +323,7 @@ And look for the following part:
 }
 ----
 
-You might even see the STATUS column of the `kubectl -w get pods` reflect the OOMKilled:
+You might even see the STATUS column of the `kubectl get pods -w` reflect the OOMKilled:
 
 [.console-output]
 [source,bash]

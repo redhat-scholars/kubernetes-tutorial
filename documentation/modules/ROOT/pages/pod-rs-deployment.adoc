@@ -36,7 +36,7 @@ Watch the pod lifecycle:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl -w get pods
+kubectl get pods -w
 ----
 
 [.console-output]
@@ -94,7 +94,7 @@ kubectl delete pod quarkus-demo
 [.console-input]
 [source,bash]
 ----
-kubectl -w get pods
+kubectl get pods -w
 ----
 
 [.console-output]
@@ -144,7 +144,7 @@ Get the pods with labels:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl -w get pods --show-labels
+kubectl get pods -w --show-labels
 ----
 
 [.console-output]

@@ -2,7 +2,7 @@
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl -w get services
+kubectl get services -w
 ----
 
 [.console-output]
