@@ -495,27 +495,26 @@ the-service   the-service-myspace.apps.gcp.burrsutter.dev          the-service  
 </div>
 </div>
 <div class="sect2">
-<h3 id="_use_jq_to_pull_out_the_data_elements_you_need_for_scripting"><a class="anchor" href="#_use_jq_to_pull_out_the_data_elements_you_need_for_scripting"></a>Use jq to pull out the data elements you need for scripting</h3>
+<h3 id="_use_jsonpath_to_pull_out_the_data_elements_you_need_for_scripting"><a class="anchor" href="#_use_jsonpath_to_pull_out_the_data_elements_you_need_for_scripting"></a>Use jsonpath to pull out the data elements you need for scripting</h3>
+<div class="paragraph">
+<p>The following command dumps the Kubernetes object to a file in JSON format:</p>
+</div>
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get route the-service -o json &gt; myroutes.json</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Copy and paste contents into jqplay.org</p>
-</div>
-<div class="paragraph">
-<p><a href="https://www.screencast.com/t/09biZYHNo62" class="bare">https://www.screencast.com/t/09biZYHNo62</a></p>
-</div>
-<div id="install-jq" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">brew install jq</code></pre>
-</div>
+<p>It&#8217;s also possible to extract specific information from the JSON using JSONPath syntax.</p>
 </div>
 <div id="route-jq" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get route the-service -o json | jq '.spec.host'
-"the-service-myspace.apps.gcp.burrsutter.dev"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get route the-service -o jsonpath="{.spec.host}"</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">the-service-myspace.apps.gcp.burrsutter.dev</code></pre>
 </div>
 </div>
 </div>

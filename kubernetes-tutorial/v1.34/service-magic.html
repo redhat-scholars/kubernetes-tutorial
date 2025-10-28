@@ -368,15 +368,16 @@ EOF</code></pre>
 my-service   &lt;none&gt;      2m6s</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Alternatively, you extract only service endpoints with the following command you&#8217;ll get no result:</p>
+</div>
 <div id="get-endpoints1" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints my-service -o jsonpath='{.subsets[].addresses[*].ip}{"\n"}'</code></pre>
 </div>
 </div>
-<div class="listingblock console-output">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">jq: error (at &lt;stdin&gt;:18): Cannot iterate over null (null)</code></pre>
-</div>
+<div class="paragraph">
+<p>Initialize <code>IP</code> and <code>PORT</code> envirnment variables to reach the service:</p>
 </div>
 <div class="tabset is-loading">
 <div class="ulist tabs">
@@ -447,6 +448,9 @@ sleep 0.8
 done</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>The client may experience either <strong>connection refusal</strong> or a <strong>delay</strong> before timing out, depending on the features of the load balancer.</p>
+</div>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl: (7) Failed to connect to 35.224.233.213 port 8000: Connection refused
@@ -498,14 +502,12 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl</code></pre>
 </div>
 <div id="get-endpoints2" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints my-service -o jsonpath='{.subsets[].addresses[*].ip}{"\n"}'</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"10.130.2.43"
-"10.130.2.44"
-"10.130.2.45"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">10.130.2.43 10.130.2.44 10.130.2.45</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -526,13 +528,12 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl</code></pre>
 </div>
 <div id="get-endpoints3" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get endpoints my-service -o jsonpath='{.subsets[].addresses[*].ip}{"\n"}'</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"10.130.2.44"
-"10.130.2.45"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">10.130.2.44 10.130.2.45</code></pre>
 </div>
 </div>
 </div>

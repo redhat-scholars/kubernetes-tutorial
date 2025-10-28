@@ -249,6 +249,9 @@ spec:
   containers:
   - name: quarkus-demo
     image: quay.io/rhdevelopers/quarkus-demo:v1
+    securityContext:
+      seccompProfile:
+        type: RuntimeDefault
 EOF</code></pre>
 </div>
 </div>

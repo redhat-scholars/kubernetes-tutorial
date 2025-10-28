@@ -262,7 +262,7 @@ EOF</code></pre>
 </div>
 <div id="logs-get-replicas" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployment my-deployment -o json | jq '.status.replicas'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployment my-deployment -o jsonpath='{.status.replicas}{"\n"}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -413,11 +413,11 @@ done</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Then use Stern to view the logs across all pods:</p>
+<p>Show the logs from all pods appending the <code>--all-pods</code> option:</p>
 </div>
-<div id="stern-my-deployment" class="listingblock console-input">
+<div id="all-pods" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">stern my-deployment</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs -f deployments/my-deployment --all-pods</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
@@ -429,18 +429,17 @@ my-deployment-5dc67997c7-s4jc6 myapp Aloha from my-deployment-5dc67997c7-s4jc6</
 </div>
 </div>
 <div class="paragraph">
-<p>Another option is <a href="https://github.com/boz/kail">kail</a>:</p>
+<p>Other popular tools to show the logs are:</p>
 </div>
-<div id="install-kail" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">brew tap boz/repo
-brew install boz/repo/kail</code></pre>
-</div>
-</div>
-<div id="run-kail" class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kail --deploy=my-deployment -c myapp --since=1h</code></pre>
-</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="https://github.com/wercker/stern">stern</a></p>
+</li>
+<li>
+<p><a href="https://github.com/boz/kail">kail</a>:</p>
+</li>
+</ol>
 </div>
 <div class="admonitionblock tip">
 <table>
