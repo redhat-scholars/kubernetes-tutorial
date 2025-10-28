@@ -41,7 +41,7 @@ Make sure you are running 3 replicas (3 pods/instances of your application):
 [.console-input]
 [source, bash]
 ----
-kubectl get deployment my-deployment -o json | jq '.status.replicas'
+kubectl get deployment my-deployment -o jsonpath='{.status.replicas}{"\n"}'
 ----
 
 If not, scale up to 3:
@@ -138,13 +138,13 @@ Start sending the request in a loop:
 
 include::partial$loop.adoc[]
 
-Then use Stern to view the logs across all pods:
+Show the logs from all pods appending the `--all-pods` option:
 
-[#stern-my-deployment]
+[#all-pods]
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-stern my-deployment
+kubectl logs -f deployments/my-deployment --all-pods
 ----
 
 [.console-output]
@@ -156,22 +156,10 @@ my-deployment-5dc67997c7-s4jc6 myapp Aloha from my-deployment-5dc67997c7-s4jc6
 my-deployment-5dc67997c7-s4jc6 myapp Aloha from my-deployment-5dc67997c7-s4jc6
 ----
 
-Another option is https://github.com/boz/kail[kail]:
+Other popular tools to show the logs are:
 
-[#install-kail]
-[.console-input]
-[source, bash]
-----
-brew tap boz/repo
-brew install boz/repo/kail
-----
-
-[#run-kail]
-[.console-input]
-[source, bash]
-----
-kail --deploy=my-deployment -c myapp --since=1h
-----
+. https://github.com/wercker/stern[stern]
+. https://github.com/boz/kail[kail]:
 
 [TIP]
 ====

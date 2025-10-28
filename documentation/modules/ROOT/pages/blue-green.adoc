@@ -90,7 +90,7 @@ kubectl exec -it $PODNAME -- curl localhost:8080
 [.console-output]
 [source,bash]
 ----
-Bonjour from Spring Boot! 1 on myboot-next-66b68c6659-ftcjr
+Jambo from Spring Boot! 1 on myboot-next-66b68c6659-ftcjr
 ----
 
 Now update the single Service to point to the new pod and go GREEN:
@@ -106,9 +106,9 @@ kubectl patch svc/myboot -p '{"spec":{"selector":{"app":"myboot-next"}}}'
 [source,bash]
 ----
 Aloha from Spring Boot! 240 on myboot-d78fb6d58-929wn
-Bonjour from Spring Boot! 2 on myboot-next-66b68c6659-ftcjr
-Bonjour from Spring Boot! 3 on myboot-next-66b68c6659-ftcjr
-Bonjour from Spring Boot! 4 on myboot-next-66b68c6659-ftcjr
+Jambo from Spring Boot! 2 on myboot-next-66b68c6659-ftcjr
+Jambo from Spring Boot! 3 on myboot-next-66b68c6659-ftcjr
+Jambo from Spring Boot! 4 on myboot-next-66b68c6659-ftcjr
 ----
 
 Determine that you prefer Hawaiian (blue) to French (green) and fallback:
@@ -125,7 +125,7 @@ kubectl patch svc/myboot -p '{"spec":{"selector":{"app":"myboot"}}}'
 [.console-output]
 [source,bash]
 ----
-Bonjour from Spring Boot! 17 on myboot-next-66b68c6659-ftcjr
+Jambo from Spring Boot! 17 on myboot-next-66b68c6659-ftcjr
 Aloha from Spring Boot! 257 on myboot-d78fb6d58-vqvlb
 Aloha from Spring Boot! 258 on myboot-d78fb6d58-vqvlb
 ----

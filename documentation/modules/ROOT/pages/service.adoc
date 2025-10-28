@@ -201,7 +201,9 @@ curl the-service-myspace.apps.gcp.burrsutter.dev
 Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:3
 ----
 
-=== Use jq to pull out the data elements you need for scripting
+=== Use jsonpath to pull out the data elements you need for scripting
+
+The following command dumps the Kubernetes object to a file in JSON format:
 
 [.console-input]
 [source,bash]
@@ -209,21 +211,17 @@ Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:
 kubectl get route the-service -o json > myroutes.json
 ----
 
-Copy and paste contents into jqplay.org
-
-https://www.screencast.com/t/09biZYHNo62
-
-[#install-jq]
-[.console-input]
-[source, bash]
-----
-brew install jq
-----
+It's also possible to extract specific information from the JSON using JSONPath syntax.
 
 [#route-jq]
 [.console-input]
 [source, bash]
 ----
-kubectl get route the-service -o json | jq '.spec.host'
-"the-service-myspace.apps.gcp.burrsutter.dev"
+kubectl get route the-service -o jsonpath="{.spec.host}"
+----
+
+[.console-output]
+[source, bash]
+----
+the-service-myspace.apps.gcp.burrsutter.dev
 ----

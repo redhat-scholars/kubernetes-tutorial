@@ -155,18 +155,16 @@ NAME         ENDPOINTS   AGE
 my-service   <none>      2m6s
 ----
 
+Alternatively, you extract only service endpoints with the following command you'll get no result:
+
 [#get-endpoints1]
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'
+kubectl get endpoints my-service -o jsonpath='{.subsets[].addresses[*].ip}{"\n"}'
 ----
 
-[.console-output]
-[source,bash]
-----
-jq: error (at <stdin>:18): Cannot iterate over null (null)
-----
+Initialize `IP` and `PORT` envirnment variables to reach the service:
 
 :section-k8s: servicemagic
 :service-exposed: my-service
@@ -175,6 +173,8 @@ include::partial$env-curl.adoc[]
 And run loop script:
 
 include::partial$loop.adoc[]
+
+The client may experience either *connection refusal* or a *delay* before timing out, depending on the features of the load balancer.
 
 [.console-output]
 [source,bash]
@@ -239,15 +239,13 @@ Python Hello on mypython-deployment-6874f84d85-2kpjl
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'
+kubectl get endpoints my-service -o jsonpath='{.subsets[].addresses[*].ip}{"\n"}'
 ----
 
 [.console-output]
 [source,bash]
 ----
-"10.130.2.43"
-"10.130.2.44"
-"10.130.2.45"
+10.130.2.43 10.130.2.44 10.130.2.45
 ----
 
 See the Pod IPs:
@@ -272,14 +270,13 @@ kubectl label pod -l app=mypython inservice-
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl get endpoints my-service -o json | jq '.subsets[].addresses[].ip'
+kubectl get endpoints my-service -o jsonpath='{.subsets[].addresses[*].ip}{"\n"}'
 ----
 
 [.console-output]
 [source,bash]
 ----
-"10.130.2.44"
-"10.130.2.45"
+10.130.2.44 10.130.2.45
 ----
 
 == Clean Up
