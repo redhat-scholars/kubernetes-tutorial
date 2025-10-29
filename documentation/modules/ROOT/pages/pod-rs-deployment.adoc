@@ -218,7 +218,7 @@ Pods are "owned" by the ReplicaSet:
 [.console-input]
 [source,bash]
 ----
-kubectl get pod rs-quarkus-demo-mlnng -o json | jq ".metadata.ownerReferences[]"
+kubectl get pod rs-quarkus-demo-mlnng -o jsonpath='{.metadata.ownerReferences[]}'
 ----
 
 [.console-output]

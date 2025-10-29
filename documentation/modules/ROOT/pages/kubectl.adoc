@@ -53,7 +53,7 @@ kubectl create deployment myapp --image=quay.io/rhdevelopers/quarkus-demo:v1
 ----
 
 [[monitor-events]]
-== while monitoring Events
+== While monitoring Events
 
 [#kubectl-get-events]
 [.console-input]
@@ -243,47 +243,55 @@ Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-z6hqw:170
 Aloha from Spring Boot! 2 on myapp-58b97dbd95-vxd87
 ----
 
-[#set-image-myboot-v2]
+Annotate the change cause for the records (documentation purpose):
+
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/myboot:v2
+kubectl annotate deployment/myapp kubernetes.io/change-cause="Reverting to old SpringBoot version" --overwrite
+----
+
+Explore the revision history:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl rollout history deployment/myapp
 ----
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
-Bonjour from Spring Boot! 2 on myapp-7d58855c6b-6c8gd
-Bonjour from Spring Boot! 3 on myapp-7d58855c6b-6c8gd
-Aloha from Spring Boot! 7 on myapp-58b97dbd95-mjlwx
-Bonjour from Spring Boot! 4 on myapp-7d58855c6b-6c8gd
-Aloha from Spring Boot! 8 on myapp-58b97dbd95-mjlwx
-Bonjour from Spring Boot! 5 on myapp-7d58855c6b-6c8gd
+deployment.apps/myapp
+REVISION  CHANGE-CAUSE
+1         <none>
+2         Restoring to old SpringBoot version
 ----
 
-[#set-image-quarkus-demo]
+Revert to the most recent successful version (e.g., from Revision 2 back to Revision 1), use the undo command:
+
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-kubectl set image deployment/myapp quarkus-demo=quay.io/rhdevelopers/quarkus-demo:v1
+kubectl rollout undo deployment/myapp
 ----
+
+[TIP]
+====
+You can specify the revision number adding the following option: `--to-revision=1`
+====
 
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
-Bonjour from Spring Boot! 14 on myapp-7d58855c6b-dw67s
-Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-tcfwp:3
-Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-tcfwp:4
-Bonjour from Spring Boot! 15 on myapp-7d58855c6b-dw67s
-Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-tcfwp:5
-Bonjour from Spring Boot! 13 on myapp-7d58855c6b-72wp8
-Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-7rkxj:1
-Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-7rkxj:2
-Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-7lf9t:1
-Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-7rkxj:3
-Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-7lf9t:2
-Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-7lf9t:3
-Supersonic Subatomic Java with Quarkus myapp-5dcbf46dfc-tcfwp:6
+Aloha from Spring Boot! 16 on myapp-fc6b78bb-d495j
+Supersonic Subatomic Java with Quarkus myapp-76d84b5f46-jlzs7:1
+Supersonic Subatomic Java with Quarkus myapp-76d84b5f46-jlzs7:2
+Aloha from Spring Boot! 17 on myapp-fc6b78bb-d495j
+Aloha from Spring Boot! 18 on myapp-fc6b78bb-d495j
+Supersonic Subatomic Java with Quarkus myapp-76d84b5f46-jlzs7:3
+Aloha from Spring Boot! 19 on myapp-fc6b78bb-d495j
+Supersonic Subatomic Java with Quarkus myapp-76d84b5f46-jlzs7:4
 ----
 
 === Clean Up
