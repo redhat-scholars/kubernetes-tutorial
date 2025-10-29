@@ -426,7 +426,7 @@ Events:
 </div>
 <div id="rs-owned-ref" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pod rs-quarkus-demo-mlnng -o json | jq ".metadata.ownerReferences[]"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pod rs-quarkus-demo-mlnng -o jsonpath='{.metadata.ownerReferences[]}'</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
