@@ -626,6 +626,21 @@ REVISION  CHANGE-CAUSE
 </div>
 </div>
 <div class="paragraph">
+<p>List the ReplicaSets for the deployment:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get rs</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME               DESIRED   CURRENT   READY   AGE
+myapp-65c9d96df4   3         3         3       2m
+myapp-67fc4b6f94   0         0         0       8m</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>Revert to the most recent successful version (e.g., from Revision 2 back to Revision 1), use the undo command:</p>
 </div>
 <div class="listingblock console-input">
