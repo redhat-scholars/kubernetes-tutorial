@@ -268,6 +268,22 @@ REVISION  CHANGE-CAUSE
 2         Restoring to old SpringBoot version
 ----
 
+List the ReplicaSets for the deployment:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+kubectl get rs
+----
+
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+NAME               DESIRED   CURRENT   READY   AGE
+myapp-65c9d96df4   3         3         3       2m
+myapp-67fc4b6f94   0         0         0       8m
+----
+
 Revert to the most recent successful version (e.g., from Revision 2 back to Revision 1), use the undo command:
 
 [.console-input]
