@@ -419,8 +419,29 @@ If you are in AWS, you need to get the <code>hostname</code> instead of <code>ip
 </div>
 </div>
 <div class="sect1">
-<h2 id="_ingress"><a class="anchor" href="#_ingress"></a>Ingress</h2>
+<h2 id="_ingress_or_route"><a class="anchor" href="#_ingress_or_route"></a>Ingress or Route</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p><strong>Kubernetes Ingress</strong> and <strong>OpenShift Route</strong> are functionally similar, resources used to expose applications externally.</p>
+</div>
+<div class="paragraph">
+<p>The <code>Route</code> object was developed by Red Hat before the Kubernetes Ingress API was fully mature. It essentially bundles the traffic rule definition and its implementation (via the built-in HAProxy Router) into a single, opinionated feature.</p>
+</div>
+<div class="paragraph">
+<p>Depending on your underlying platform, continue with the relevant path:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="#_kubernetes_ingress">Kubernetes Ingress</a></p>
+</li>
+<li>
+<p><a href="#_openshift_route">OpenShift Route</a></p>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="_kubernetes_ingress"><a class="anchor" href="#_kubernetes_ingress"></a>Kubernetes Ingress</h3>
 <div id="create-ingress" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | kubectl apply -f -
@@ -456,23 +477,21 @@ EOF</code></pre>
 <div class="paragraph">
 <p>In case of using Minikube follow: <a href="https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/" class="bare">https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/</a></p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_openshift_route"><a class="anchor" href="#_openshift_route"></a>OpenShift Route</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>Delete the manually created Ingress to avoid any naming collisions.  An OpenShift Route leverages ha-proxy for its default Ingress.</p>
+<p>Remove the ingress:</p>
 </div>
 <div id="delete-ingress" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete ingress myingress</code></pre>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_openshift_route"><a class="anchor" href="#_openshift_route"></a>OpenShift Route</h3>
 <div id="expose-service" class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc expose service the-service
-kubectl get routes</code></pre>
+oc get routes</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
@@ -494,6 +513,7 @@ the-service   the-service-myspace.apps.gcp.burrsutter.dev          the-service  
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:3</code></pre>
 </div>
 </div>
+</div>
 <div class="sect2">
 <h3 id="_use_jsonpath_to_pull_out_the_data_elements_you_need_for_scripting"><a class="anchor" href="#_use_jsonpath_to_pull_out_the_data_elements_you_need_for_scripting"></a>Use jsonpath to pull out the data elements you need for scripting</h3>
 <div class="paragraph">
@@ -501,7 +521,7 @@ the-service   the-service-myspace.apps.gcp.burrsutter.dev          the-service  
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get route the-service -o json &gt; myroutes.json</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get route the-service -o json &gt; myroutes.json</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -509,7 +529,7 @@ the-service   the-service-myspace.apps.gcp.burrsutter.dev          the-service  
 </div>
 <div id="route-jq" class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get route the-service -o jsonpath="{.spec.host}"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get route the-service -o jsonpath="{.spec.host}"</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
