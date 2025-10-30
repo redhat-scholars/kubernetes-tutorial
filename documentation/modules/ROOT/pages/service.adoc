@@ -119,7 +119,18 @@ Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-grf59:
 
 NOTE: "5979886fb7-grf59" is part of the unique id for the pod. The `.java` code uses `System.getenv().getOrDefault("HOSTNAME", "unknown");`
 
-== Ingress
+== Ingress or Route
+
+*Kubernetes Ingress* and *OpenShift Route* are functionally similar, resources used to expose applications externally.
+
+The `Route` object was developed by Red Hat before the Kubernetes Ingress API was fully mature. It essentially bundles the traffic rule definition and its implementation (via the built-in HAProxy Router) into a single, opinionated feature.
+
+Depending on your underlying platform, continue with the relevant path:
+
+. <<#_kubernetes_ingress,Kubernetes Ingress>>
+. <<#_openshift_route,OpenShift Route>>
+
+=== Kubernetes Ingress
 
 [#create-ingress]
 [.console-input]
@@ -160,9 +171,7 @@ Supersonic Subatomic Java with Quarkus quarkus-demo-deployment-5979886fb7-gdtnz:
 
 In case of using Minikube follow: https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/
 
-== OpenShift Route
-
-Delete the manually created Ingress to avoid any naming collisions.  An OpenShift Route leverages ha-proxy for its default Ingress.
+Remove the ingress:
 
 [#delete-ingress]
 [.console-input]
@@ -171,12 +180,14 @@ Delete the manually created Ingress to avoid any naming collisions.  An OpenShif
 kubectl delete ingress myingress
 ----
 
+=== OpenShift Route
+
 [#expose-service]
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 oc expose service the-service
-kubectl get routes
+oc get routes
 ----
 
 [.console-output]
@@ -208,7 +219,7 @@ The following command dumps the Kubernetes object to a file in JSON format:
 [.console-input]
 [source,bash]
 ----
-kubectl get route the-service -o json > myroutes.json
+oc get route the-service -o json > myroutes.json
 ----
 
 It's also possible to extract specific information from the JSON using JSONPath syntax.
@@ -217,7 +228,7 @@ It's also possible to extract specific information from the JSON using JSONPath 
 [.console-input]
 [source, bash]
 ----
-kubectl get route the-service -o jsonpath="{.spec.host}"
+oc get route the-service -o jsonpath="{.spec.host}"
 ----
 
 [.console-output]
